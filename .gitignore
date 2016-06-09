@@ -1,0 +1,19 @@
+# compiled files
+*.class
+
+# Eclipse project files
+.settings
+.classpath
+.project
+
+# IntelliJ IDEA project files
+.idea
+*.iml
+*.iws
+*.ipr
+
+# Gradle
+.gradle
+gradle-app.setting
+build/
+local.properties

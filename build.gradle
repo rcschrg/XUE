@@ -1,0 +1,32 @@
+apply plugin: "idea"
+apply plugin: "eclipse"
+apply plugin: "java"
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+ext {
+    appName = "XUE"
+}
+
+repositories {
+    mavenCentral();
+}
+
+dependencies {
+    compile "net.sf.kxml:kxml2:2.3.0"
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.mockito:mockito-all:1.10.19'
+}
+
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+sourceSets.main.java.srcDirs = [ "src/main/java" ]
+sourceSets.test.java.srcDirs = [ "src/test/java"]
+
+idea {
+    module {
+        sourceDirs += file("src/main/java");
+        testSourceDirs += file("src/test/java");
+    }
+}
