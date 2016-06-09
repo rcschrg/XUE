@@ -1,12 +1,29 @@
 apply plugin: "idea"
 apply plugin: "eclipse"
 apply plugin: "java"
+apply plugin: "maven-publish"
+apply plugin: 'signing'
 
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
+group = 'de.verygame.xue'
+version = '0.1'
+
 ext {
     appName = "XUE"
+    appDescription = "XUE is an easy way to create and set up objects via XML"
+    projectUrl = "https://github.com/VeryGame/XUE"
+    scmUrl = "https://github.com/VeryGame/XUE.git"
+    connectionUrl = "scm:git:git://github.com/VeryGame/XUE.git"
+    developerConnectionUrl = "scm:git:ssh:git@github.com:VeryGame/XUE.git"
+    mitLicenseName = "The MIT License (MIT)"
+    mitLicenseUrl = "https://opensource.org/licenses/mit-license.php"
+    mitLicenseDis = "repo"
+
+    devId = "rcschrg"
+    devName = "Rico Schrage"
+    devEmail = "rcschrg@verygame.de"
 }
 
 repositories {
@@ -19,6 +36,65 @@ dependencies {
     testCompile 'org.mockito:mockito-all:1.10.19'
 }
 
+task javadocJar (type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+task sourceJar (type : Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+publishing {
+    publications {
+
+        myPublication(MavenPublication) {
+            from components.java
+
+            artifact (javadocJar) {
+                classifier = 'javadoc'
+            }
+            artifact (sourceJar) {
+                classifier = 'sources'
+            }
+
+            pom.withXml {
+                asNode().children().last() + {
+                    resolveStrategy = Closure.DELEGATE_FIRST
+                    name appName
+                    description appDescription
+                    url projectUrl
+                    scm {
+                        url scmUrl
+                        connection connectionUrl
+                        developerConnection developerConnectionUrl
+                    }
+                    licenses {
+                        license {
+                            name mitLicenseName
+                            url mitLicenseUrl
+                            distribution mitLicenseDis
+                        }
+                    }
+                    developers {
+                        developer {
+                            id devId
+                            name devName
+                            email devEmail
+                        }
+                    }
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            url "file:/${project.projectDir}/artifacts" //just a placeholder
+        }
+    }
+
+}
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
 sourceSets.main.java.srcDirs = [ "src/main/java" ]

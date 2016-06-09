@@ -130,7 +130,7 @@ public class GLMenuCore<T> {
     }
 
     /**
-     * @param mapping mapping name -> actionSequence implementation
+     * @param mapping mapping name - actionSequence implementation
      */
     public void addActionSequenceMapping(BuilderMapping<Action> mapping) {
         actionSequenceTagHandler.addBuilderMapping(mapping);
