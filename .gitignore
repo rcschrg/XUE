@@ -16,5 +16,6 @@
 .gradle
 gradle-app.setting
 build/
+gradle.properties
 local.properties
 artifacts/
