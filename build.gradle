@@ -1,7 +1,7 @@
 apply plugin: "idea"
 apply plugin: "eclipse"
 apply plugin: "java"
-apply plugin: "maven-publish"
+apply plugin: "maven"
 apply plugin: 'signing'
 
 sourceCompatibility = 1.7
@@ -9,6 +9,7 @@ targetCompatibility = 1.7
 
 group = 'de.verygame.xue'
 version = '0.1'
+archivesBaseName = 'XUE'
 
 ext {
     appName = "XUE"
@@ -38,7 +39,7 @@ dependencies {
 
 task javadocJar (type: Jar, dependsOn: javadoc) {
     classifier = 'javadoc'
-    from javadoc.destinationDir
+    from javadoc
 }
 
 task sourceJar (type : Jar) {
@@ -46,54 +47,56 @@ task sourceJar (type : Jar) {
     from sourceSets.main.allSource
 }
 
-publishing {
-    publications {
+artifacts {
+    archives javadocJar, sourceJar
+}
 
-        myPublication(MavenPublication) {
-            from components.java
+signing {
+    sign configurations.archives
+}
 
-            artifact (javadocJar) {
-                classifier = 'javadoc'
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
             }
-            artifact (sourceJar) {
-                classifier = 'sources'
+
+            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
             }
 
-            pom.withXml {
-                asNode().children().last() + {
-                    resolveStrategy = Closure.DELEGATE_FIRST
-                    name appName
-                    description appDescription
-                    url projectUrl
-                    scm {
-                        url scmUrl
-                        connection connectionUrl
-                        developerConnection developerConnectionUrl
+            pom.project {
+                name appName
+                packaging 'jar'
+                description appDescription
+                url projectUrl
+
+                scm {
+                    connection connectionUrl
+                    developerConnection developerConnectionUrl
+                    url scmUrl
+                }
+
+                licenses {
+                    license {
+                        name mitLicenseName
+                        url mitLicenseUrl
                     }
-                    licenses {
-                        license {
-                            name mitLicenseName
-                            url mitLicenseUrl
-                            distribution mitLicenseDis
-                        }
-                    }
-                    developers {
-                        developer {
-                            id devId
-                            name devName
-                            email devEmail
-                        }
+                }
+
+                developers {
+                    developer {
+                        id devId
+                        name devName
+                        email devEmail
                     }
                 }
             }
         }
     }
-    repositories {
-        maven {
-            url "file:/${project.projectDir}/artifacts" //just a placeholder
-        }
-    }
-
 }
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
