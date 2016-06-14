@@ -1,6 +1,12 @@
 package de.verygame.xue;
 
 import de.verygame.xue.exception.*;
+import de.verygame.xue.handler.*;
+import de.verygame.xue.handler.action.Action;
+import de.verygame.xue.handler.annotation.DependencyHandler;
+import de.verygame.xue.input.XueInputEvent;
+import de.verygame.xue.mapping.GlobalMappings;
+import de.verygame.xue.util.ReflectionUtils;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -9,18 +15,6 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import de.verygame.xue.util.ReflectionUtils;
-import de.verygame.xue.input.XueInputEvent;
-import de.verygame.xue.handler.ActionSequence;
-import de.verygame.xue.handler.ActionSequenceTagHandler;
-import de.verygame.xue.handler.BuilderMapping;
-import de.verygame.xue.handler.ConstantTagHandler;
-import de.verygame.xue.handler.ElementsTagHandler;
-import de.verygame.xue.mapping.GlobalMappings;
-import de.verygame.xue.handler.TagHandler;
-import de.verygame.xue.handler.action.Action;
-import de.verygame.xue.handler.annotation.DependencyHandler;
 
 /**
  * Created by Rico on 10.07.2015.
