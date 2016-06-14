@@ -16,20 +16,20 @@ import de.verygame.xue.exception.XueException;
 import de.verygame.xue.exception.XueSyntaxException;
 import de.verygame.xue.exception.TagUnknownException;
 import de.verygame.xue.handler.annotation.DependencyHandler;
-import de.verygame.xue.mapping.builder.ContainerBuilder;
-import de.verygame.xue.mapping.builder.GLMenuBuilder;
+import de.verygame.xue.mapping.builder.XueContainerTag;
+import de.verygame.xue.mapping.builder.XueTag;
 import de.verygame.xue.handler.dom.DomElement;
 
 /**
  * @author Rico Schrage
  */
-public class ElementsTagHandler<T> extends BaseTagHandler<T, DomElement<T>> {
+public class ElementsTagGroupHandler<T> extends BaseTagGroupHandler<T, DomElement<T>> {
 
     @DependencyHandler
-    protected ConstantTagHandler constantTagHandler;
+    protected ConstantTagGroupHandler constantTagHandler;
 
     /** stack of elements to determine current scope */
-    private final Deque<ContainerBuilder<T>> scopeStack;
+    private final Deque<XueContainerTag<T>> scopeStack;
 
     /** global mappings */
     private final GlobalMappings<T> globalMappings;
@@ -43,7 +43,7 @@ public class ElementsTagHandler<T> extends BaseTagHandler<T, DomElement<T>> {
         }
     };
 
-    public ElementsTagHandler(GlobalMappings<T> globalMappings) {
+    public ElementsTagGroupHandler(GlobalMappings<T> globalMappings) {
         super(Globals.ELEMENT_TAG);
 
         this.globalMappings = globalMappings;
@@ -66,7 +66,7 @@ public class ElementsTagHandler<T> extends BaseTagHandler<T, DomElement<T>> {
     @Override
     public void handle(XmlPullParser xpp) throws XueSyntaxException, TagUnknownException, AttributeUnknownException {
         final String tag = xpp.getName();
-        GLMenuBuilder<T> elementBuilder = null;
+        XueTag<T> elementBuilder = null;
         for (BuilderMapping<T> m : mapping) {
             elementBuilder = m.createBuilder(xpp.getName());
             if (elementBuilder != null) {
@@ -86,10 +86,10 @@ public class ElementsTagHandler<T> extends BaseTagHandler<T, DomElement<T>> {
             scopeStack.peek().applyChild(elementBuilder.getElement());
         }
 
-        if (elementBuilder instanceof ContainerBuilder) {
+        if (elementBuilder instanceof XueContainerTag) {
             // it guaranteed because of the type of 'mapping'
             //noinspection unchecked
-            scopeStack.push((ContainerBuilder<T>) elementBuilder);
+            scopeStack.push((XueContainerTag<T>) elementBuilder);
         }
 
         String name = null;

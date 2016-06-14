@@ -16,7 +16,7 @@ import de.verygame.xue.exception.ElementTagUnknownException;
 import de.verygame.xue.exception.XueException;
 import de.verygame.xue.handler.BuilderMapping;
 import de.verygame.xue.mapping.GlobalMappings;
-import de.verygame.xue.mapping.builder.GLMenuBuilder;
+import de.verygame.xue.mapping.builder.XueTag;
 
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
@@ -66,7 +66,7 @@ public class XueCoreTest {
     @Mock
     private BuilderMapping<Object> cM;
     @Mock
-    private GLMenuBuilder<Object> gb;
+    private XueTag<Object> gb;
 
     private XueCore<Object> core;
     private KXmlParser parser;

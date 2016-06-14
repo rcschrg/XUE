@@ -1,4 +1,4 @@
-package de.verygame.xue;
+package de.verygame.xue.annotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

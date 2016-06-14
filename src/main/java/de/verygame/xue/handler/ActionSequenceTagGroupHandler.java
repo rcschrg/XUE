@@ -1,40 +1,39 @@
 package de.verygame.xue.handler;
 
-import org.xmlpull.v1.XmlPullParser;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import de.verygame.xue.handler.dom.DomObject;
-import de.verygame.xue.handler.dom.DomRepresentation;
-import de.verygame.xue.input.XueInputEvent;
 import de.verygame.xue.exception.ElementTagUnknownException;
 import de.verygame.xue.exception.XueException;
 import de.verygame.xue.handler.action.Action;
 import de.verygame.xue.handler.action.BasicActionBuilder;
 import de.verygame.xue.handler.annotation.DependencyHandler;
-import de.verygame.xue.mapping.builder.GLMenuBuilder;
+import de.verygame.xue.handler.dom.DomObject;
+import de.verygame.xue.handler.dom.DomRepresentation;
+import de.verygame.xue.input.XueInputEvent;
+import de.verygame.xue.mapping.builder.XueTag;
+import org.xmlpull.v1.XmlPullParser;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Rico Schrage
  */
-public class ActionSequenceTagHandler extends BaseTagHandler<Action, DomRepresentation<Action>> {
+public class ActionSequenceTagGroupHandler extends BaseTagGroupHandler<Action, DomRepresentation<Action>> {
 
     @DependencyHandler
-    private ElementsTagHandler<?> tagHandler;
+    private ElementsTagGroupHandler<?> tagHandler;
 
     private ActionSequence currentActionSequence;
     private String currentActionSequenceName;
 
     private Map<String, ActionSequence> actionSequenceMap;
 
-    public ActionSequenceTagHandler() {
+    public ActionSequenceTagGroupHandler() {
         super(Globals.AS_TAG);
 
         actionSequenceMap = new HashMap<>();
         addBuilderMapping(new BuilderMapping<Action>() {
             @Override
-            public GLMenuBuilder<Action> createBuilder(String name) {
+            public XueTag<Action> createBuilder(String name) {
                 if ("basicAction".equals(name)) {
                     return new BasicActionBuilder();
                 }
@@ -47,15 +46,16 @@ public class ActionSequenceTagHandler extends BaseTagHandler<Action, DomRepresen
         return actionSequenceMap;
     }
 
-    public void updateActionSequences(float delta) {
-        for (final Map.Entry<String, ActionSequence> entry : actionSequenceMap.entrySet()) {
-            entry.getValue().update(delta);
-        }
-    }
-
     public void onInputEvent(XueInputEvent inputEvent) {
         for (final Map.Entry<String, ActionSequence> entry : actionSequenceMap.entrySet()) {
             entry.getValue().onInputEvent(inputEvent);
+        }
+    }
+
+    @Override
+    public void update(float delta) {
+        for (final Map.Entry<String, ActionSequence> entry : actionSequenceMap.entrySet()) {
+            entry.getValue().update(delta);
         }
     }
 
@@ -77,7 +77,7 @@ public class ActionSequenceTagHandler extends BaseTagHandler<Action, DomRepresen
     public void handle(XmlPullParser xpp) throws XueException {
         String tagName = xpp.getName();
 
-        GLMenuBuilder<Action> actionBuilder = null;
+        XueTag<Action> actionBuilder = null;
         for (BuilderMapping<Action> m : mapping) {
             actionBuilder = m.createBuilder(tagName);
         }

@@ -23,12 +23,12 @@ import java.util.Map;
  */
 public class XueCore<T> {
 
-    private final ElementsTagHandler<T> elementsTagHandler;
-    private final ConstantTagHandler constantTagHandler;
-    private final ActionSequenceTagHandler actionSequenceTagHandler;
+    private final ElementsTagGroupHandler<T> elementsTagHandler;
+    private final ConstantTagGroupHandler constantTagHandler;
+    private final ActionSequenceTagGroupHandler actionSequenceTagHandler;
 
-    private final List<TagHandler<?, ?>> tagHandlerList;
-    private final List<TagHandler<?, ?>> closed;
+    private final List<TagGroupHandler<?, ?>> tagGroupHandlerList;
+    private final List<TagGroupHandler<?, ?>> closed;
 
     /**
      * Constructs XueCore, which uses tagMapping and attributeMapping for everything, which have to be mapped.
@@ -36,19 +36,19 @@ public class XueCore<T> {
      * @param globalMappings Mapping to builders
      */
     public XueCore(GlobalMappings<T> globalMappings) throws XueException {
-        tagHandlerList = new ArrayList<>();
+        tagGroupHandlerList = new ArrayList<>();
         closed = new ArrayList<>();
 
-        constantTagHandler = new ConstantTagHandler();
-        elementsTagHandler = new ElementsTagHandler<>(globalMappings);
-        actionSequenceTagHandler = new ActionSequenceTagHandler();
+        constantTagHandler = new ConstantTagGroupHandler();
+        elementsTagHandler = new ElementsTagGroupHandler<>(globalMappings);
+        actionSequenceTagHandler = new ActionSequenceTagGroupHandler();
 
-        tagHandlerList.add(constantTagHandler);
-        tagHandlerList.add(elementsTagHandler);
-        tagHandlerList.add(actionSequenceTagHandler);
+        addHandler(constantTagHandler);
+        addHandler(elementsTagHandler);
+        addHandler(actionSequenceTagHandler);
 
-        for (TagHandler<?, ?> otherT : tagHandlerList) {
-            for (TagHandler<?, ?> t : tagHandlerList) {
+        for (TagGroupHandler<?, ?> otherT : tagGroupHandlerList) {
+            for (TagGroupHandler<?, ?> t : tagGroupHandlerList) {
                 if (otherT != t) {
                     injectDependency(otherT, t);
                 }
@@ -56,8 +56,8 @@ public class XueCore<T> {
         }
     }
 
-    private TagHandler<?, ?> calculateNextTagHandler() throws XueException {
-        for (TagHandler<?, ?> t : tagHandlerList) {
+    private TagGroupHandler<?, ?> calculateNextTagHandler() throws XueException {
+        for (TagGroupHandler<?, ?> t : tagGroupHandlerList) {
             if (closed.contains(t)) {
                 continue;
             }
@@ -70,8 +70,8 @@ public class XueCore<T> {
         throw new XueException("The dependencies of the tag handler are cyclic!");
     }
 
-    private List<Class<?>> calcDependencies(TagHandler<?, ?> tagHandler) {
-        List<Field> fields = ReflectionUtils.getAllFields(tagHandler.getClass());
+    private List<Class<?>> calcDependencies(TagGroupHandler<?, ?> tagGroupHandler) {
+        List<Field> fields = ReflectionUtils.getAllFields(tagGroupHandler.getClass());
         List<Class<?>> tagHandlers = new ArrayList<>();
         for (final Field field : fields) {
             if (field.isAnnotationPresent(DependencyHandler.class)) {
@@ -81,23 +81,21 @@ public class XueCore<T> {
         return tagHandlers;
     }
 
+    public void addHandler(TagGroupHandler<?, ?> tagGroupHandler) {
+        this.tagGroupHandlerList.add(tagGroupHandler);
+    }
+
     public void update(float delta) {
-        actionSequenceTagHandler.updateActionSequences(delta);
+        for (int i = 0; i < tagGroupHandlerList.size(); ++i) {
+            TagGroupHandler<?, ?> handler = tagGroupHandlerList.get(i);
+            handler.update(delta);
+        }
     }
 
     public void onInputEvent(XueInputEvent inputEvent) {
-        switch (inputEvent) {
-            case RESIZE:
-                elementsTagHandler.onResizeEvent();
-                break;
-
-            case ACTIVATE:
-            case DEACTIVATE:
-                actionSequenceTagHandler.onInputEvent(inputEvent);
-                break;
-
-            default:
-                break;
+        for (int i = 0; i < tagGroupHandlerList.size(); ++i) {
+            TagGroupHandler<?, ?> handler = tagGroupHandlerList.get(i);
+            handler.onInputEvent(inputEvent);
         }
     }
 
@@ -134,11 +132,11 @@ public class XueCore<T> {
      * @param builderMapping mapping
      * @param <B> makes sure that the tagHandler und builderMapping fit together
      */
-    public <B, D> void addMapping(Class<TagHandler<B, D>> tagHandler, BuilderMapping<B> builderMapping) {
-        for (TagHandler<?, ?> t : tagHandlerList) {
+    public <B, D> void addMapping(Class<TagGroupHandler<B, D>> tagHandler, BuilderMapping<B> builderMapping) {
+        for (TagGroupHandler<?, ?> t : tagGroupHandlerList) {
             if (t.getClass() == tagHandler) {
                 //noinspection unchecked
-                ((TagHandler<B, D>)t).addBuilderMapping(builderMapping);
+                ((TagGroupHandler<B, D>)t).addBuilderMapping(builderMapping);
             }
         }
     }
@@ -187,8 +185,8 @@ public class XueCore<T> {
      * @param <B> ensures a correct return type
      * @return Result of the handlerClass
      */
-    public <B, D> Map<String, B> getResult(Class<TagHandler<B, D>> handlerClass) {
-        for (TagHandler<?, ?> t : tagHandlerList) {
+    public <B, D> Map<String, B> getResult(Class<TagGroupHandler<B, D>> handlerClass) {
+        for (TagGroupHandler<?, ?> t : tagGroupHandlerList) {
             if (t.getClass() == handlerClass) {
                 //noinspection unchecked
                 return (Map<String, B>) t.getResultMap();
@@ -242,14 +240,14 @@ public class XueCore<T> {
      * @throws ElementTagUnknownException if a tag in <elements>...</elements> is unknown
      */
     private void handleStartTag(XmlPullParser xpp) throws XueException {
-        for (TagHandler pT : tagHandlerList) {
+        for (TagGroupHandler pT : tagGroupHandlerList) {
             if (pT.getName().equals(xpp.getName())) {
                 pT.setActive(true);
                 pT.startHandle(xpp);
                 return;
             }
         }
-        for (TagHandler t : tagHandlerList) {
+        for (TagGroupHandler t : tagGroupHandlerList) {
             if (t.isActive()) {
                 t.handle(xpp);
             }
@@ -262,7 +260,7 @@ public class XueCore<T> {
      * @param xpp PullParser, which has been created with the xml resource.
      */
     private void handleEndTag(XmlPullParser xpp) throws XueException {
-        for (TagHandler t : tagHandlerList) {
+        for (TagGroupHandler t : tagGroupHandlerList) {
             if (t.getName().equals(xpp.getName()) && t.isActive()) {
                 t.setActive(false);
                 t.stopHandle(xpp);
@@ -276,7 +274,7 @@ public class XueCore<T> {
      * @param injectTarget target of the injection
      * @param injectable injectable which contains injectable result or builder
      */
-    private void injectDependency(TagHandler injectTarget, TagHandler injectable) throws XueException {
+    private void injectDependency(TagGroupHandler injectTarget, TagGroupHandler injectable) throws XueException {
         List<Field> fields = ReflectionUtils.getAllFields(injectTarget.getClass());
         for (final Field field : fields) {
             if (field.isAnnotationPresent(DependencyHandler.class) && field.getType() == injectable.getClass()) {

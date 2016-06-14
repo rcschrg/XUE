@@ -8,12 +8,12 @@ import de.verygame.xue.exception.AttributeUnknownException;
 /**
  * @author Rico Schrage
  */
-public abstract class AbstractElementBuilder<T> implements GLMenuBuilder<T> {
+public abstract class XueAbstractElementTag<T> implements XueTag<T> {
 
     private final Class<? extends T> subjectClass;
     protected T element;
 
-    public AbstractElementBuilder(Class<? extends T> subjectClass) {
+    public XueAbstractElementTag(Class<? extends T> subjectClass) {
         this.subjectClass = subjectClass;
     }
 

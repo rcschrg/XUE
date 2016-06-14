@@ -3,7 +3,7 @@ package de.verygame.xue;
 import de.verygame.xue.exception.XueException;
 import de.verygame.xue.exception.XueParseException;
 import de.verygame.xue.handler.BuilderMapping;
-import de.verygame.xue.handler.TagHandler;
+import de.verygame.xue.handler.TagGroupHandler;
 import de.verygame.xue.input.XueInputEvent;
 import de.verygame.xue.mapping.GlobalMappings;
 
@@ -23,7 +23,10 @@ import java.util.Set;
  */
 public class XmlObjectContainer<T> implements Xue<T> {
 
-    private XueCore<T> core;
+    private static final String ENCODING = "UTF-8";
+    private static final String LOAD_BEFORE_MESSAGE = "You have to load the gl-menu-file first!";
+
+    private final XueCore<T> core;
 
     /** Resource of the menu, all elements of the menu are described in this file */
     private final InputStream resource;
@@ -55,7 +58,7 @@ public class XmlObjectContainer<T> implements Xue<T> {
         this.core.addConstantMapping(mapping);
     }
 
-    public <B, D> void addMapping(Class<TagHandler<B, D>> tagHandler, BuilderMapping<B> builderMapping) {
+    public <B, D> void addMapping(Class<TagGroupHandler<B, D>> tagHandler, BuilderMapping<B> builderMapping) {
         this.core.addMapping(tagHandler, builderMapping);
     }
 
@@ -66,7 +69,7 @@ public class XmlObjectContainer<T> implements Xue<T> {
      */
     public int getElementSize() {
         if (elementMap == null) {
-            throw new IllegalStateException("You have to load the gl-menu-file first!");
+            throw new IllegalStateException(LOAD_BEFORE_MESSAGE);
         }
 
         return elementMap.size();
@@ -75,7 +78,7 @@ public class XmlObjectContainer<T> implements Xue<T> {
     @Override
     public T getElementByName(final String name) {
         if (elementMap == null) {
-            throw new IllegalStateException("You have to load the gl-menu-file first!");
+            throw new IllegalStateException(LOAD_BEFORE_MESSAGE);
         }
 
         return elementMap.get(name);
@@ -84,7 +87,7 @@ public class XmlObjectContainer<T> implements Xue<T> {
     @Override
     public Object getConstByName(String name) {
         if (constMap == null) {
-            throw new IllegalStateException("You have to load the gl-menu-file first!");
+            throw new IllegalStateException(LOAD_BEFORE_MESSAGE);
         }
         return constMap.get(name);
     }
@@ -125,7 +128,7 @@ public class XmlObjectContainer<T> implements Xue<T> {
 
         final KXmlParser parser = new KXmlParser();
         try {
-            parser.setInput(resource, "UTF-8");
+            parser.setInput(resource, ENCODING);
             this.core.load(parser);
         }
         catch (XmlPullParserException e) {
@@ -146,5 +149,10 @@ public class XmlObjectContainer<T> implements Xue<T> {
     @Override
     public void onInputEvent(XueInputEvent inputEvent) {
         core.onInputEvent(inputEvent);
+    }
+
+    @Override
+    public void update(float delta) {
+        core.update(delta);
     }
 }

@@ -11,7 +11,7 @@ import de.verygame.xue.handler.CoreAttribute;
 import de.verygame.xue.mapping.GlobalMappings;
 import de.verygame.xue.mapping.GlobalMappings.CoordinateType;
 import de.verygame.xue.handler.Globals;
-import de.verygame.xue.mapping.builder.GLMenuBuilder;
+import de.verygame.xue.mapping.builder.XueTag;
 
 /**
  * @author Rico Schrage
@@ -32,7 +32,7 @@ public class DomElement<T> extends DomObject<T> {
     private float maxWidth = -1;
     private float maxHeight = -1;
 
-    public DomElement(GLMenuBuilder<T> builder, GlobalMappings<T> mappings, Map<String, Object> constantMap) {
+    public DomElement(XueTag<T> builder, GlobalMappings<T> mappings, Map<String, Object> constantMap) {
         super(builder);
 
         this.mappings = mappings;
@@ -126,7 +126,7 @@ public class DomElement<T> extends DomObject<T> {
      * @throws AttributeUnknownException
      * @throws ElementTagUnknownException
      */
-    private void applyConstToElement(String attributeName, String attributeValue, GLMenuBuilder<T> element) throws AttributeUnknownException, TagUnknownException {
+    private void applyConstToElement(String attributeName, String attributeValue, XueTag<T> element) throws AttributeUnknownException, TagUnknownException {
         Object constObj = constantMap.get(attributeValue.substring(1, attributeValue.length()));
         if (constObj == null) {
             return;

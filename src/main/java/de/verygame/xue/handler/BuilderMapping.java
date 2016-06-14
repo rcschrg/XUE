@@ -1,10 +1,10 @@
 package de.verygame.xue.handler;
 
-import de.verygame.xue.mapping.builder.GLMenuBuilder;
+import de.verygame.xue.mapping.builder.XueTag;
 
 /**
  * @author Rico Schrage
  */
 public interface BuilderMapping<T> {
-    GLMenuBuilder<T> createBuilder(String name);
+    XueTag<T> createBuilder(String name);
 }

@@ -1,17 +1,17 @@
 package de.verygame.xue.handler.action;
 
 import de.verygame.xue.exception.AttributeUnknownException;
-import de.verygame.xue.mapping.builder.AbstractElementBuilder;
-import de.verygame.xue.mapping.builder.GLMenuBuilder;
+import de.verygame.xue.mapping.builder.XueAbstractElementTag;
+import de.verygame.xue.mapping.builder.XueTag;
 import de.verygame.xue.util.math.function.LinearEaseFunction;
 import de.verygame.xue.util.modifier.base.SimpleModifierCallback;
 
 /**
  * @author Rico Schrage
  */
-public class BasicActionBuilder extends AbstractElementBuilder<Action> {
+public class BasicActionBuilder extends XueAbstractElementTag<Action> {
 
-    private GLMenuBuilder<?> builder;
+    private XueTag<?> builder;
 
     public BasicActionBuilder() {
         super(BasicAction.class);
@@ -51,7 +51,7 @@ public class BasicActionBuilder extends AbstractElementBuilder<Action> {
     @Override
     protected void applyObjectSpecial(String attribute, Object value) throws AttributeUnknownException {
         if ("target".equals(attribute)) {
-            builder = (GLMenuBuilder<?>) value;
+            builder = (XueTag<?>) value;
         }
     }
 

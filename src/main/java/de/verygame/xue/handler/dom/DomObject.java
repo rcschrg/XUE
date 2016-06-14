@@ -3,15 +3,15 @@ package de.verygame.xue.handler.dom;
 import de.verygame.xue.exception.AttributeUnknownException;
 import de.verygame.xue.exception.TagUnknownException;
 import de.verygame.xue.handler.Globals;
-import de.verygame.xue.mapping.builder.GLMenuBuilder;
+import de.verygame.xue.mapping.builder.XueTag;
 
 /**
  * @author Rico Schrage
  */
 public class DomObject<T> implements DomRepresentation<T> {
-    protected final GLMenuBuilder<T> builder;
+    protected final XueTag<T> builder;
 
-    public DomObject(GLMenuBuilder<T> builder) {
+    public DomObject(XueTag<T> builder) {
         this.builder = builder;
     }
 
@@ -31,7 +31,7 @@ public class DomObject<T> implements DomRepresentation<T> {
     }
 
     @Override
-    public GLMenuBuilder<T> getBuilder() {
+    public XueTag<T> getBuilder() {
         return builder;
     }
 
@@ -60,7 +60,7 @@ public class DomObject<T> implements DomRepresentation<T> {
         //for subclasses
     }
 
-    protected void onApplyConst(String attribute, String value, GLMenuBuilder<T> builder) {
+    protected void onApplyConst(String attribute, String value, XueTag<T> builder) {
         //for subclasses
     }
 

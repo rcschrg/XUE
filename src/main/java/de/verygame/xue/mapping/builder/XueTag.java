@@ -5,7 +5,7 @@ import de.verygame.xue.exception.AttributeUnknownException;
 /**
  * @author Rico Schrage
  */
-public interface GLMenuBuilder<T> {
+public interface XueTag<T> {
 
     void preBuild();
     void postBuild();

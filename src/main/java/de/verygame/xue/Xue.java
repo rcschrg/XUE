@@ -1,5 +1,6 @@
 package de.verygame.xue;
 
+import de.verygame.xue.annotation.Bind;
 import de.verygame.xue.exception.XueException;
 import de.verygame.xue.input.XueInputEvent;
 
@@ -16,7 +17,7 @@ public interface Xue<T> {
      * @param name of the element
      * @return Element
      */
-    T getElementByName(final String name);
+    T getElementByName(String name);
 
     /**
      * Returns constant by name.
@@ -24,7 +25,7 @@ public interface Xue<T> {
      * @param name of the constant
      * @return constant
      */
-    Object getConstByName(final String name);
+    Object getConstByName(String name);
 
     /**
      * Loads specified menu.
@@ -33,7 +34,7 @@ public interface Xue<T> {
 
     /**
      * Binds an object as target for binding elements to fields.
-     * The field you want the element ot be bind must have the same name as the element.
+     * The field you want the element to be bound to must have the same name as the element.
      *
      * @param bindTarget object, which contains annotated ({@link Bind}} fields
      */
@@ -41,7 +42,16 @@ public interface Xue<T> {
 
     /**
      * Will propagate the event to listening handlers.
+     *
      * @param inputEvent input event
      */
     void onInputEvent(XueInputEvent inputEvent);
+
+    /**
+     * Updates the TagGroupHandler.
+     *
+     * @param delta time passed since last update
+     */
+    void update(float delta);
+
 }

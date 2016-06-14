@@ -2,7 +2,7 @@ package de.verygame.xue.handler.dom;
 
 import de.verygame.xue.exception.AttributeUnknownException;
 import de.verygame.xue.exception.TagUnknownException;
-import de.verygame.xue.mapping.builder.GLMenuBuilder;
+import de.verygame.xue.mapping.builder.XueTag;
 
 /**
  * @author Rico Schrage
@@ -14,5 +14,5 @@ public interface DomRepresentation<T> {
     void end() throws AttributeUnknownException;
 
     T getObject();
-    GLMenuBuilder<T> getBuilder();
+    XueTag<T> getBuilder();
 }

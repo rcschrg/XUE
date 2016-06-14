@@ -6,22 +6,22 @@ import de.verygame.xue.exception.AttributeUnknownException;
 import de.verygame.xue.exception.ConstTagUnknownException;
 import de.verygame.xue.exception.XueSyntaxException;
 import de.verygame.xue.exception.TagUnknownException;
-import de.verygame.xue.mapping.builder.GLMenuBuilder;
+import de.verygame.xue.mapping.builder.XueTag;
 import de.verygame.xue.handler.dom.DomObject;
 
 /**
  * @author Rico Schrage
  */
-public class ConstantTagHandler extends BaseTagHandler<Object, DomObject<Object>> {
+public class ConstantTagGroupHandler extends BaseTagGroupHandler<Object, DomObject<Object>> {
 
-    public ConstantTagHandler() {
+    public ConstantTagGroupHandler() {
         super(Globals.CONST_TAG);
     }
 
     @Override
     public void handle(XmlPullParser xpp) throws XueSyntaxException, TagUnknownException, AttributeUnknownException {
         String nameAttr = "";
-        GLMenuBuilder<Object> objectBuilder = null;
+        XueTag<Object> objectBuilder = null;
         for (BuilderMapping<Object> m : mapping) {
             objectBuilder = m.createBuilder(xpp.getName());
             if (objectBuilder != null) {
