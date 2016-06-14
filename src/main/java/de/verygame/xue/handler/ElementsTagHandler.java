@@ -12,8 +12,8 @@ import java.util.List;
 
 import de.verygame.xue.exception.AttributeUnknownException;
 import de.verygame.xue.exception.ElementTagUnknownException;
-import de.verygame.xue.exception.GLMenuException;
-import de.verygame.xue.exception.GLMenuSyntaxException;
+import de.verygame.xue.exception.XueException;
+import de.verygame.xue.exception.XueSyntaxException;
 import de.verygame.xue.exception.TagUnknownException;
 import de.verygame.xue.handler.annotation.DependencyHandler;
 import de.verygame.xue.mapping.builder.ContainerBuilder;
@@ -64,7 +64,7 @@ public class ElementsTagHandler<T> extends BaseTagHandler<T, DomElement<T>> {
     }
 
     @Override
-    public void handle(XmlPullParser xpp) throws GLMenuSyntaxException, TagUnknownException, AttributeUnknownException {
+    public void handle(XmlPullParser xpp) throws XueSyntaxException, TagUnknownException, AttributeUnknownException {
         final String tag = xpp.getName();
         GLMenuBuilder<T> elementBuilder = null;
         for (BuilderMapping<T> m : mapping) {
@@ -118,7 +118,7 @@ public class ElementsTagHandler<T> extends BaseTagHandler<T, DomElement<T>> {
     }
 
     @Override
-    public void stopHandle(XmlPullParser xpp) throws GLMenuException {
+    public void stopHandle(XmlPullParser xpp) throws XueException {
         Collections.sort(internalDomModel, domElementComparator);
     }
 

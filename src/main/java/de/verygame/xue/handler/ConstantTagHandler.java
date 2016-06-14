@@ -4,7 +4,7 @@ import org.xmlpull.v1.XmlPullParser;
 
 import de.verygame.xue.exception.AttributeUnknownException;
 import de.verygame.xue.exception.ConstTagUnknownException;
-import de.verygame.xue.exception.GLMenuSyntaxException;
+import de.verygame.xue.exception.XueSyntaxException;
 import de.verygame.xue.exception.TagUnknownException;
 import de.verygame.xue.mapping.builder.GLMenuBuilder;
 import de.verygame.xue.handler.dom.DomObject;
@@ -19,7 +19,7 @@ public class ConstantTagHandler extends BaseTagHandler<Object, DomObject<Object>
     }
 
     @Override
-    public void handle(XmlPullParser xpp) throws GLMenuSyntaxException, TagUnknownException, AttributeUnknownException {
+    public void handle(XmlPullParser xpp) throws XueSyntaxException, TagUnknownException, AttributeUnknownException {
         String nameAttr = "";
         GLMenuBuilder<Object> objectBuilder = null;
         for (BuilderMapping<Object> m : mapping) {
@@ -50,7 +50,7 @@ public class ConstantTagHandler extends BaseTagHandler<Object, DomObject<Object>
                 nameAttr = xpp.getAttributeValue(i);
 
                 if (nameAttr.isEmpty()) {
-                    throw new GLMenuSyntaxException(xpp.getLineNumber(), "Missing name attribute!");
+                    throw new XueSyntaxException(xpp.getLineNumber(), "Missing name attribute!");
                 }
                 continue;
             }
@@ -67,9 +67,9 @@ public class ConstantTagHandler extends BaseTagHandler<Object, DomObject<Object>
      * Creates all primitive constants.
      *
      * @param xpp PullParser, which has been created with the xml resource.
-     * @throws GLMenuSyntaxException if name attribute is missing.
+     * @throws XueSyntaxException if name attribute is missing.
      */
-    private void handlePrimitiveConst(XmlPullParser xpp) throws GLMenuSyntaxException {
+    private void handlePrimitiveConst(XmlPullParser xpp) throws XueSyntaxException {
 
         String nameAttr = "";
         Object o = 0;
@@ -95,7 +95,7 @@ public class ConstantTagHandler extends BaseTagHandler<Object, DomObject<Object>
         }
 
         if (nameAttr.isEmpty()) {
-            throw new GLMenuSyntaxException(xpp.getLineNumber(), "Missing name attribute!");
+            throw new XueSyntaxException(xpp.getLineNumber(), "Missing name attribute!");
         }
 
         resultMap.put(nameAttr, o);

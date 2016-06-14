@@ -5,8 +5,8 @@ import org.xmlpull.v1.XmlPullParser;
 import java.util.Map;
 
 import de.verygame.xue.exception.AttributeUnknownException;
-import de.verygame.xue.exception.GLMenuException;
-import de.verygame.xue.exception.GLMenuSyntaxException;
+import de.verygame.xue.exception.XueException;
+import de.verygame.xue.exception.XueSyntaxException;
 import de.verygame.xue.exception.TagUnknownException;
 
 /**
@@ -19,25 +19,25 @@ public interface TagHandler<T, D> {
      *
      * @param xpp parser
      */
-    void startHandle(XmlPullParser xpp) throws GLMenuException;
+    void startHandle(XmlPullParser xpp) throws XueException;
 
     /**
      * Stops the handling of the group, means the end tag was reached.
      *
      * @param xpp parser
      */
-    void stopHandle(XmlPullParser xpp) throws GLMenuException ;
+    void stopHandle(XmlPullParser xpp) throws XueException;
 
     /**
      * Called when a tag inside the specified ({@link #getName()}) tag has been reached.
      *
      * @param xpp parser of the xml
      *
-     * @throws GLMenuSyntaxException
+     * @throws XueSyntaxException
      * @throws TagUnknownException
      * @throws AttributeUnknownException
      */
-    void handle(XmlPullParser xpp) throws GLMenuException;
+    void handle(XmlPullParser xpp) throws XueException;
 
     /**
      * Set the handling active

@@ -3,7 +3,7 @@ package de.verygame.xue.handler;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.verygame.xue.input.GLMenuInputEvent;
+import de.verygame.xue.input.XueInputEvent;
 import de.verygame.xue.handler.action.Action;
 
 /**
@@ -13,13 +13,13 @@ public class ActionSequence {
 
     private final List<Action> actions;
     private boolean active = false;
-    private GLMenuInputEvent startEvent;
+    private XueInputEvent startEvent;
 
     public ActionSequence() {
         actions = new ArrayList<>();
     }
 
-    public GLMenuInputEvent getStartEvent()  {
+    public XueInputEvent getStartEvent()  {
         return this.startEvent;
     }
 
@@ -34,7 +34,7 @@ public class ActionSequence {
         return max;
     }
 
-    public void setStartEvent(GLMenuInputEvent startEvent) {
+    public void setStartEvent(XueInputEvent startEvent) {
         this.startEvent = startEvent;
     }
 
@@ -42,7 +42,7 @@ public class ActionSequence {
         actions.add(action);
     }
 
-    public void onInputEvent(GLMenuInputEvent inputEvent) {
+    public void onInputEvent(XueInputEvent inputEvent) {
         if (inputEvent == startEvent) {
             start();
         }

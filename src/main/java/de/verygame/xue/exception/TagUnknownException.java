@@ -5,7 +5,7 @@ package de.verygame.xue.exception;
  *
  * @author Rico Schrage
  */
-public abstract class TagUnknownException extends GLMenuException {
+public abstract class TagUnknownException extends XueException {
 
     public TagUnknownException(final String msg) {
         super(msg);

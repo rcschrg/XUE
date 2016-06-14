@@ -3,9 +3,9 @@ package de.verygame.xue.exception;
 /**
  * @author Rico Schrage
  */
-public class GLMenuException extends Exception {
+public class XueException extends Exception {
 
-    public GLMenuException(String msg) {
+    public XueException(String msg) {
         super(msg);
     }
 

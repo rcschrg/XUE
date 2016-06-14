@@ -1,13 +1,13 @@
 package de.verygame.xue;
 
-import de.verygame.xue.input.GLMenuInputEvent;
+import de.verygame.xue.input.XueInputEvent;
 
 /**
  * Created by Rico on 10.07.2015.
  *
  * @author Rico Schrage
  */
-public interface GLMenu<T> {
+public interface Xue<T> {
 
     /**
      * Returns element by name.
@@ -28,7 +28,7 @@ public interface GLMenu<T> {
     /**
      * Loads specified menu.
      */
-    void loadMenu();
+    void load();
 
     /**
      * Binds an object as target for binding elements to fields.
@@ -42,5 +42,5 @@ public interface GLMenu<T> {
      * Will propagate the event to listening handlers.
      * @param inputEvent input event
      */
-    void onInputEvent(GLMenuInputEvent inputEvent);
+    void onInputEvent(XueInputEvent inputEvent);
 }

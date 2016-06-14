@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import de.verygame.xue.exception.GLMenuException;
+import de.verygame.xue.exception.XueException;
 
 /**
  * @author Rico Schrage
@@ -35,12 +35,12 @@ public abstract class BaseTagHandler<T, D> implements TagHandler<T, D> {
     }
 
     @Override
-    public void startHandle(XmlPullParser xpp) throws GLMenuException {
+    public void startHandle(XmlPullParser xpp) throws XueException {
         //default
     }
 
     @Override
-    public void stopHandle(XmlPullParser xpp) throws GLMenuException {
+    public void stopHandle(XmlPullParser xpp) throws XueException {
         //default
     }
 

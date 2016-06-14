@@ -7,9 +7,9 @@ import java.util.Locale;
  *
  * @author Rico Schrage
  */
-public class GLMenuSyntaxException extends GLMenuException {
+public class XueSyntaxException extends XueException {
 
-    public GLMenuSyntaxException(int lineNumber, String message) {
+    public XueSyntaxException(int lineNumber, String message) {
         super(String.format(Locale.ENGLISH, "A syntax error has occurred on line %d (%s)", lineNumber, message));
     }
 

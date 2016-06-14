@@ -5,7 +5,7 @@ package de.verygame.xue.exception;
  *
  * @author Rico Schrage
  */
-public class AttributeUnknownException extends GLMenuException {
+public class AttributeUnknownException extends XueException {
 
     public AttributeUnknownException(final String element, String attribute) {
         super(String.format("The attribute '%s' cannot be applied to element '%s'", attribute, element));

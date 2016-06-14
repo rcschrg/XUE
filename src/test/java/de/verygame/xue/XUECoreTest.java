@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 import de.verygame.xue.exception.ElementTagUnknownException;
-import de.verygame.xue.exception.GLMenuException;
+import de.verygame.xue.exception.XueException;
 import de.verygame.xue.handler.BuilderMapping;
 import de.verygame.xue.mapping.GlobalMappings;
 import de.verygame.xue.mapping.builder.GLMenuBuilder;
@@ -26,7 +26,7 @@ import static org.mockito.Mockito.when;
  * @author Rico Schrage
  */
 @RunWith(MockitoJUnitRunner.class)
-public class GLMenuCoreTest {
+public class XueCoreTest {
 
     public static final String exampleXML = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
             "<menu>\n" +
@@ -68,14 +68,14 @@ public class GLMenuCoreTest {
     @Mock
     private GLMenuBuilder<Object> gb;
 
-    private GLMenuCore<Object> core;
+    private XueCore<Object> core;
     private KXmlParser parser;
 
     @Before
     public void prepare() throws ElementTagUnknownException, XmlPullParserException {
         when(aM.createBuilder(anyString())).thenReturn(gb);
         when(cM.createBuilder(anyString())).thenReturn(gb);
-        core = new GLMenuCore<>(map);
+        core = new XueCore<>(map);
         core.addElementMapping(aM);
         core.addConstantMapping(cM);
         parser = new KXmlParser();
@@ -83,7 +83,7 @@ public class GLMenuCoreTest {
     }
 
     @Test
-    public void testForCorrectParsing() throws GLMenuException, XmlPullParserException, IOException {
+    public void testForCorrectParsing() throws XueException, XmlPullParserException, IOException {
         core.load(parser);
         assertTrue("Size is " + core.getConstMap().size() + " instead of the expected 3", core.getConstMap().size() == 3);
         assertTrue("Size is " + core.getElementMap().size() + " instead of the expected 12", core.getElementMap().size() == 12);

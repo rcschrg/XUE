@@ -3,6 +3,6 @@ package de.verygame.xue.input;
 /**
  * @author Rico Schrage
  */
-public enum GLMenuInputEvent {
+public enum XueInputEvent {
     ACTIVATE, DEACTIVATE, TOUCH, SWIPE, RESIZE
 }

@@ -10,12 +10,12 @@ import java.util.List;
 import java.util.Map;
 
 import de.verygame.xue.util.ReflectionUtils;
-import de.verygame.xue.input.GLMenuInputEvent;
+import de.verygame.xue.input.XueInputEvent;
 import de.verygame.xue.exception.AttributeUnknownException;
 import de.verygame.xue.exception.ConstTagUnknownException;
 import de.verygame.xue.exception.ElementTagUnknownException;
-import de.verygame.xue.exception.GLMenuException;
-import de.verygame.xue.exception.GLMenuSyntaxException;
+import de.verygame.xue.exception.XueException;
+import de.verygame.xue.exception.XueSyntaxException;
 import de.verygame.xue.handler.ActionSequence;
 import de.verygame.xue.handler.ActionSequenceTagHandler;
 import de.verygame.xue.handler.BuilderMapping;
@@ -31,7 +31,7 @@ import de.verygame.xue.handler.annotation.DependencyHandler;
  *
  * @author Rico Schrage
  */
-public class GLMenuCore<T> {
+public class XueCore<T> {
 
     private final ElementsTagHandler<T> elementsTagHandler;
     private final ConstantTagHandler constantTagHandler;
@@ -41,11 +41,11 @@ public class GLMenuCore<T> {
     private final List<TagHandler<?, ?>> closed;
 
     /**
-     * Constructs GLMenuCore, which uses tagMapping and attributeMapping for everything, which have to be mapped.
+     * Constructs XueCore, which uses tagMapping and attributeMapping for everything, which have to be mapped.
      *
      * @param globalMappings Mapping to builders
      */
-    public GLMenuCore(GlobalMappings<T> globalMappings) {
+    public XueCore(GlobalMappings<T> globalMappings) {
         tagHandlerList = new ArrayList<>();
         closed = new ArrayList<>();
 
@@ -66,7 +66,7 @@ public class GLMenuCore<T> {
         }
     }
 
-    private TagHandler<?, ?> calculateNextTagHandler() throws GLMenuException {
+    private TagHandler<?, ?> calculateNextTagHandler() throws XueException {
         for (TagHandler<?, ?> t : tagHandlerList) {
             if (closed.contains(t)) {
                 continue;
@@ -77,7 +77,7 @@ public class GLMenuCore<T> {
                 return t;
             }
         }
-        throw new GLMenuException("The dependencies of the tag handler are cyclic!");
+        throw new XueException("The dependencies of the tag handler are cyclic!");
     }
 
     private List<Class<?>> calcDependencies(TagHandler<?, ?> tagHandler) {
@@ -95,7 +95,7 @@ public class GLMenuCore<T> {
         actionSequenceTagHandler.updateActionSequences(delta);
     }
 
-    public void onInputEvent(GLMenuInputEvent inputEvent) {
+    public void onInputEvent(XueInputEvent inputEvent) {
         switch (inputEvent) {
             case RESIZE:
                 elementsTagHandler.onResizeEvent();
@@ -214,12 +214,12 @@ public class GLMenuCore<T> {
      *
      * @throws XmlPullParserException see: {@link XmlPullParserException}
      * @throws IOException see: {@link IOException}
-     * @throws GLMenuSyntaxException see {@link GLMenuSyntaxException}
+     * @throws XueSyntaxException see {@link XueSyntaxException}
      * @throws ConstTagUnknownException see {@link ConstTagUnknownException}
      * @throws AttributeUnknownException see {@link AttributeUnknownException}
      * @throws ElementTagUnknownException see {@link ElementTagUnknownException}
      */
-    public void load(XmlPullParser xpp) throws XmlPullParserException, IOException, GLMenuException {
+    public void load(XmlPullParser xpp) throws XmlPullParserException, IOException, XueException {
         while (xpp.getEventType() != XmlPullParser.END_DOCUMENT) {
             switch (xpp.getEventType()) {
 
@@ -242,13 +242,13 @@ public class GLMenuCore<T> {
      * Defines what happens when the parser reaches a start-tag.
      *
      * @param xpp PullParser, which has been created with the xml resource.
-     * @throws GLMenuSyntaxException if a const tag has been placed wrong
+     * @throws XueSyntaxException if a const tag has been placed wrong
      * @throws ConstTagUnknownException if a tag in <constants>...</constants> is unknown
      * @throws XmlPullParserException see: {@link XmlPullParserException}
      * @throws AttributeUnknownException if an attribute is unknow.
      * @throws ElementTagUnknownException if a tag in <elements>...</elements> is unknown
      */
-    private void handleStartTag(XmlPullParser xpp) throws XmlPullParserException, GLMenuException {
+    private void handleStartTag(XmlPullParser xpp) throws XmlPullParserException, XueException {
         for (TagHandler pT : tagHandlerList) {
             if (pT.getName().equals(xpp.getName())) {
                 pT.setActive(true);
@@ -268,7 +268,7 @@ public class GLMenuCore<T> {
      *
      * @param xpp PullParser, which has been created with the xml resource.
      */
-    private void handleEndTag(XmlPullParser xpp) throws GLMenuException {
+    private void handleEndTag(XmlPullParser xpp) throws XueException {
         for (TagHandler t : tagHandlerList) {
             if (t.getName().equals(xpp.getName()) && t.isActive()) {
                 t.setActive(false);
