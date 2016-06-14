@@ -1,5 +1,6 @@
 package de.verygame.xue;
 
+import de.verygame.xue.exception.XueException;
 import de.verygame.xue.input.XueInputEvent;
 
 /**
@@ -28,7 +29,7 @@ public interface Xue<T> {
     /**
      * Loads specified menu.
      */
-    void load();
+    void load() throws XueException;
 
     /**
      * Binds an object as target for binding elements to fields.

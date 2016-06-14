@@ -1,5 +1,6 @@
 package de.verygame.xue;
 
+import de.verygame.xue.exception.*;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -11,11 +12,6 @@ import java.util.Map;
 
 import de.verygame.xue.util.ReflectionUtils;
 import de.verygame.xue.input.XueInputEvent;
-import de.verygame.xue.exception.AttributeUnknownException;
-import de.verygame.xue.exception.ConstTagUnknownException;
-import de.verygame.xue.exception.ElementTagUnknownException;
-import de.verygame.xue.exception.XueException;
-import de.verygame.xue.exception.XueSyntaxException;
 import de.verygame.xue.handler.ActionSequence;
 import de.verygame.xue.handler.ActionSequenceTagHandler;
 import de.verygame.xue.handler.BuilderMapping;
@@ -45,7 +41,7 @@ public class XueCore<T> {
      *
      * @param globalMappings Mapping to builders
      */
-    public XueCore(GlobalMappings<T> globalMappings) {
+    public XueCore(GlobalMappings<T> globalMappings) throws XueException {
         tagHandlerList = new ArrayList<>();
         closed = new ArrayList<>();
 
@@ -212,29 +208,33 @@ public class XueCore<T> {
      *
      * @param xpp PullParser, which has been created with the xml resource.
      *
-     * @throws XmlPullParserException see: {@link XmlPullParserException}
-     * @throws IOException see: {@link IOException}
      * @throws XueSyntaxException see {@link XueSyntaxException}
      * @throws ConstTagUnknownException see {@link ConstTagUnknownException}
      * @throws AttributeUnknownException see {@link AttributeUnknownException}
      * @throws ElementTagUnknownException see {@link ElementTagUnknownException}
      */
-    public void load(XmlPullParser xpp) throws XmlPullParserException, IOException, XueException {
-        while (xpp.getEventType() != XmlPullParser.END_DOCUMENT) {
-            switch (xpp.getEventType()) {
+    public void load(XmlPullParser xpp) throws XueException {
+        try {
+            while (xpp.getEventType() != XmlPullParser.END_DOCUMENT) {
+                switch (xpp.getEventType()) {
 
-                case XmlPullParser.START_TAG:
-                    handleStartTag(xpp);
-                    break;
+                    case XmlPullParser.START_TAG:
+                        handleStartTag(xpp);
+                        break;
 
-                case XmlPullParser.END_TAG:
-                    handleEndTag(xpp);
-                    break;
+                    case XmlPullParser.END_TAG:
+                        handleEndTag(xpp);
+                        break;
 
-                default:
-                    break;
+                    default:
+                        break;
+                }
+                xpp.next();
             }
-            xpp.next();
+        } catch (XmlPullParserException e) {
+            throw new XueParseException(e);
+        } catch (IOException e) {
+            throw new XueIOException(e);
         }
     }
 
@@ -244,11 +244,10 @@ public class XueCore<T> {
      * @param xpp PullParser, which has been created with the xml resource.
      * @throws XueSyntaxException if a const tag has been placed wrong
      * @throws ConstTagUnknownException if a tag in <constants>...</constants> is unknown
-     * @throws XmlPullParserException see: {@link XmlPullParserException}
      * @throws AttributeUnknownException if an attribute is unknow.
      * @throws ElementTagUnknownException if a tag in <elements>...</elements> is unknown
      */
-    private void handleStartTag(XmlPullParser xpp) throws XmlPullParserException, XueException {
+    private void handleStartTag(XmlPullParser xpp) throws XueException {
         for (TagHandler pT : tagHandlerList) {
             if (pT.getName().equals(xpp.getName())) {
                 pT.setActive(true);
@@ -283,7 +282,7 @@ public class XueCore<T> {
      * @param injectTarget target of the injection
      * @param injectable injectable which contains injectable result or builder
      */
-    private void injectDependency(TagHandler injectTarget, TagHandler injectable) {
+    private void injectDependency(TagHandler injectTarget, TagHandler injectable) throws XueException {
         List<Field> fields = ReflectionUtils.getAllFields(injectTarget.getClass());
         for (final Field field : fields) {
             if (field.isAnnotationPresent(DependencyHandler.class) && field.getType() == injectable.getClass()) {
@@ -292,7 +291,7 @@ public class XueCore<T> {
                     field.set(injectTarget, injectable);
                 }
                 catch (IllegalAccessException e) {
-                    //TODO LOGGER
+                    throw new XueException(e);
                 }
             }
         }

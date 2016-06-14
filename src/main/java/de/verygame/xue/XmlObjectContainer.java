@@ -1,18 +1,18 @@
 package de.verygame.xue;
 
 import de.verygame.xue.exception.XueException;
+import de.verygame.xue.exception.XueParseException;
 import de.verygame.xue.handler.BuilderMapping;
 import de.verygame.xue.handler.TagHandler;
 import de.verygame.xue.input.XueInputEvent;
 import de.verygame.xue.mapping.GlobalMappings;
+
 import org.kxml2.io.KXmlParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -112,7 +112,7 @@ public class XmlObjectContainer<T> implements Xue<T> {
                         field.set(bindTarget, entry.getValue());
                     }
                     catch (IllegalAccessException e) {
-                        //TODO
+                        throw new XueException(e);
                     }
                 }
             }
@@ -120,25 +120,22 @@ public class XmlObjectContainer<T> implements Xue<T> {
     }
 
     @Override
-    public void load() {
+    public void load() throws XueException {
+        this.preLoad();
+
+        final KXmlParser parser = new KXmlParser();
         try {
-            this.preLoad();
-            final KXmlParser parser = new KXmlParser();
             parser.setInput(resource, "UTF-8");
             this.core.load(parser);
-            this.elementMap = core.getElementMap();
-            this.constMap = core.getConstMap();
-            this.postLoad();
         }
         catch (XmlPullParserException e) {
-            //TODO
+            throw new XueParseException(e);
         }
-        catch (IOException e) {
-            //TODO
-        }
-        catch (XueException e) {
-            //TODO
-        }
+
+        this.elementMap = core.getElementMap();
+        this.constMap = core.getConstMap();
+
+        this.postLoad();
     }
 
     @Override
