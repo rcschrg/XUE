@@ -1,22 +1,21 @@
 package de.verygame.xue;
 
+import de.verygame.xue.exception.ElementTagUnknownException;
+import de.verygame.xue.exception.XueException;
+import de.verygame.xue.mapping.BuilderMapping;
+import de.verygame.xue.mapping.GlobalMappings;
+import de.verygame.xue.mapping.builder.XueTag;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kxml2.io.KXmlParser;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-
-import de.verygame.xue.exception.ElementTagUnknownException;
-import de.verygame.xue.exception.XueException;
-import de.verygame.xue.handler.BuilderMapping;
-import de.verygame.xue.mapping.GlobalMappings;
-import de.verygame.xue.mapping.builder.XueTag;
 
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
@@ -69,7 +68,7 @@ public class XueCoreTest {
     private XueTag<Object> gb;
 
     private XueCore<Object> core;
-    private KXmlParser parser;
+    private InputStream inputStream;
 
     @Before
     public void prepare() throws ElementTagUnknownException, XmlPullParserException {
@@ -78,13 +77,12 @@ public class XueCoreTest {
         core = new XueCore<>(map);
         core.addElementMapping(aM);
         core.addConstantMapping(cM);
-        parser = new KXmlParser();
-        parser.setInput(new ByteArrayInputStream(exampleXML.getBytes(StandardCharsets.UTF_8)), "UTF-8");
+        inputStream = new ByteArrayInputStream(exampleXML.getBytes(StandardCharsets.UTF_8));
     }
 
     @Test
     public void testForCorrectParsing() throws XueException, XmlPullParserException, IOException {
-        core.load(parser);
+        core.load(inputStream);
         assertTrue("Size is " + core.getConstMap().size() + " instead of the expected 3", core.getConstMap().size() == 3);
         assertTrue("Size is " + core.getElementMap().size() + " instead of the expected 12", core.getElementMap().size() == 12);
     }

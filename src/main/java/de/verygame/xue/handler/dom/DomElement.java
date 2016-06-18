@@ -1,17 +1,18 @@
 package de.verygame.xue.handler.dom;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import de.verygame.xue.util.Tuple;
 import de.verygame.xue.exception.AttributeUnknownException;
 import de.verygame.xue.exception.ElementTagUnknownException;
 import de.verygame.xue.exception.TagUnknownException;
-import de.verygame.xue.handler.CoreAttribute;
+import de.verygame.xue.constants.CoreAttribute;
+import de.verygame.xue.constants.Globals;
 import de.verygame.xue.mapping.GlobalMappings;
 import de.verygame.xue.mapping.GlobalMappings.CoordinateType;
-import de.verygame.xue.handler.Globals;
 import de.verygame.xue.mapping.builder.XueTag;
+import de.verygame.xue.util.Tuple;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Rico Schrage
@@ -20,7 +21,7 @@ public class DomElement<T> extends DomObject<T> {
     private final static int DEFAULT_REL_VALUE_SIZE = 5;
 
     private final GlobalMappings<T> mappings;
-    private final Map<String, Object> constantMap;
+    private final List<DomObject<Object>> constantDom;
     private final Map<String, Tuple<CoordinateType, Float>> relativeValueMap;
     private int layer;
 
@@ -32,11 +33,11 @@ public class DomElement<T> extends DomObject<T> {
     private float maxWidth = -1;
     private float maxHeight = -1;
 
-    public DomElement(XueTag<T> builder, GlobalMappings<T> mappings, Map<String, Object> constantMap) {
+    public DomElement(XueTag<T> builder, GlobalMappings<T> mappings, List<DomObject<Object>> constantDom) {
         super(builder);
 
         this.mappings = mappings;
-        this.constantMap = constantMap;
+        this.constantDom = constantDom;
         this.relativeValueMap = new HashMap<>(DEFAULT_REL_VALUE_SIZE);
     }
 
@@ -127,7 +128,13 @@ public class DomElement<T> extends DomObject<T> {
      * @throws ElementTagUnknownException
      */
     private void applyConstToElement(String attributeName, String attributeValue, XueTag<T> element) throws AttributeUnknownException, TagUnknownException {
-        Object constObj = constantMap.get(attributeValue.substring(1, attributeValue.length()));
+        Object constObj = null;
+        for (int i = 0 ; i < constantDom.size(); ++i) {
+            DomObject<Object> domObject = constantDom.get(i);
+            if (domObject.getName().equals(attributeValue.substring(1, attributeValue.length()))) {
+                constObj = domObject.getObject();
+            }
+        }
         if (constObj == null) {
             return;
         }

@@ -3,18 +3,22 @@ package de.verygame.xue;
 import de.verygame.xue.exception.*;
 import de.verygame.xue.handler.*;
 import de.verygame.xue.handler.action.Action;
-import de.verygame.xue.handler.annotation.DependencyHandler;
-import de.verygame.xue.input.XueInputEvent;
+import de.verygame.xue.annotation.DependencyHandler;
+import de.verygame.xue.handler.dom.DomElement;
+import de.verygame.xue.handler.dom.DomObject;
+import de.verygame.xue.handler.dom.DomRepresentation;
+import de.verygame.xue.mapping.BuilderMapping;
 import de.verygame.xue.mapping.GlobalMappings;
 import de.verygame.xue.util.ReflectionUtils;
+import de.verygame.xue.util.InjectionUtils;
+import org.kxml2.io.KXmlParser;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Rico on 10.07.2015.
@@ -22,6 +26,7 @@ import java.util.Map;
  * @author Rico Schrage
  */
 public class XueCore<T> {
+    private static final String ENCODING = "UTF-8";
 
     private final ElementsTagGroupHandler<T> elementsTagHandler;
     private final ConstantTagGroupHandler constantTagHandler;
@@ -50,7 +55,7 @@ public class XueCore<T> {
         for (TagGroupHandler<?, ?> otherT : tagGroupHandlerList) {
             for (TagGroupHandler<?, ?> t : tagGroupHandlerList) {
                 if (otherT != t) {
-                    injectDependency(otherT, t);
+                    InjectionUtils.injectDependencyByType(otherT, t);
                 }
             }
         }
@@ -85,18 +90,30 @@ public class XueCore<T> {
         this.tagGroupHandlerList.add(tagGroupHandler);
     }
 
-    public void update(float delta) {
-        for (int i = 0; i < tagGroupHandlerList.size(); ++i) {
-            TagGroupHandler<?, ?> handler = tagGroupHandlerList.get(i);
-            handler.update(delta);
-        }
+    public List<DomElement<T>> getElementDom() {
+        return elementsTagHandler.getDom();
     }
 
-    public void onInputEvent(XueInputEvent inputEvent) {
-        for (int i = 0; i < tagGroupHandlerList.size(); ++i) {
-            TagGroupHandler<?, ?> handler = tagGroupHandlerList.get(i);
-            handler.onInputEvent(inputEvent);
+    public List<DomObject<Object>> getConstantDom() {
+        return constantTagHandler.getDom();
+    }
+
+    public List<DomRepresentation<Action>> getActionSequenceDom() {
+        return actionSequenceTagHandler.getDom();
+    }
+
+    public <E, D> Map<String, D> getDom(Class<TagGroupHandler<E, D>> tagGroupHandlerClass) {
+        for (TagGroupHandler<?, ?> t : tagGroupHandlerList) {
+            if (t.getClass() == tagGroupHandlerClass) {
+                //noinspection unchecked
+                return (Map<String, D>) t.getDom();
+            }
         }
+        throw new IllegalArgumentException("There does not exist a tag-group handler of the given class!");
+    }
+
+    public List<TagGroupHandler<?, ?>> getDomContainer() {
+        return tagGroupHandlerList;
     }
 
     /**
@@ -142,54 +159,39 @@ public class XueCore<T> {
     }
 
     /**
-     * @param name name of the element you want to retrieve
-     * @return element mapped to the given name
-     */
-    public T getElementByName(String name) {
-        return elementsTagHandler.getResultMap().get(name);
-    }
-
-    /**
-     * @param name name of the const you want to retrieve
-     * @return const mapped to the given name
-     */
-    public Object getConstByName(String name) {
-        return constantTagHandler.getResultMap().get(name);
-    }
-
-    /**
-     * @return map containing all elements mapped to their name
+     * @return element map
      */
     public Map<String, T> getElementMap() {
-        return elementsTagHandler.getResultMap();
+        //noinspection unchecked
+        return getResult((Class<? extends TagGroupHandler<T, DomElement<T>>>) elementsTagHandler.getClass());
     }
 
     /**
-     * @return map containing all constants mapped to their name
+     * @return const map
      */
     public Map<String, Object> getConstMap() {
-        return constantTagHandler.getResultMap();
+        return getResult(ConstantTagGroupHandler.class);
     }
 
     /**
-     * @return map containing all action sequences mapped to their name
-     */
-    public Map<String, ActionSequence> getActionSequenceMap() {
-        return actionSequenceTagHandler.getActionSequenceMap();
-    }
-
-    /**
-     * Generic method to get the map of a tagHandler.
+     * Generic method to get/create the result map of a tagHandler.
      *
      * @param handlerClass type of the handler you want to get the map from
      * @param <B> ensures a correct return type
      * @return Result of the handlerClass
      */
-    public <B, D> Map<String, B> getResult(Class<TagGroupHandler<B, D>> handlerClass) {
+    public <B, D> Map<String, B> getResult(Class<? extends TagGroupHandler<B, D>> handlerClass) {
         for (TagGroupHandler<?, ?> t : tagGroupHandlerList) {
             if (t.getClass() == handlerClass) {
                 //noinspection unchecked
-                return (Map<String, B>) t.getResultMap();
+                List<D> dom = (List<D>) t.getDom();
+                Map<String, B> resultMap = new HashMap<>();
+                for (int i = 0; i < dom.size(); ++i) {
+                    //noinspection unchecked
+                    DomRepresentation<B> domObject = (DomRepresentation<B>) dom.get(i);
+                    resultMap.put(domObject.getName(), domObject.getObject());
+                }
+                return resultMap;
             }
         }
         throw new IllegalArgumentException(handlerClass + " is no part of this core!");
@@ -198,15 +200,17 @@ public class XueCore<T> {
     /**
      * Creates all elements specified in xml-file, which has been used to create the PullParser.
      *
-     * @param xpp PullParser, which has been created with the xml resource.
+     * @param inputXml Xml input stream.
      *
      * @throws XueSyntaxException see {@link XueSyntaxException}
      * @throws ConstTagUnknownException see {@link ConstTagUnknownException}
      * @throws AttributeUnknownException see {@link AttributeUnknownException}
      * @throws ElementTagUnknownException see {@link ElementTagUnknownException}
      */
-    public void load(XmlPullParser xpp) throws XueException {
+    public void load(InputStream inputXml) throws XueException {
         try {
+            XmlPullParser xpp = new KXmlParser();
+            xpp.setInput(inputXml, ENCODING);
             while (xpp.getEventType() != XmlPullParser.END_DOCUMENT) {
                 switch (xpp.getEventType()) {
 
@@ -223,9 +227,11 @@ public class XueCore<T> {
                 }
                 xpp.next();
             }
-        } catch (XmlPullParserException e) {
+        }
+        catch (XmlPullParserException e) {
             throw new XueParseException(e);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new XueIOException(e);
         }
     }
@@ -267,26 +273,4 @@ public class XueCore<T> {
             }
         }
     }
-
-    /**
-     * Injects dependencies.
-     *
-     * @param injectTarget target of the injection
-     * @param injectable injectable which contains injectable result or builder
-     */
-    private void injectDependency(TagGroupHandler injectTarget, TagGroupHandler injectable) throws XueException {
-        List<Field> fields = ReflectionUtils.getAllFields(injectTarget.getClass());
-        for (final Field field : fields) {
-            if (field.isAnnotationPresent(DependencyHandler.class) && field.getType() == injectable.getClass()) {
-                try {
-                    field.setAccessible(true);
-                    field.set(injectTarget, injectable);
-                }
-                catch (IllegalAccessException e) {
-                    throw new XueException(e);
-                }
-            }
-        }
-    }
-
 }

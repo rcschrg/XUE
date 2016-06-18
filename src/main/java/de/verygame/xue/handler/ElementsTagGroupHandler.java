@@ -1,24 +1,20 @@
 package de.verygame.xue.handler;
 
+import de.verygame.xue.annotation.DependencyHandler;
+import de.verygame.xue.constants.Globals;
+import de.verygame.xue.exception.*;
+import de.verygame.xue.handler.dom.DomElement;
+import de.verygame.xue.mapping.BuilderMapping;
 import de.verygame.xue.mapping.GlobalMappings;
+import de.verygame.xue.mapping.builder.XueContainerTag;
+import de.verygame.xue.mapping.builder.XueTag;
+import de.verygame.xue.util.DomUtils;
 import org.xmlpull.v1.XmlPullParser;
 
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Deque;
-import java.util.List;
-
-import de.verygame.xue.exception.AttributeUnknownException;
-import de.verygame.xue.exception.ElementTagUnknownException;
-import de.verygame.xue.exception.XueException;
-import de.verygame.xue.exception.XueSyntaxException;
-import de.verygame.xue.exception.TagUnknownException;
-import de.verygame.xue.handler.annotation.DependencyHandler;
-import de.verygame.xue.mapping.builder.XueContainerTag;
-import de.verygame.xue.mapping.builder.XueTag;
-import de.verygame.xue.handler.dom.DomElement;
 
 /**
  * @author Rico Schrage
@@ -34,8 +30,6 @@ public class ElementsTagGroupHandler<T> extends BaseTagGroupHandler<T, DomElemen
     /** global mappings */
     private final GlobalMappings<T> globalMappings;
 
-    private final List<DomElement<T>> internalDomModel;
-
     private final Comparator<DomElement<T>> domElementComparator = new Comparator<DomElement<T>>() {
         @Override
         public int compare(DomElement<T> o1, DomElement<T> o2) {
@@ -48,19 +42,6 @@ public class ElementsTagGroupHandler<T> extends BaseTagGroupHandler<T, DomElemen
 
         this.globalMappings = globalMappings;
         this.scopeStack = new ArrayDeque<>();
-        this.internalDomModel = new ArrayList<>();
-    }
-
-    public void onResizeEvent() {
-        for (int i = 0; i < internalDomModel.size(); ++i) {
-            DomElement<T> domElement = internalDomModel.get(i);
-            try {
-                domElement.resize();
-            }
-            catch (AttributeUnknownException e) {
-                //TODO LOGGER
-            }
-        }
     }
 
     @Override
@@ -87,39 +68,26 @@ public class ElementsTagGroupHandler<T> extends BaseTagGroupHandler<T, DomElemen
         }
 
         if (elementBuilder instanceof XueContainerTag) {
-            // it guaranteed because of the type of 'mapping'
+            // it is guaranteed because of the type of 'mapping'
             //noinspection unchecked
             scopeStack.push((XueContainerTag<T>) elementBuilder);
         }
 
-        String name = null;
-        DomElement<T> domElement = new DomElement<>(elementBuilder, globalMappings, constantTagHandler.getResultMap());
+        DomElement<T> domElement = new DomElement<>(elementBuilder, globalMappings, constantTagHandler.getDom());
         domElement.setLayer(scopeStack.size());
-        domElement.begin();
-        for (int i = 0; i < xpp.getAttributeCount(); ++i) {
 
-            final String attributeValue = xpp.getAttributeValue(i);
-            final String attributeName = xpp.getAttributeName(i);
+        DomUtils.applyTagToDom(domElement, xpp);
 
-            if (CoreAttribute.ELEMENT_ID.equals(attributeName)) {
-                name = attributeValue;
-                continue;
-            }
-
-            domElement.apply(attributeName, attributeValue);
+        if (domElement.getName() == null) {
+            throw new XueException("The name attribute is missing!");
         }
-        domElement.end();
 
-        if (name != null) {
-            domMap.put(name, domElement);
-            internalDomModel.add(domElement);
-            resultMap.put(name, elementBuilder.getElement());
-        }
+        domList.add(domElement);
     }
 
     @Override
     public void stopHandle(XmlPullParser xpp) throws XueException {
-        Collections.sort(internalDomModel, domElementComparator);
+        Collections.sort(domList, domElementComparator);
     }
 
 }

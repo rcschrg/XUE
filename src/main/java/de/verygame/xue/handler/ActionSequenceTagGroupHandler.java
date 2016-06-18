@@ -1,14 +1,19 @@
 package de.verygame.xue.handler;
 
+import de.verygame.xue.constants.CoreAttribute;
+import de.verygame.xue.constants.Globals;
 import de.verygame.xue.exception.ElementTagUnknownException;
 import de.verygame.xue.exception.XueException;
 import de.verygame.xue.handler.action.Action;
 import de.verygame.xue.handler.action.BasicActionBuilder;
-import de.verygame.xue.handler.annotation.DependencyHandler;
+import de.verygame.xue.annotation.DependencyHandler;
 import de.verygame.xue.handler.dom.DomObject;
 import de.verygame.xue.handler.dom.DomRepresentation;
 import de.verygame.xue.input.XueInputEvent;
+import de.verygame.xue.mapping.BuilderMapping;
 import de.verygame.xue.mapping.builder.XueTag;
+import de.verygame.xue.util.DomUtils;
+import de.verygame.xue.util.XmlParserUtils;
 import org.xmlpull.v1.XmlPullParser;
 
 import java.util.HashMap;
@@ -46,19 +51,6 @@ public class ActionSequenceTagGroupHandler extends BaseTagGroupHandler<Action, D
         return actionSequenceMap;
     }
 
-    public void onInputEvent(XueInputEvent inputEvent) {
-        for (final Map.Entry<String, ActionSequence> entry : actionSequenceMap.entrySet()) {
-            entry.getValue().onInputEvent(inputEvent);
-        }
-    }
-
-    @Override
-    public void update(float delta) {
-        for (final Map.Entry<String, ActionSequence> entry : actionSequenceMap.entrySet()) {
-            entry.getValue().update(delta);
-        }
-    }
-
     @Override
     public void startHandle(XmlPullParser xpp) throws XueException {
         for (int i = 0; i  < xpp.getAttributeCount(); ++i) {
@@ -87,12 +79,12 @@ public class ActionSequenceTagGroupHandler extends BaseTagGroupHandler<Action, D
 
         DomRepresentation<Action> domObject = new DomObject<>(actionBuilder);
 
-        String nameId = findValueOf(xpp, CoreAttribute.ELEMENT_ID);
-        String targetId = findValueOf(xpp, CoreAttribute.ACTION_TARGET_ID);
+        String nameId = XmlParserUtils.findValueOf(xpp, CoreAttribute.ELEMENT_ID);
+        String targetId = XmlParserUtils.findValueOf(xpp, CoreAttribute.ACTION_TARGET_ID);
         if (nameId == null || targetId == null) {
             throw new XueException(xpp.getLineNumber() + ": You have to specify a name and a target id!");
         }
-        actionBuilder.applyObject(CoreAttribute.ACTION_TARGET_ID, tagHandler.getDomObjectMap().get(targetId).getBuilder());
+        actionBuilder.applyObject(CoreAttribute.ACTION_TARGET_ID, DomUtils.searchFor(tagHandler.getDom(), targetId).getTag());
 
         domObject.begin();
         for (int i = 0; i < xpp.getAttributeCount(); ++i) {
@@ -104,12 +96,12 @@ public class ActionSequenceTagGroupHandler extends BaseTagGroupHandler<Action, D
             }
             domObject.apply(name, value);
         }
+        domObject.setName(nameId);
         domObject.end();
 
         currentActionSequence.addAction(actionBuilder.getElement());
 
-        resultMap.put(nameId, actionBuilder.getElement());
-        domMap.put(nameId, domObject);
+        domList.add(domObject);
     }
 
     @Override
@@ -118,16 +110,6 @@ public class ActionSequenceTagGroupHandler extends BaseTagGroupHandler<Action, D
 
         currentActionSequence = null;
         currentActionSequenceName = null;
-    }
-
-    private static String findValueOf(XmlPullParser xpp, String aName) {
-        String value = null;
-        for (int i = 0; i < xpp.getAttributeCount(); ++i) {
-            if (xpp.getAttributeName(i).equals(aName)) {
-                value = xpp.getAttributeValue(i);
-            }
-        }
-        return value;
     }
 
 }

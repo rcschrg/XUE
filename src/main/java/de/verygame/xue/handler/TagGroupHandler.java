@@ -4,15 +4,13 @@ import de.verygame.xue.exception.AttributeUnknownException;
 import de.verygame.xue.exception.TagUnknownException;
 import de.verygame.xue.exception.XueException;
 import de.verygame.xue.exception.XueSyntaxException;
-import de.verygame.xue.input.XueInputEvent;
+import de.verygame.xue.mapping.BuilderMapping;
 import org.xmlpull.v1.XmlPullParser;
-
-import java.util.Map;
 
 /**
  * @author Rico Schrage
  */
-public interface TagGroupHandler<T, D> {
+public interface TagGroupHandler<T, D> extends DomContainer<D> {
 
     /**
      * Starts the handling of the group, means the start tag was reached.
@@ -57,37 +55,8 @@ public interface TagGroupHandler<T, D> {
     String getName();
 
     /**
-     * Returns a map of the resultMap element mapped to their key string.
-     *
-     * @return map
-     */
-    Map<String, T> getResultMap();
-
-    /**
-     * Returns a map of the resultMap element mapped to their key string.
-     *
-     * @return map
-     */
-    Map<String, D> getDomObjectMap();
-
-    /**
      * @param mapping builder mapping
      */
     void addBuilderMapping(BuilderMapping<T> mapping);
-
-    /**
-     * Called when an input event occurs. Input event have to thrown by the user.
-     *
-     * @param inputEvent {@link XueInputEvent}
-     */
-    void onInputEvent(XueInputEvent inputEvent);
-
-    /**
-     * Will be called when the {@link de.verygame.xue.Xue} gets updated. It might be necessary to call it
-     * with very short intervals for features like the {@link ActionSequenceTagGroupHandler}.
-     *
-     * @param delta time passed
-     */
-    void update(float delta);
 
 }

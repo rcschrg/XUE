@@ -1,13 +1,11 @@
 package de.verygame.xue.handler;
 
 import de.verygame.xue.exception.XueException;
-import de.verygame.xue.input.XueInputEvent;
+import de.verygame.xue.mapping.BuilderMapping;
 import org.xmlpull.v1.XmlPullParser;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Rico Schrage
@@ -20,15 +18,13 @@ public abstract class BaseTagGroupHandler<T, D> implements TagGroupHandler<T, D>
     private boolean active = false;
     private String name;
 
-    protected Map<String, T> resultMap;
-    protected Map<String, D> domMap;
+    protected List<D> domList;
 
     protected List<BuilderMapping<T>> mapping;
 
     public BaseTagGroupHandler(String name) {
         this.name = name;
-        this.resultMap = new HashMap<>();
-        this.domMap = new HashMap<>();
+        this.domList = new ArrayList<>();
         this.mapping = new ArrayList<>();
     }
 
@@ -63,24 +59,8 @@ public abstract class BaseTagGroupHandler<T, D> implements TagGroupHandler<T, D>
     }
 
     @Override
-    public Map<String, T> getResultMap() {
-        return resultMap;
+    public List<D> getDom() {
+        return domList;
     }
 
-    @Override
-    public Map<String, D> getDomObjectMap() {
-        return domMap;
-    }
-
-    @Override
-    public void onInputEvent(XueInputEvent event) {
-        //default: do nothing
-        //most TagHandlers won't need to handle input events,
-    }
-
-    @Override
-    public void update(float delta) {
-        //default: do nothing
-        //most TagHandlers won't need to handle update ticks.
-    }
 }

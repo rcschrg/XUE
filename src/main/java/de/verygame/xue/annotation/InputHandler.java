@@ -1,4 +1,4 @@
-package de.verygame.xue.handler.annotation;
+package de.verygame.xue.annotation;
 
 import de.verygame.xue.input.XueInputEvent;
 

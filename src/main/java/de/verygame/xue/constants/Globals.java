@@ -1,4 +1,4 @@
-package de.verygame.xue.handler;
+package de.verygame.xue.constants;
 
 /**
  * @author Rico Schrage

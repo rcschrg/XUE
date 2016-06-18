@@ -2,7 +2,7 @@ package de.verygame.xue.handler.dom;
 
 import de.verygame.xue.exception.AttributeUnknownException;
 import de.verygame.xue.exception.TagUnknownException;
-import de.verygame.xue.handler.Globals;
+import de.verygame.xue.constants.Globals;
 import de.verygame.xue.mapping.builder.XueTag;
 
 /**
@@ -10,6 +10,7 @@ import de.verygame.xue.mapping.builder.XueTag;
  */
 public class DomObject<T> implements DomRepresentation<T> {
     protected final XueTag<T> builder;
+    protected String name;
 
     public DomObject(XueTag<T> builder) {
         this.builder = builder;
@@ -26,12 +27,22 @@ public class DomObject<T> implements DomRepresentation<T> {
     }
 
     @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
     public T getObject() {
         return builder.getElement();
     }
 
     @Override
-    public XueTag<T> getBuilder() {
+    public XueTag<T> getTag() {
         return builder;
     }
 
