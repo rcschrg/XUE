@@ -1,111 +1,25 @@
-apply plugin: "idea"
-apply plugin: "eclipse"
-apply plugin: "java"
-apply plugin: "maven"
-apply plugin: 'signing'
+allprojects {
+    apply plugin: "eclipse"
+    apply plugin: "idea"
+    apply plugin: "java"
 
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
-
-group = 'de.verygame.xue'
-version = '0.1'
-archivesBaseName = 'Xue'
-
-ext {
-    appName = "Xue"
-    appDescription = "Xue is an easy way to create and set up objects via XML"
-    projectUrl = "https://github.com/VeryGame/Xue"
-    scmUrl = "https://github.com/VeryGame/Xue.git"
-    connectionUrl = "scm:git:git://github.com/VeryGame/Xue.git"
-    developerConnectionUrl = "scm:git:ssh:git@github.com:VeryGame/Xue.git"
-    mitLicenseName = "The MIT License (MIT)"
-    mitLicenseUrl = "https://opensource.org/licenses/mit-license.php"
-    mitLicenseDis = "repo"
-
-    devId = "rcschrg"
-    devName = "Rico Schrage"
-    devEmail = "rcschrg@verygame.de"
-}
-
-repositories {
-    mavenCentral();
-}
-
-dependencies {
-    compile "net.sf.kxml:kxml2:2.3.0"
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.mockito:mockito-all:1.10.19'
-}
-/*
-task javadocJar (type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc
-}
-
-task sourceJar (type : Jar) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
-
-artifacts {
-    archives javadocJar, sourceJar
-}
-
-signing {
-    sign configurations.archives
-}
-
-uploadArchives {
     repositories {
-        mavenDeployer {
-            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-
-            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-                authentication(userName: ossrhUsername, password: ossrhPassword)
-            }
-
-            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-                authentication(userName: ossrhUsername, password: ossrhPassword)
-            }
-
-            pom.project {
-                name appName
-                packaging 'jar'
-                description appDescription
-                url projectUrl
-
-                scm {
-                    connection connectionUrl
-                    developerConnection developerConnectionUrl
-                    url scmUrl
-                }
-
-                licenses {
-                    license {
-                        name mitLicenseName
-                        url mitLicenseUrl
-                    }
-                }
-
-                developers {
-                    developer {
-                        id devId
-                        name devName
-                        email devEmail
-                    }
-                }
-            }
-        }
+        mavenCentral()
     }
-} */
-[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
-sourceSets.main.java.srcDirs = [ "src/main/java" ]
-sourceSets.test.java.srcDirs = [ "src/test/java"]
+    dependencies {
+        testCompile 'junit:junit:4.12'
+        testCompile 'org.mockito:mockito-all:1.10.19'
+    }
+}
 
-idea {
-    module {
-        sourceDirs += file("src/main/java");
-        testSourceDirs += file("src/test/java");
+project(':xue') {
+    apply plugin: "java"
+    apply plugin: "maven"
+    apply plugin: 'signing'
+
+    dependencies {
+        compile project(':utils')
+        compile "net.sf.kxml:kxml2:2.3.0"
     }
 }
