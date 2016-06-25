@@ -2,16 +2,15 @@ package de.verygame.xue.handler;
 
 import de.verygame.xue.constants.CoreAttribute;
 import de.verygame.xue.constants.Globals;
-import de.verygame.xue.mapping.BuilderMapping;
-import de.verygame.xue.mapping.PrimitiveTag;
-import org.xmlpull.v1.XmlPullParser;
-
 import de.verygame.xue.exception.AttributeUnknownException;
 import de.verygame.xue.exception.ConstTagUnknownException;
-import de.verygame.xue.exception.XueSyntaxException;
 import de.verygame.xue.exception.TagUnknownException;
-import de.verygame.xue.mapping.builder.XueTag;
+import de.verygame.xue.exception.XueSyntaxException;
 import de.verygame.xue.handler.dom.DomObject;
+import de.verygame.xue.mapping.BuilderMapping;
+import de.verygame.xue.mapping.tag.XueTag;
+import de.verygame.xue.tag.PrimitiveTag;
+import org.xmlpull.v1.XmlPullParser;
 
 /**
  * @author Rico Schrage
@@ -73,7 +72,6 @@ public class ConstantTagGroupHandler extends BaseTagGroupHandler<Object, DomObje
      * @throws XueSyntaxException if name attribute is missing.
      */
     private void handlePrimitiveConst(XmlPullParser xpp) throws XueSyntaxException {
-
         String nameAttr = "";
         DomObject<Object> dom = new DomObject<>(new PrimitiveTag());
 

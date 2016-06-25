@@ -1,12 +1,12 @@
-package de.verygame.xue.mapping.builder;
+package de.verygame.xue.mapping.tag;
 
 /**
  * @author Rico Schrage
  */
 public abstract class XueAbstractContainerTag<T> extends XueAbstractElementTag<T> implements XueContainerTag<T> {
 
-    public XueAbstractContainerTag(Class<? extends T> subjectClass) {
-        super(subjectClass);
+    public XueAbstractContainerTag(T element) {
+        super(element);
     }
 
 }

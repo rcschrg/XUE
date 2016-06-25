@@ -1,18 +1,13 @@
 package de.verygame.xue.mapping;
 
+import de.verygame.util.math.CoordinateType;
+
 /**
  * Created by Rico on 09.07.2015.
  *
  * @author Rico Schrage
  */
 public interface GlobalMappings<T>  {
-
-    /**
-     * Coordinate type
-     */
-    enum CoordinateType {
-        X, Y
-    }
 
     /**
      * Calculates a positional value regarding the target and the coordinate type.

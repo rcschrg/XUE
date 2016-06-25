@@ -1,4 +1,4 @@
-package de.verygame.xue.handler.action;
+package de.verygame.xue.util.action;
 
 /**
  * @author Rico Schrage

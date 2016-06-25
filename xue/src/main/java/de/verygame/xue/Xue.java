@@ -2,8 +2,8 @@ package de.verygame.xue;
 
 import de.verygame.xue.exception.XueException;
 import de.verygame.xue.handler.TagGroupHandler;
-import de.verygame.xue.handler.XueInputHandler;
-import de.verygame.xue.handler.XueUpdateHandler;
+import de.verygame.xue.input.XueInputHandler;
+import de.verygame.xue.input.XueUpdateHandler;
 import de.verygame.xue.input.XueInputEvent;
 import de.verygame.xue.mapping.BuilderMapping;
 import de.verygame.xue.mapping.GlobalMappings;
@@ -11,6 +11,7 @@ import de.verygame.xue.util.InjectionUtils;
 
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -29,6 +30,9 @@ public class Xue<T> {
 
     /** Resource of the menu, all elements of the menu are described in this file */
     private final InputStream resource;
+
+    /** Mappings */
+    private final GlobalMappings<T> mappings;
 
     /** Contains all elements, which have the attribute <code>name</code> */
     private Map<String, T> elementMap;
@@ -53,6 +57,9 @@ public class Xue<T> {
     public Xue(GlobalMappings<T> mappings, InputStream xml) {
         this.core = new XueCore<>(mappings);
         this.resource = xml;
+        this.mappings = mappings;
+        this.updateHandlers = new ArrayList<>();
+        this.inputHandlers = new ArrayList<>();
     }
 
     public void addInputHandler(XueInputHandler inputHandler) {
@@ -71,6 +78,7 @@ public class Xue<T> {
         for (TagGroupHandler<?, ?> groupHandler : core.getDomContainer()) {
             InjectionUtils.injectDependencyByName(groupHandler, target);
         }
+        InjectionUtils.injectDependencyByType(mappings, target);
     }
 
     public void addElementMapping(BuilderMapping<T> mapping) {

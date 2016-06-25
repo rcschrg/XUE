@@ -4,7 +4,7 @@ import de.verygame.xue.exception.ElementTagUnknownException;
 import de.verygame.xue.exception.XueException;
 import de.verygame.xue.mapping.BuilderMapping;
 import de.verygame.xue.mapping.GlobalMappings;
-import de.verygame.xue.mapping.builder.XueTag;
+import de.verygame.xue.mapping.tag.XueTag;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

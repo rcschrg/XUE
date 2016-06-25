@@ -1,26 +1,44 @@
 package de.verygame.xue.handler;
 
-import de.verygame.xue.annotation.DependencyHandler;
+import de.verygame.xue.annotation.Dependency;
 import de.verygame.xue.handler.dom.DomElement;
+import de.verygame.xue.handler.dom.value.FloatValue;
+import de.verygame.xue.handler.dom.value.Value;
 import de.verygame.xue.input.XueInputEvent;
+import de.verygame.xue.input.XueInputHandler;
+import de.verygame.xue.mapping.GlobalMappings;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Rico Schrage
  */
-public class ResizeInputHandler implements XueInputHandler {
+public class ResizeInputHandler<T> implements XueInputHandler {
 
-    @DependencyHandler
-    protected ElementsTagGroupHandler<?> elementsTagGroupHandler;
+    @Dependency
+    protected ElementsTagGroupHandler<T> elementsTagGroupHandler;
+
+    @Dependency
+    protected GlobalMappings<T> globalMappings;
 
     @Override
     public void onInputEvent(XueInputEvent event) {
         if (event == XueInputEvent.RESIZE) {
-            List<? extends DomElement<?>> domElements = elementsTagGroupHandler.getDom();
+            List<? extends DomElement<T>> domElements = elementsTagGroupHandler.getDom();
             for (int i = 0; i < domElements.size(); ++i) {
-                DomElement<?> domElement = domElements.get(i);
-                domElement.resize();
+                DomElement<T> domElement = domElements.get(i);
+
+                domElement.begin();
+                for (Map.Entry<String, Value<?, ?>> entry : domElement.getValues().entrySet()) {
+                    Value<?, ?> value = entry.getValue();
+                    if (value instanceof FloatValue.Relative) {
+                        FloatValue.Relative relativeValue = (FloatValue.Relative) value;
+                        float f = globalMappings.calcFromRelativeValue(domElement.getObject(), relativeValue.getValue(), relativeValue.getAddition());
+                        domElement.applyRelative(entry.getKey(), relativeValue, f);
+                    }
+                }
+                domElement.end();
             }
         }
     }

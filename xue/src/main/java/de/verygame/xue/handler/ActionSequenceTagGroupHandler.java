@@ -1,19 +1,20 @@
 package de.verygame.xue.handler;
 
+import de.verygame.xue.annotation.Dependency;
 import de.verygame.xue.constants.CoreAttribute;
 import de.verygame.xue.constants.Globals;
 import de.verygame.xue.exception.ElementTagUnknownException;
 import de.verygame.xue.exception.XueException;
-import de.verygame.xue.handler.action.Action;
-import de.verygame.xue.handler.action.BasicActionBuilder;
-import de.verygame.xue.annotation.DependencyHandler;
 import de.verygame.xue.handler.dom.DomObject;
 import de.verygame.xue.handler.dom.DomRepresentation;
 import de.verygame.xue.input.XueInputEvent;
 import de.verygame.xue.mapping.BuilderMapping;
-import de.verygame.xue.mapping.builder.XueTag;
+import de.verygame.xue.mapping.tag.XueTag;
+import de.verygame.xue.tag.BasicActionTag;
 import de.verygame.xue.util.DomUtils;
 import de.verygame.xue.util.XmlParserUtils;
+import de.verygame.xue.util.action.Action;
+import de.verygame.xue.util.action.ActionSequence;
 import org.xmlpull.v1.XmlPullParser;
 
 import java.util.HashMap;
@@ -24,7 +25,7 @@ import java.util.Map;
  */
 public class ActionSequenceTagGroupHandler extends BaseTagGroupHandler<Action, DomRepresentation<Action>> {
 
-    @DependencyHandler
+    @Dependency
     private ElementsTagGroupHandler<?> tagHandler;
 
     private ActionSequence currentActionSequence;
@@ -40,7 +41,7 @@ public class ActionSequenceTagGroupHandler extends BaseTagGroupHandler<Action, D
             @Override
             public XueTag<Action> createBuilder(String name) {
                 if ("basicAction".equals(name)) {
-                    return new BasicActionBuilder();
+                    return new BasicActionTag();
                 }
                 return null;
             }
@@ -84,7 +85,7 @@ public class ActionSequenceTagGroupHandler extends BaseTagGroupHandler<Action, D
         if (nameId == null || targetId == null) {
             throw new XueException(xpp.getLineNumber() + ": You have to specify a name and a target id!");
         }
-        actionBuilder.applyObject(CoreAttribute.ACTION_TARGET_ID, DomUtils.searchFor(tagHandler.getDom(), targetId).getTag());
+        actionBuilder.apply(CoreAttribute.ACTION_TARGET_ID, DomUtils.searchFor(tagHandler.getDom(), targetId).getTag());
 
         domObject.begin();
         for (int i = 0; i < xpp.getAttributeCount(); ++i) {

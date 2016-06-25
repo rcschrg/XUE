@@ -1,6 +1,5 @@
-package de.verygame.xue.handler;
+package de.verygame.xue.util.action;
 
-import de.verygame.xue.handler.action.Action;
 import de.verygame.xue.input.XueInputEvent;
 
 import java.util.ArrayList;

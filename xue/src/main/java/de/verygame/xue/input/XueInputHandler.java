@@ -1,6 +1,4 @@
-package de.verygame.xue.handler;
-
-import de.verygame.xue.input.XueInputEvent;
+package de.verygame.xue.input;
 
 /**
  * @author Rico Schrage

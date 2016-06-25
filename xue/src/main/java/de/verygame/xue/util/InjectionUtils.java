@@ -1,6 +1,6 @@
 package de.verygame.xue.util;
 
-import de.verygame.xue.annotation.DependencyHandler;
+import de.verygame.xue.annotation.Dependency;
 import de.verygame.xue.exception.XueException;
 import de.verygame.util.ReflectionUtils;
 
@@ -24,12 +24,12 @@ public class InjectionUtils {
      * Injects dependencies.
      *
      * @param injectTarget target of the injection
-     * @param injectable injectable which contains injectable result or builder
+     * @param injectable injectable which contains injectable result or tag
      */
     public static void injectDependency(Object injectTarget, Object injectable, InjectionStrategy injectionStrategy) throws XueException {
         List<Field> fields = ReflectionUtils.getAllFields(injectTarget.getClass());
         for (final Field field : fields) {
-            if (field.isAnnotationPresent(DependencyHandler.class) && injectionStrategy.injectionCondition(field, injectable)) {
+            if (field.isAnnotationPresent(Dependency.class) && injectionStrategy.injectionCondition(field, injectable)) {
                 try {
                     field.setAccessible(true);
                     field.set(injectTarget, injectable);

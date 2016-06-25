@@ -1,7 +1,10 @@
 package de.verygame.xue.handler;
 
-import de.verygame.xue.annotation.DependencyHandler;
+import de.verygame.xue.annotation.Dependency;
 import de.verygame.xue.input.XueInputEvent;
+import de.verygame.xue.input.XueInputHandler;
+import de.verygame.xue.input.XueUpdateHandler;
+import de.verygame.xue.util.action.ActionSequence;
 
 import java.util.Map;
 
@@ -10,7 +13,7 @@ import java.util.Map;
  */
 public class ActionSequenceUpdateHandler implements XueUpdateHandler, XueInputHandler {
 
-    @DependencyHandler
+    @Dependency
     protected ActionSequenceTagGroupHandler actionSequenceTagGroupHandler;
 
     @Override

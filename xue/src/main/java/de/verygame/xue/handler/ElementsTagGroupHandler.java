@@ -1,13 +1,13 @@
 package de.verygame.xue.handler;
 
-import de.verygame.xue.annotation.DependencyHandler;
+import de.verygame.xue.annotation.Dependency;
 import de.verygame.xue.constants.Globals;
 import de.verygame.xue.exception.*;
 import de.verygame.xue.handler.dom.DomElement;
 import de.verygame.xue.mapping.BuilderMapping;
 import de.verygame.xue.mapping.GlobalMappings;
-import de.verygame.xue.mapping.builder.XueContainerTag;
-import de.verygame.xue.mapping.builder.XueTag;
+import de.verygame.xue.mapping.tag.XueContainerTag;
+import de.verygame.xue.mapping.tag.XueTag;
 import de.verygame.xue.util.DomUtils;
 import org.xmlpull.v1.XmlPullParser;
 
@@ -21,7 +21,7 @@ import java.util.Deque;
  */
 public class ElementsTagGroupHandler<T> extends BaseTagGroupHandler<T, DomElement<T>> {
 
-    @DependencyHandler
+    @Dependency
     protected ConstantTagGroupHandler constantTagHandler;
 
     /** stack of elements to determine current scope */

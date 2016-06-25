@@ -1,4 +1,4 @@
-package de.verygame.xue.mapping.builder;
+package de.verygame.xue.mapping.tag;
 
 /**
  * @author Rico Schrage

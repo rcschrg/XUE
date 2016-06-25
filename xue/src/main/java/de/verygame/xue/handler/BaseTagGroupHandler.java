@@ -2,6 +2,7 @@ package de.verygame.xue.handler;
 
 import de.verygame.xue.exception.XueException;
 import de.verygame.xue.mapping.BuilderMapping;
+import de.verygame.xue.mapping.GlobalMappings;
 import org.xmlpull.v1.XmlPullParser;
 
 import java.util.ArrayList;

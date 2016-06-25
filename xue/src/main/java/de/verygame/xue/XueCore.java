@@ -2,8 +2,8 @@ package de.verygame.xue;
 
 import de.verygame.xue.exception.*;
 import de.verygame.xue.handler.*;
-import de.verygame.xue.handler.action.Action;
-import de.verygame.xue.annotation.DependencyHandler;
+import de.verygame.xue.util.action.Action;
+import de.verygame.xue.annotation.Dependency;
 import de.verygame.xue.handler.dom.DomElement;
 import de.verygame.xue.handler.dom.DomObject;
 import de.verygame.xue.handler.dom.DomRepresentation;
@@ -51,14 +51,6 @@ public class XueCore<T> {
         addHandler(constantTagHandler);
         addHandler(elementsTagHandler);
         addHandler(actionSequenceTagHandler);
-
-        for (TagGroupHandler<?, ?> otherT : tagGroupHandlerList) {
-            for (TagGroupHandler<?, ?> t : tagGroupHandlerList) {
-                if (otherT != t) {
-                    InjectionUtils.injectDependencyByType(otherT, t);
-                }
-            }
-        }
     }
 
     private TagGroupHandler<?, ?> calculateNextTagHandler() throws XueException {
@@ -79,7 +71,7 @@ public class XueCore<T> {
         List<Field> fields = ReflectionUtils.getAllFields(tagGroupHandler.getClass());
         List<Class<?>> tagHandlers = new ArrayList<>();
         for (final Field field : fields) {
-            if (field.isAnnotationPresent(DependencyHandler.class)) {
+            if (field.isAnnotationPresent(Dependency.class)) {
                 tagHandlers.add(field.getType());
             }
         }
@@ -87,6 +79,9 @@ public class XueCore<T> {
     }
 
     public void addHandler(TagGroupHandler<?, ?> tagGroupHandler) {
+        for (TagGroupHandler<?, ?> other : tagGroupHandlerList) {
+            InjectionUtils.injectDependencyByType(tagGroupHandler, other);
+        }
         this.tagGroupHandlerList.add(tagGroupHandler);
     }
 

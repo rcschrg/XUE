@@ -1,6 +1,6 @@
 package de.verygame.xue.mapping;
 
-import de.verygame.xue.mapping.builder.XueTag;
+import de.verygame.xue.mapping.tag.XueTag;
 
 /**
  * @author Rico Schrage

@@ -1,4 +1,4 @@
-package de.verygame.xue.handler.action;
+package de.verygame.xue.util.action;
 
 import de.verygame.util.math.function.EaseFunction;
 import de.verygame.util.modifier.SingleValueModifier;
