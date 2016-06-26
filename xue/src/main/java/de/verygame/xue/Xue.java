@@ -1,16 +1,17 @@
 package de.verygame.xue;
 
+import de.verygame.xue.annotation.Bind;
+import de.verygame.xue.annotation.Dependency;
 import de.verygame.xue.exception.XueException;
 import de.verygame.xue.handler.TagGroupHandler;
+import de.verygame.xue.input.XueInputEvent;
 import de.verygame.xue.input.XueInputHandler;
 import de.verygame.xue.input.XueUpdateHandler;
-import de.verygame.xue.input.XueInputEvent;
 import de.verygame.xue.mapping.BuilderMapping;
 import de.verygame.xue.mapping.GlobalMappings;
 import de.verygame.xue.util.InjectionUtils;
 
 import java.io.InputStream;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -18,35 +19,48 @@ import java.util.Set;
 
 /**
  * @author Rico Schrage
- *
- * Parses given XML input to a set of objects of the type {@link T}.
- * Should mostly be used as base of the xml extension you want to create.
+ *         <p>
+ *         Parses given XML input to a set of objects of the type {@link T}.
+ *         Should mostly be used as base of the xml extension you want to create.
  */
 public class Xue<T> {
-
     private static final String LOAD_BEFORE_MESSAGE = "You have to load the xml-file first!";
 
     private final XueCore<T> core;
 
-    /** Resource of the menu, all elements of the menu are described in this file */
+    /**
+     * Resource of the menu, all elements of the menu are described in this file
+     */
     private final InputStream resource;
 
-    /** Mappings */
+    /**
+     * Mappings
+     */
     private final GlobalMappings<T> mappings;
 
-    /** Contains all elements, which have the attribute <code>name</code> */
+    /**
+     * Contains all elements, which have the attribute <code>name</code>
+     */
     private Map<String, T> elementMap;
 
-    /** Contains all constants */
+    /**
+     * Contains all constants
+     */
     private Map<String, Object> constMap;
 
-    /** List of input handlers, which are used to react to input events */
+    /**
+     * List of input handlers, which are used to react to input events
+     */
     private List<XueInputHandler> inputHandlers;
 
-    /** List of update handlers, which are used to react to update ticks */
+    /**
+     * List of update handlers, which are used to react to update ticks
+     */
     private List<XueUpdateHandler> updateHandlers;
 
-    /** see {@link #bind(Object)} */
+    /**
+     * see {@link #bind(Object)}
+     */
     private Object bindTarget;
 
     /**
@@ -76,9 +90,9 @@ public class Xue<T> {
 
     private void injectDomContainer(Object target) {
         for (TagGroupHandler<?, ?> groupHandler : core.getDomContainer()) {
-            InjectionUtils.injectDependencyByName(groupHandler, target);
+            InjectionUtils.injectByName(Dependency.class, groupHandler, target);
         }
-        InjectionUtils.injectDependencyByType(mappings, target);
+        InjectionUtils.injectByType(Dependency.class, mappings, target);
     }
 
     public void addElementMapping(BuilderMapping<T> mapping) {
@@ -136,18 +150,8 @@ public class Xue<T> {
         if (bindTarget == null) {
             return;
         }
-        for (final Field field : bindTarget.getClass().getDeclaredFields()) {
-            for (final Map.Entry<String, T> entry : entries) {
-                if (field.getName().equals(entry.getKey())) {
-                    try {
-                        field.setAccessible(true);
-                        field.set(bindTarget, entry.getValue());
-                    }
-                    catch (IllegalAccessException e) {
-                        throw new XueException(e);
-                    }
-                }
-            }
+        for (final Map.Entry<String, T> entry : entries) {
+            InjectionUtils.injectByName(Bind.class, bindTarget, entry.getKey());
         }
     }
 
@@ -173,7 +177,7 @@ public class Xue<T> {
     }
 
     public void onUpdate(float delta) {
-        for (int i = 0; i < inputHandlers.size(); ++i) {
+        for (int i = 0; i < updateHandlers.size(); ++i) {
             XueUpdateHandler updateHandler = updateHandlers.get(i);
             updateHandler.onUpdate(delta);
         }

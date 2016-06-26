@@ -28,4 +28,23 @@ public class AttributeGroupElementMeta {
     public void setName(String name) {
         this.name = name;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        AttributeGroupElementMeta that = (AttributeGroupElementMeta) o;
+
+        return name != null ? name.equals(that.name) : that.name == null && (valueType != null ?
+                valueType.equals(that.valueType) : that.valueType == null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name != null ? name.hashCode() : 0;
+        result = 31 * result + (valueType != null ? valueType.hashCode() : 0);
+        return result;
+    }
 }

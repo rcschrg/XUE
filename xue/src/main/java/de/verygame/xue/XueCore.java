@@ -40,7 +40,7 @@ public class XueCore<T> {
      *
      * @param globalMappings Mapping to builders
      */
-    public XueCore(GlobalMappings<T> globalMappings) throws XueException {
+    public XueCore(GlobalMappings<T> globalMappings) {
         tagGroupHandlerList = new ArrayList<>();
         closed = new ArrayList<>();
 
@@ -53,7 +53,7 @@ public class XueCore<T> {
         addHandler(actionSequenceTagHandler);
     }
 
-    private TagGroupHandler<?, ?> calculateNextTagHandler() throws XueException {
+    private TagGroupHandler<?, ?> calculateNextTagHandler() {
         for (TagGroupHandler<?, ?> t : tagGroupHandlerList) {
             if (closed.contains(t)) {
                 continue;
@@ -80,7 +80,7 @@ public class XueCore<T> {
 
     public void addHandler(TagGroupHandler<?, ?> tagGroupHandler) {
         for (TagGroupHandler<?, ?> other : tagGroupHandlerList) {
-            InjectionUtils.injectDependencyByType(tagGroupHandler, other);
+            InjectionUtils.injectByType(Dependency.class, tagGroupHandler, other);
         }
         this.tagGroupHandlerList.add(tagGroupHandler);
     }
@@ -202,7 +202,7 @@ public class XueCore<T> {
      * @throws AttributeUnknownException see {@link AttributeUnknownException}
      * @throws ElementTagUnknownException see {@link ElementTagUnknownException}
      */
-    public void load(InputStream inputXml) throws XueException {
+    public void load(InputStream inputXml) {
         try {
             XmlPullParser xpp = new KXmlParser();
             xpp.setInput(inputXml, ENCODING);
@@ -240,7 +240,7 @@ public class XueCore<T> {
      * @throws AttributeUnknownException if an attribute is unknow.
      * @throws ElementTagUnknownException if a tag in <elements>...</elements> is unknown
      */
-    private void handleStartTag(XmlPullParser xpp) throws XueException {
+    private void handleStartTag(XmlPullParser xpp) {
         for (TagGroupHandler pT : tagGroupHandlerList) {
             if (pT.getName().equals(xpp.getName())) {
                 pT.setActive(true);
@@ -260,7 +260,7 @@ public class XueCore<T> {
      *
      * @param xpp PullParser, which has been created with the xml resource.
      */
-    private void handleEndTag(XmlPullParser xpp) throws XueException {
+    private void handleEndTag(XmlPullParser xpp) {
         for (TagGroupHandler t : tagGroupHandlerList) {
             if (t.getName().equals(xpp.getName()) && t.isActive()) {
                 t.setActive(false);
