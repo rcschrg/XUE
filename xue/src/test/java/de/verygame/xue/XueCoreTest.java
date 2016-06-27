@@ -3,7 +3,6 @@ package de.verygame.xue;
 import de.verygame.xue.exception.ElementTagUnknownException;
 import de.verygame.xue.exception.XueException;
 import de.verygame.xue.mapping.BuilderMapping;
-import de.verygame.xue.mapping.GlobalMappings;
 import de.verygame.xue.mapping.tag.XueTag;
 import org.junit.Before;
 import org.junit.Test;
@@ -59,8 +58,6 @@ public class XueCoreTest {
             "</menu>";
 
     @Mock
-    private GlobalMappings<Object> map;
-    @Mock
     private BuilderMapping<Object> aM;
     @Mock
     private BuilderMapping<Object> cM;
@@ -74,7 +71,7 @@ public class XueCoreTest {
     public void prepare() throws ElementTagUnknownException, XmlPullParserException {
         when(aM.createBuilder(anyString())).thenReturn(gb);
         when(cM.createBuilder(anyString())).thenReturn(gb);
-        core = new XueCore<>(map);
+        core = new XueCore<>();
         core.addElementMapping(aM);
         core.addConstantMapping(cM);
         inputStream = new ByteArrayInputStream(exampleXML.getBytes(StandardCharsets.UTF_8));

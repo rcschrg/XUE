@@ -3,7 +3,6 @@ package de.verygame.xue;
 import de.verygame.xue.input.XueInputEvent;
 import de.verygame.xue.input.XueInputHandler;
 import de.verygame.xue.input.XueUpdateHandler;
-import de.verygame.xue.mapping.DummyGlobalMappings;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -23,7 +22,7 @@ public class XueTest {
 
     @Before
     public void setUp() throws Exception {
-        xue = new Xue<>(new DummyGlobalMappings<>(), new ByteArrayInputStream("".getBytes()));
+        xue = new Xue<>(new ByteArrayInputStream("".getBytes()));
     }
 
     @Test
