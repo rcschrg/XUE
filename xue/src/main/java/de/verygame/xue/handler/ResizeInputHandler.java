@@ -6,7 +6,6 @@ import de.verygame.xue.handler.dom.value.FloatValue;
 import de.verygame.xue.handler.dom.value.Value;
 import de.verygame.xue.input.XueInputEvent;
 import de.verygame.xue.input.XueInputHandler;
-import de.verygame.xue.mapping.GlobalMappings;
 
 import java.util.List;
 import java.util.Map;
@@ -18,9 +17,6 @@ public class ResizeInputHandler<T> implements XueInputHandler {
 
     @Dependency
     protected ElementsTagGroupHandler<T> elementsTagGroupHandler;
-
-    @Dependency
-    protected GlobalMappings<T> globalMappings;
 
     @Override
     public void onInputEvent(XueInputEvent event) {
@@ -34,7 +30,7 @@ public class ResizeInputHandler<T> implements XueInputHandler {
                     Value<?, ?> value = entry.getValue();
                     if (value instanceof FloatValue.Relative) {
                         FloatValue.Relative relativeValue = (FloatValue.Relative) value;
-                        float f = globalMappings.calcFromRelativeValue(domElement.getObject(), relativeValue.getValue(), relativeValue.getAddition());
+                        float f = elementsTagGroupHandler.getGlobalMappings().calcFromRelativeValue(domElement.getObject(), relativeValue.getValue(), relativeValue.getAddition());
                         domElement.applyRelative(entry.getKey(), relativeValue, f);
                     }
                 }

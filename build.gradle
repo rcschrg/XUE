@@ -14,12 +14,10 @@ allprojects {
 }
 
 project(':xue') {
-    apply plugin: "java"
     apply plugin: "maven"
     apply plugin: 'signing'
 
     dependencies {
-        compile project(':utils')
         compile "net.sf.kxml:kxml2:2.3.0"
     }
 }

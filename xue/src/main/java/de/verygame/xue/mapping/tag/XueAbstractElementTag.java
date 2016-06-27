@@ -63,6 +63,11 @@ public abstract class XueAbstractElementTag<T> implements XueTag<T> {
     }
 
     @Override
+    public void applyChild(Object child) {
+        //default: nothing to do
+    }
+
+    @Override
     public void postBuild() {
         for (int i = 0; i < attributeGroups.size(); ++i) {
             AttributeGroup<T> a = attributeGroups.get(i);

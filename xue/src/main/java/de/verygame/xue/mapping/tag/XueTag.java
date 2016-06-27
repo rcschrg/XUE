@@ -9,6 +9,7 @@ import de.verygame.xue.input.XueUpdateHandler;
 public interface XueTag<T> extends XueInputHandler, XueUpdateHandler {
     void preBuild();
     <V> void apply(String attribute, V value);
+    void applyChild(Object child);
     void postBuild();
 
     T getElement();

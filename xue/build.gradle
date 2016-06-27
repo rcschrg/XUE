@@ -3,11 +3,11 @@ targetCompatibility = 1.7
 
 group = 'de.verygame.xue'
 version = '0.1'
-archivesBaseName = 'Xue'
+archivesBaseName = 'XUE'
 
 ext {
-    appName = "Xue"
-    appDescription = "Xue is an easy way to create and set up objects via XML"
+    appName = "XUE"
+    appDescription = "XUE provides an easy way to create and set up objects via XML"
     projectUrl = "https://github.com/VeryGame/Xue"
     scmUrl = "https://github.com/VeryGame/Xue.git"
     connectionUrl = "scm:git:git://github.com/VeryGame/Xue.git"

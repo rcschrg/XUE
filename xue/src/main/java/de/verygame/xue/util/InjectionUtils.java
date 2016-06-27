@@ -12,6 +12,10 @@ import java.util.List;
  */
 public class InjectionUtils {
 
+    private InjectionUtils() {
+        //utility class
+    }
+
     public static void injectByType(Class<? extends Annotation> marker, Object injectTarget, Object injectable) {
         inject(marker, injectTarget, injectable, InjectionByTypeStrategy.getInstance());
     }

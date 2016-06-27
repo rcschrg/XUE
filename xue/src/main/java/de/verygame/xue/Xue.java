@@ -8,7 +8,6 @@ import de.verygame.xue.input.XueInputEvent;
 import de.verygame.xue.input.XueInputHandler;
 import de.verygame.xue.input.XueUpdateHandler;
 import de.verygame.xue.mapping.BuilderMapping;
-import de.verygame.xue.mapping.GlobalMappings;
 import de.verygame.xue.util.InjectionUtils;
 
 import java.io.InputStream;
@@ -32,11 +31,6 @@ public class Xue<T> {
      * Resource of the menu, all elements of the menu are described in this file
      */
     private final InputStream resource;
-
-    /**
-     * Mappings
-     */
-    private final GlobalMappings<T> mappings;
 
     /**
      * Contains all elements, which have the attribute <code>name</code>
@@ -65,13 +59,10 @@ public class Xue<T> {
 
     /**
      * Creates a container with the given mappings.
-     *
-     * @param mappings {@link GlobalMappings<T>}
      */
-    public Xue(GlobalMappings<T> mappings, InputStream xml) {
-        this.core = new XueCore<>(mappings);
+    public Xue(InputStream xml) {
+        this.core = new XueCore<>();
         this.resource = xml;
-        this.mappings = mappings;
         this.updateHandlers = new ArrayList<>();
         this.inputHandlers = new ArrayList<>();
     }
@@ -92,7 +83,6 @@ public class Xue<T> {
         for (TagGroupHandler<?, ?> groupHandler : core.getDomContainer()) {
             InjectionUtils.injectByName(Dependency.class, groupHandler, target);
         }
-        InjectionUtils.injectByType(Dependency.class, mappings, target);
     }
 
     public void addElementMapping(BuilderMapping<T> mapping) {

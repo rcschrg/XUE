@@ -1,14 +1,13 @@
 package de.verygame.xue.tag.attribute;
 
 import de.verygame.util.math.function.LinearEaseFunction;
-import de.verygame.xue.util.action.Action;
-import de.verygame.xue.util.action.BasicAction;
 import de.verygame.xue.mapping.tag.attribute.AbstractAttribute;
+import de.verygame.xue.util.action.BasicAction;
 
 /**
  * @author Rico Schrage
  */
-public class BasicActionInterpolation extends AbstractAttribute<Action, String> {
+public class BasicActionInterpolation extends AbstractAttribute<BasicAction, String> {
     private static final String ATTRIBUTE_NAME = "interpolation";
     private static final BasicActionInterpolation instance = new BasicActionInterpolation();
 
@@ -22,13 +21,13 @@ public class BasicActionInterpolation extends AbstractAttribute<Action, String> 
     }
 
     @Override
-    public void apply(Action element, String value) {
+    public void apply(BasicAction element, String value) {
         switch (value) {
             case "linear":
             case "none":
             case "square":
             case "cubic":
-                ((BasicAction)element).setEaseFunction(LinearEaseFunction.getInstance());
+                element.setEaseFunction(LinearEaseFunction.getInstance());
                 break;
             default:
                 break;

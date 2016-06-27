@@ -1,16 +1,18 @@
 package de.verygame.xue;
 
-import de.verygame.xue.exception.*;
-import de.verygame.xue.handler.*;
-import de.verygame.xue.util.action.Action;
+import de.verygame.util.ReflectionUtils;
 import de.verygame.xue.annotation.Dependency;
+import de.verygame.xue.exception.*;
+import de.verygame.xue.handler.ActionSequenceTagGroupHandler;
+import de.verygame.xue.handler.ConstantTagGroupHandler;
+import de.verygame.xue.handler.ElementsTagGroupHandler;
+import de.verygame.xue.handler.TagGroupHandler;
 import de.verygame.xue.handler.dom.DomElement;
 import de.verygame.xue.handler.dom.DomObject;
 import de.verygame.xue.handler.dom.DomRepresentation;
 import de.verygame.xue.mapping.BuilderMapping;
-import de.verygame.xue.mapping.GlobalMappings;
 import de.verygame.xue.util.InjectionUtils;
-import de.verygame.util.ReflectionUtils;
+import de.verygame.xue.util.action.Action;
 import org.kxml2.io.KXmlParser;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -18,7 +20,10 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Rico on 10.07.2015.
@@ -37,15 +42,13 @@ public class XueCore<T> {
 
     /**
      * Constructs XueCore, which uses tagMapping and attributeMapping for everything, which have to be mapped.
-     *
-     * @param globalMappings Mapping to builders
      */
-    public XueCore(GlobalMappings<T> globalMappings) {
+    public XueCore() {
         tagGroupHandlerList = new ArrayList<>();
         closed = new ArrayList<>();
 
         constantTagHandler = new ConstantTagGroupHandler();
-        elementsTagHandler = new ElementsTagGroupHandler<>(globalMappings);
+        elementsTagHandler = new ElementsTagGroupHandler<>();
         actionSequenceTagHandler = new ActionSequenceTagGroupHandler();
 
         addHandler(constantTagHandler);

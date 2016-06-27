@@ -41,7 +41,8 @@ public class ActionSequenceTagGroupHandler extends BaseTagGroupHandler<Action, D
             @Override
             public XueTag<Action> createBuilder(String name) {
                 if ("basicAction".equals(name)) {
-                    return new BasicActionTag();
+                    //noinspection unchecked
+                    return (XueTag<Action>) (XueTag<? extends Action>) new BasicActionTag();
                 }
                 return null;
             }
@@ -78,7 +79,7 @@ public class ActionSequenceTagGroupHandler extends BaseTagGroupHandler<Action, D
             throw new ElementTagUnknownException(tagName);
         }
 
-        DomRepresentation<Action> domObject = new DomObject<>(actionBuilder);
+        DomRepresentation<Action> domObject = new DomObject<Action>(actionBuilder);
 
         String nameId = XmlParserUtils.findValueOf(xpp, CoreAttribute.ELEMENT_ID);
         String targetId = XmlParserUtils.findValueOf(xpp, CoreAttribute.ACTION_TARGET_ID);

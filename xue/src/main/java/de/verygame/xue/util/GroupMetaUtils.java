@@ -10,6 +10,10 @@ import java.util.List;
  */
 public class GroupMetaUtils {
 
+    private GroupMetaUtils() {
+        //utility class
+    }
+
     public static List<AttributeGroupElementMeta> buildMetaList(String[] names, Class<?>[] valueTypes) {
         List<AttributeGroupElementMeta> metaList = new ArrayList<>();
         if (names.length != valueTypes.length) {
