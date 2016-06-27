@@ -20,22 +20,22 @@ import java.util.Map;
  * @author Rico Schrage
  */
 public class DomObject<T> implements DomRepresentation<T> {
-    protected final XueTag<T> builder;
+    protected final XueTag<? extends T> builder;
     private final Map<String, Value<?, ?>> attributeValueMap;
     private final GlobalMappings<T> mappings;
-    private final List<DomObject<Object>> constantDom;
+    private final List<DomObject<?>> constantDom;
     protected String name;
     private int layer;
 
-    public DomObject(XueTag<T> builder) {
+    public DomObject(XueTag<? extends T> builder) {
         this(builder, new DummyGlobalMappings<T>());
     }
 
-    public DomObject(XueTag<T> builder, GlobalMappings<T> mappings) {
-        this(builder, mappings, new ArrayList<DomObject<Object>>());
+    public DomObject(XueTag<? extends T> builder, GlobalMappings<T> mappings) {
+        this(builder, mappings, new ArrayList<DomObject<?>>());
     }
 
-    public DomObject(XueTag<T> builder, GlobalMappings<T> mappings, List<DomObject<Object>> constantDom) {
+    public DomObject(XueTag<? extends T> builder, GlobalMappings<T> mappings, List<DomObject<?>> constantDom) {
         this.builder = builder;
         this.mappings = mappings;
         this.constantDom = constantDom;
@@ -109,7 +109,7 @@ public class DomObject<T> implements DomRepresentation<T> {
     private void applyConstToElement(String attributeName, String attributeValue) throws XueException {
         Object constObj = null;
         for (int i = 0 ; i < constantDom.size(); ++i) {
-            DomObject<Object> domObject = constantDom.get(i);
+            DomObject<?> domObject = constantDom.get(i);
             if (domObject.getName().equals(attributeValue.substring(1, attributeValue.length()))) {
                 constObj = domObject.getObject();
             }
@@ -125,7 +125,7 @@ public class DomObject<T> implements DomRepresentation<T> {
         //for subclasses
     }
 
-    protected void onApplyConst(String attribute, Object value, XueTag<T> builder) {
+    protected void onApplyConst(String attribute, Object value, XueTag<? extends T> builder) {
         //for subclasses
     }
 
@@ -270,7 +270,7 @@ public class DomObject<T> implements DomRepresentation<T> {
     }
 
     @Override
-    public XueTag<T> getTag() {
+    public XueTag<? extends T> getTag() {
         return builder;
     }
 

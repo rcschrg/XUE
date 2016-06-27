@@ -12,11 +12,9 @@ import java.util.List;
  */
 public class DomElement<T> extends DomObject<T> {
 
-    public DomElement(XueTag<T> builder, GlobalMappings<T> mappings, List<DomObject<Object>> constantDom) {
+    public DomElement(XueTag<? extends T> builder, GlobalMappings<T> mappings, List<DomObject<? extends Object>> constantDom) {
         super(builder, mappings, constantDom);
     }
-
-
 
     @Override
     public void end() throws AttributeUnknownException {

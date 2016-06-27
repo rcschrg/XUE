@@ -58,6 +58,6 @@ public interface TagGroupHandler<T, D> extends DomContainer<D> {
     /**
      * @param mapping tag mapping
      */
-    void addBuilderMapping(BuilderMapping<T> mapping);
+    void addBuilderMapping(BuilderMapping<? extends T> mapping);
 
 }

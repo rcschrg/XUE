@@ -24,5 +24,5 @@ public interface DomRepresentation<T> {
     boolean valueExists(String... attribute);
 
     T getObject();
-    XueTag<T> getTag();
+    XueTag<? extends T> getTag();
 }

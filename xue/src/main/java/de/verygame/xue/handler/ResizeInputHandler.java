@@ -21,9 +21,9 @@ public class ResizeInputHandler<T> implements XueInputHandler {
     @Override
     public void onInputEvent(XueInputEvent event) {
         if (event == XueInputEvent.RESIZE) {
-            List<? extends DomElement<T>> domElements = elementsTagGroupHandler.getDom();
+            List<? extends DomElement<? extends T>> domElements = elementsTagGroupHandler.getDom();
             for (int i = 0; i < domElements.size(); ++i) {
-                DomElement<T> domElement = domElements.get(i);
+                DomElement<? extends T> domElement = domElements.get(i);
 
                 domElement.begin();
                 for (Map.Entry<String, Value<?, ?>> entry : domElement.getValues().entrySet()) {

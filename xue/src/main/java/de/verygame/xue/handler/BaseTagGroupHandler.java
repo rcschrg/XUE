@@ -20,7 +20,7 @@ public abstract class BaseTagGroupHandler<T, D> implements TagGroupHandler<T, D>
 
     protected List<D> domList;
 
-    protected List<BuilderMapping<T>> mapping;
+    protected List<BuilderMapping<? extends T>> mapping;
 
     public BaseTagGroupHandler(String name) {
         this.name = name;
@@ -29,7 +29,7 @@ public abstract class BaseTagGroupHandler<T, D> implements TagGroupHandler<T, D>
     }
 
     @Override
-    public void addBuilderMapping(BuilderMapping<T> mapping) {
+    public void addBuilderMapping(BuilderMapping<? extends T> mapping) {
         this.mapping.add(mapping);
     }
 

@@ -88,15 +88,15 @@ public class XueCore<T> {
         this.tagGroupHandlerList.add(tagGroupHandler);
     }
 
-    public List<DomElement<T>> getElementDom() {
+    public List<DomElement<? extends T>> getElementDom() {
         return elementsTagHandler.getDom();
     }
 
-    public List<DomObject<Object>> getConstantDom() {
+    public List<DomObject<? extends Object>> getConstantDom() {
         return constantTagHandler.getDom();
     }
 
-    public List<DomRepresentation<Action>> getActionSequenceDom() {
+    public List<DomRepresentation<? extends Action>> getActionSequenceDom() {
         return actionSequenceTagHandler.getDom();
     }
 

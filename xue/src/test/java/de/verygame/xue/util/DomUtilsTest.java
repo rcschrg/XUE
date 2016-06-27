@@ -42,7 +42,7 @@ public class DomUtilsTest {
         testList.add(domRepresentation);
 
         //when
-        DomRepresentation<Object> result = DomUtils.searchFor(testList, "a");
+        DomRepresentation<?> result = DomUtils.searchFor(testList, "a");
 
         //then
         assertEquals(result, domRepresentation);

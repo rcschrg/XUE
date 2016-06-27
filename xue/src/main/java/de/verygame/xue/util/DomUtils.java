@@ -15,9 +15,9 @@ public class DomUtils {
         //utility class
     }
 
-    public static <T> DomRepresentation<T> searchFor(List<? extends DomRepresentation<T>> domList, String name) {
+    public static <T> DomRepresentation<? extends T> searchFor(List<? extends DomRepresentation<? extends T>> domList, String name) {
         for (int i = 0; i < domList.size(); ++i) {
-            DomRepresentation<T> domElement = domList.get(i);
+            DomRepresentation<? extends T> domElement = domList.get(i);
             if (domElement.getName().equals(name)) {
                 return domElement;
             }

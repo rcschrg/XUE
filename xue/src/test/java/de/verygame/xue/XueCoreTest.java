@@ -62,7 +62,7 @@ public class XueCoreTest {
     @Mock
     private BuilderMapping<Object> cM;
     @Mock
-    private XueTag<Object> gb;
+    private XueTag gb;
 
     private XueCore<Object> core;
     private InputStream inputStream;

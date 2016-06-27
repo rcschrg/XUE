@@ -15,7 +15,7 @@ import org.xmlpull.v1.XmlPullParser;
 /**
  * @author Rico Schrage
  */
-public class ConstantTagGroupHandler extends BaseTagGroupHandler<Object, DomObject<Object>> {
+public class ConstantTagGroupHandler extends BaseTagGroupHandler<Object, DomObject<? extends Object>> {
 
     public ConstantTagGroupHandler() {
         super(Globals.CONST_TAG);
@@ -24,8 +24,8 @@ public class ConstantTagGroupHandler extends BaseTagGroupHandler<Object, DomObje
     @Override
     public void handle(XmlPullParser xpp) throws XueSyntaxException, TagUnknownException, AttributeUnknownException {
         String nameAttr = "";
-        XueTag<Object> objectBuilder = null;
-        for (BuilderMapping<Object> m : mapping) {
+        XueTag<? extends Object> objectBuilder = null;
+        for (BuilderMapping<? extends Object> m : mapping) {
             objectBuilder = m.createBuilder(xpp.getName());
             if (objectBuilder != null) {
                 break;

@@ -23,7 +23,7 @@ import java.util.Map;
 /**
  * @author Rico Schrage
  */
-public class ActionSequenceTagGroupHandler extends BaseTagGroupHandler<Action, DomRepresentation<Action>> {
+public class ActionSequenceTagGroupHandler extends BaseTagGroupHandler<Action, DomRepresentation<? extends Action>> {
 
     @Dependency
     private ElementsTagGroupHandler<?> tagHandler;
@@ -39,10 +39,10 @@ public class ActionSequenceTagGroupHandler extends BaseTagGroupHandler<Action, D
         actionSequenceMap = new HashMap<>();
         addBuilderMapping(new BuilderMapping<Action>() {
             @Override
-            public XueTag<Action> createBuilder(String name) {
+            public XueTag<? extends Action> createBuilder(String name) {
                 if ("basicAction".equals(name)) {
                     //noinspection unchecked
-                    return (XueTag<Action>) (XueTag<? extends Action>) new BasicActionTag();
+                    return new BasicActionTag();
                 }
                 return null;
             }
@@ -71,8 +71,8 @@ public class ActionSequenceTagGroupHandler extends BaseTagGroupHandler<Action, D
     public void handle(XmlPullParser xpp) throws XueException {
         String tagName = xpp.getName();
 
-        XueTag<Action> actionBuilder = null;
-        for (BuilderMapping<Action> m : mapping) {
+        XueTag<? extends Action> actionBuilder = null;
+        for (BuilderMapping<? extends Action> m : mapping) {
             actionBuilder = m.createBuilder(tagName);
         }
         if (actionBuilder == null) {

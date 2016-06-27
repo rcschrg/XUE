@@ -6,5 +6,5 @@ import de.verygame.xue.mapping.tag.XueTag;
  * @author Rico Schrage
  */
 public interface BuilderMapping<T> {
-    XueTag<T> createBuilder(String name);
+    XueTag<? extends T> createBuilder(String name);
 }

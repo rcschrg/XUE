@@ -17,22 +17,22 @@ import java.util.*;
 /**
  * @author Rico Schrage
  */
-public class ElementsTagGroupHandler<T> extends BaseTagGroupHandler<T, DomElement<T>> {
+public class ElementsTagGroupHandler<T> extends BaseTagGroupHandler<T, DomElement<? extends T>> {
 
     @Dependency
     protected ConstantTagGroupHandler constantTagHandler;
 
     /** stack of elements to determine current scope */
-    private final Deque<XueTag<T>> scopeStack;
+    private final Deque<XueTag<?>> scopeStack;
 
     /** global mappings */
     private final GlobalMappings<T> globalMappings;
 
     private final List<BuilderMapping<Object>> childMapping;
 
-    private final Comparator<DomElement<T>> domElementComparator = new Comparator<DomElement<T>>() {
+    private final Comparator<DomElement<? extends T>> domElementComparator = new Comparator<DomElement<? extends T>>() {
         @Override
-        public int compare(DomElement<T> o1, DomElement<T> o2) {
+        public int compare(DomElement<? extends T> o1, DomElement<? extends T> o2) {
             return o1.getLayer()-o2.getLayer();
         }
     };
@@ -56,12 +56,13 @@ public class ElementsTagGroupHandler<T> extends BaseTagGroupHandler<T, DomElemen
         if (xpp.getDepth()-1 > scopeStack.size()+1 && !scopeStack.isEmpty()) {
             scopeStack.peek().applyChild(currentTag.getElement());
         }
+        scopeStack.push(currentTag);
     }
 
     private void handleChildObject(XmlPullParser xpp) {
         final String tag = xpp.getName();
-        XueTag<Object> childBuilder = null;
-        for (BuilderMapping<Object> m : childMapping) {
+        XueTag<?> childBuilder = null;
+        for (BuilderMapping<?> m : childMapping) {
             childBuilder = m.createBuilder(tag);
             if (childBuilder != null) {
                 break;
@@ -84,8 +85,8 @@ public class ElementsTagGroupHandler<T> extends BaseTagGroupHandler<T, DomElemen
     @Override
     public void handle(XmlPullParser xpp) {
         final String tag = xpp.getName();
-        XueTag<T> elementBuilder = null;
-        for (BuilderMapping<T> m : mapping) {
+        XueTag<? extends T> elementBuilder = null;
+        for (BuilderMapping<? extends T> m : mapping) {
             elementBuilder = m.createBuilder(tag);
             if (elementBuilder != null) {
                 break;
@@ -97,9 +98,8 @@ public class ElementsTagGroupHandler<T> extends BaseTagGroupHandler<T, DomElemen
             return;
         }
         updateScope(xpp, elementBuilder);
-        scopeStack.push(elementBuilder);
 
-        DomElement<T> domElement = new DomElement<>(elementBuilder, globalMappings, constantTagHandler.getDom());
+        DomElement<? extends T> domElement = new DomElement<>(elementBuilder, globalMappings, constantTagHandler.getDom());
         domElement.setLayer(scopeStack.size());
         DomUtils.applyTagToDom(domElement, xpp);
 
