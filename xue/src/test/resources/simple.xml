@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<elements>
+    <BaseTag name="testOne" testName="Hallo" value="42" />
+</elements>

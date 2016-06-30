@@ -5,6 +5,7 @@ import de.verygame.xue.mapping.tag.attribute.Attribute;
 import de.verygame.xue.mapping.tag.attribute.AttributeGroup;
 import de.verygame.xue.mapping.tag.attribute.AttributeGroupElementMeta;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +27,26 @@ public abstract class XueAbstractElementTag<T> implements XueTag<T> {
     }
 
     protected abstract List<Attribute<T, ?>> defineAttributes();
+
     protected abstract List<AttributeGroup<T>> defineAttributeGroups();
+
+    @SafeVarargs
+    protected final List<Attribute<T, ?>> buildAttributeList(Attribute<T, ?>... attributes) {
+        List<Attribute<T, ?>> attributeList = new ArrayList<>(attributes.length);
+        for (Attribute<T, ?> attribute : attributes) {
+            attributeList.add(attribute);
+        }
+        return attributeList;
+    }
+
+    @SafeVarargs
+    protected final List<AttributeGroup<T>> buildAttributeGroupList(AttributeGroup<T>... attributes) {
+        List<AttributeGroup<T>> attributeList = new ArrayList<>(attributes.length);
+        for (AttributeGroup<T> attribute : attributes) {
+            attributeList.add(attribute);
+        }
+        return attributeList;
+    }
 
     @Override
     public void preBuild() {
