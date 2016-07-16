@@ -1,7 +1,7 @@
 package de.verygame.xue.handler.dom;
 
 import de.verygame.xue.constants.CoreAttribute;
-import de.verygame.xue.constants.Globals;
+import de.verygame.xue.constants.Constant;
 import de.verygame.xue.exception.AttributeUnknownException;
 import de.verygame.xue.exception.ElementTagUnknownException;
 import de.verygame.xue.exception.XueException;
@@ -24,21 +24,23 @@ public class DomObject<T> implements DomRepresentation<T> {
     private final Map<String, Value<?, ?>> attributeValueMap;
     private final GlobalMappings<T> mappings;
     private final List<DomObject<?>> constantDom;
+    protected final Map<Constant, String> constantMap;
     protected String name;
     private int layer;
 
-    public DomObject(XueTag<? extends T> builder) {
-        this(builder, new DummyGlobalMappings<T>());
+    public DomObject(Map<Constant, String> constantStringMap, XueTag<? extends T> builder) {
+        this(constantStringMap, builder, new DummyGlobalMappings<T>());
     }
 
-    public DomObject(XueTag<? extends T> builder, GlobalMappings<T> mappings) {
-        this(builder, mappings, new ArrayList<DomObject<?>>());
+    public DomObject(Map<Constant, String> constantStringMap, XueTag<? extends T> builder, GlobalMappings<T> mappings) {
+        this(constantStringMap, builder, mappings, new ArrayList<DomObject<?>>());
     }
 
-    public DomObject(XueTag<? extends T> builder, GlobalMappings<T> mappings, List<DomObject<?>> constantDom) {
+    public DomObject(Map<Constant, String> constantStringMap, XueTag<? extends T> builder, GlobalMappings<T> mappings, List<DomObject<?>> constantDom) {
         this.builder = builder;
         this.mappings = mappings;
         this.constantDom = constantDom;
+        this.constantMap = constantStringMap;
 
         this.attributeValueMap = new HashMap<>();
     }
@@ -55,11 +57,11 @@ public class DomObject<T> implements DomRepresentation<T> {
     private void applyGenericRelativeDigitToElement(String attributeName, String attributeValue) throws XueException {
         float relativeValue = Float.parseFloat(attributeValue.substring(0, attributeValue.length() - 2));
 
-        if (attributeValue.endsWith(Globals.REL_VALUE_SUFFIX_X)) {
+        if (attributeValue.endsWith(constantMap.get(Constant.REL_VALUE_SUFFIX_X))) {
             float relativeValueX = mappings.calcFromRelativeValue(builder.getElement(), relativeValue, CoordinateType.X);
             applyRelative(attributeName, new FloatValue.Relative(relativeValue, CoordinateType.X), relativeValueX);
         }
-        else if (attributeValue.endsWith(Globals.REL_VALUE_SUFFIX_Y)) {
+        else if (attributeValue.endsWith(constantMap.get(Constant.REL_VALUE_SUFFIX_Y))) {
             float relativeValueY = mappings.calcFromRelativeValue(builder.getElement(), relativeValue, CoordinateType.Y);
             applyRelative(attributeName, new FloatValue.Relative(relativeValue, CoordinateType.Y), relativeValueY);
         }
@@ -189,33 +191,33 @@ public class DomObject<T> implements DomRepresentation<T> {
 
     @Override
     public void apply(String attribute, String value) throws XueException {
-        if (value.matches(Globals.ATT_REL_GEN_VALUE_REGEX)) {
+        if (value.matches(constantMap.get(Constant.ATT_REL_GEN_VALUE_REGEX))) {
             applyGenericRelativeDigitToElement(attribute, value);
         }
-        else if (value.matches(Globals.ATT_REL_VALUE_REGEX)) {
+        else if (value.matches(constantMap.get(Constant.ATT_REL_VALUE_REGEX))) {
             applyRelativeDigitToElement(attribute, value);
         }
-        else if (value.startsWith(Globals.ATT_CONST_ID)) {
+        else if (value.startsWith(constantMap.get(Constant.ATT_CONST_ID))) {
             applyConstToElement(attribute, value);
         }
-        else if (value.startsWith(Globals.ATT_STRING_ID)) {
-            String stringKey = value.substring(Globals.ATT_STRING_ID.length());
+        else if (value.startsWith(constantMap.get(Constant.ATT_STRING_ID))) {
+            String stringKey = value.substring(constantMap.get(Constant.ATT_STRING_ID).length());
             String string = mappings.getString(stringKey);
 
             applyStringId(attribute, new StringValue(stringKey, StringValue.StringType.ID), string);
         }
-        else if (value.matches(Globals.ATT_DENSITY_REGEX)) {
+        else if (value.matches(constantMap.get(Constant.ATT_DENSITY_REGEX))) {
             float num = Float.parseFloat(value.substring(0, value.length()-1));
             float result = Float.parseFloat(value.substring(0, value.length()-1)) * mappings.getDensity();
 
             applyDensity(attribute, new FloatValue.Density(num), result);
         }
-        else if (value.matches(Globals.ATT_INT_REGEX)) {
+        else if (value.matches(constantMap.get(Constant.ATT_INT_REGEX))) {
             int integer = Integer.parseInt(value);
 
             applyInt(attribute, new IntValue(integer));
         }
-        else if (value.matches(Globals.ATT_FLOAT_REGEX)) {
+        else if (value.matches(constantMap.get(Constant.ATT_FLOAT_REGEX))) {
             float f = Float.parseFloat(value);
 
             applyFloat(attribute, new FloatValue.Normal(f));

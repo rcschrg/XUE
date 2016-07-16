@@ -1,19 +1,21 @@
 package de.verygame.xue.handler.dom;
 
+import de.verygame.xue.constants.Constant;
 import de.verygame.xue.constants.CoreAttribute;
 import de.verygame.xue.exception.AttributeUnknownException;
 import de.verygame.xue.mapping.GlobalMappings;
 import de.verygame.xue.mapping.tag.XueTag;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Rico Schrage
  */
 public class DomElement<T> extends DomObject<T> {
 
-    public DomElement(XueTag<? extends T> builder, GlobalMappings<T> mappings, List<DomObject<? extends Object>> constantDom) {
-        super(builder, mappings, constantDom);
+    public DomElement(Map<Constant, String> constantStringMap, XueTag<? extends T> builder, GlobalMappings<T> mappings, List<DomObject<?>> constantDom) {
+        super(constantStringMap, builder, mappings, constantDom);
     }
 
     @Override

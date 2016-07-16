@@ -2,7 +2,7 @@ package de.verygame.xue.handler;
 
 import de.verygame.xue.annotation.Dependency;
 import de.verygame.xue.constants.CoreAttribute;
-import de.verygame.xue.constants.Globals;
+import de.verygame.xue.constants.Constant;
 import de.verygame.xue.exception.ElementTagUnknownException;
 import de.verygame.xue.exception.XueException;
 import de.verygame.xue.handler.dom.DomObject;
@@ -33,8 +33,8 @@ public class ActionSequenceTagGroupHandler extends BaseTagGroupHandler<Action, D
 
     private Map<String, ActionSequence> actionSequenceMap;
 
-    public ActionSequenceTagGroupHandler() {
-        super(Globals.AS_TAG);
+    public ActionSequenceTagGroupHandler(Map<Constant, String> constantStringMap) {
+        super(constantStringMap, Constant.AS_TAG);
 
         actionSequenceMap = new HashMap<>();
         addBuilderMapping(new BuilderMapping<Action>() {
@@ -79,7 +79,7 @@ public class ActionSequenceTagGroupHandler extends BaseTagGroupHandler<Action, D
             throw new ElementTagUnknownException(tagName);
         }
 
-        DomRepresentation<Action> domObject = new DomObject<Action>(actionBuilder);
+        DomRepresentation<Action> domObject = new DomObject<Action>(constantMap, actionBuilder);
 
         String nameId = XmlParserUtils.findValueOf(xpp, CoreAttribute.ELEMENT_ID);
         String targetId = XmlParserUtils.findValueOf(xpp, CoreAttribute.ACTION_TARGET_ID);

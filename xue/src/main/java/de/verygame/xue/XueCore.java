@@ -2,6 +2,7 @@ package de.verygame.xue;
 
 import de.verygame.util.ReflectionUtils;
 import de.verygame.xue.annotation.Dependency;
+import de.verygame.xue.constants.Constant;
 import de.verygame.xue.exception.*;
 import de.verygame.xue.handler.ActionSequenceTagGroupHandler;
 import de.verygame.xue.handler.ConstantTagGroupHandler;
@@ -20,10 +21,7 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Rico on 10.07.2015.
@@ -40,16 +38,23 @@ public class XueCore<T> {
     private final List<TagGroupHandler<?, ?>> tagGroupHandlerList;
     private final List<TagGroupHandler<?, ?>> closed;
 
+    private final Map<Constant, String> constantMap;
+
     /**
      * Constructs XueCore, which uses tagMapping and attributeMapping for everything, which have to be mapped.
      */
     public XueCore() {
         tagGroupHandlerList = new ArrayList<>();
         closed = new ArrayList<>();
+        constantMap = new EnumMap<>(Constant.class);
 
-        constantTagHandler = new ConstantTagGroupHandler();
-        elementsTagHandler = new ElementsTagGroupHandler<>();
-        actionSequenceTagHandler = new ActionSequenceTagGroupHandler();
+        for (Constant constant : Constant.values()) {
+            constantMap.put(constant, constant.toString());
+        }
+
+        constantTagHandler = new ConstantTagGroupHandler(constantMap);
+        elementsTagHandler = new ElementsTagGroupHandler<>(constantMap);
+        actionSequenceTagHandler = new ActionSequenceTagGroupHandler(constantMap);
 
         addHandler(constantTagHandler);
         addHandler(elementsTagHandler);
@@ -79,6 +84,10 @@ public class XueCore<T> {
             }
         }
         return tagHandlers;
+    }
+
+    public void overwriteConstant(Constant constant, String value) {
+        constantMap.put(constant, value);
     }
 
     public void addHandler(TagGroupHandler<?, ?> tagGroupHandler) {

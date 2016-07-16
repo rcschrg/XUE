@@ -1,11 +1,13 @@
 package de.verygame.xue.handler;
 
+import de.verygame.xue.constants.Constant;
 import de.verygame.xue.exception.XueException;
 import de.verygame.xue.mapping.BuilderMapping;
 import org.xmlpull.v1.XmlPullParser;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Rico Schrage
@@ -16,14 +18,15 @@ import java.util.List;
 public abstract class BaseTagGroupHandler<T, D> implements TagGroupHandler<T, D> {
 
     private boolean active = false;
-    private String name;
+    private Constant nameConstant;
 
+    protected Map<Constant, String> constantMap;
     protected List<D> domList;
-
     protected List<BuilderMapping<? extends T>> mapping;
 
-    public BaseTagGroupHandler(String name) {
-        this.name = name;
+    public BaseTagGroupHandler(Map<Constant, String> constantMap, Constant constant) {
+        this.nameConstant = constant;
+        this.constantMap = constantMap;
         this.domList = new ArrayList<>();
         this.mapping = new ArrayList<>();
     }
@@ -55,7 +58,7 @@ public abstract class BaseTagGroupHandler<T, D> implements TagGroupHandler<T, D>
 
     @Override
     public String getName() {
-        return name;
+        return constantMap.get(nameConstant);
     }
 
     @Override

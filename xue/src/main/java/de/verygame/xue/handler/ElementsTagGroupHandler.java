@@ -1,7 +1,7 @@
 package de.verygame.xue.handler;
 
 import de.verygame.xue.annotation.Dependency;
-import de.verygame.xue.constants.Globals;
+import de.verygame.xue.constants.Constant;
 import de.verygame.xue.exception.*;
 import de.verygame.xue.handler.dom.DomElement;
 import de.verygame.xue.handler.dom.DomObject;
@@ -22,12 +22,8 @@ public class ElementsTagGroupHandler<T> extends BaseTagGroupHandler<T, DomElemen
     @Dependency
     protected ConstantTagGroupHandler constantTagHandler;
 
-    /** stack of elements to determine current scope */
     private final Deque<XueTag<?>> scopeStack;
-
-    /** global mappings */
     private final GlobalMappings<T> globalMappings;
-
     private final List<BuilderMapping<Object>> childMapping;
 
     private final Comparator<DomElement<? extends T>> domElementComparator = new Comparator<DomElement<? extends T>>() {
@@ -37,12 +33,12 @@ public class ElementsTagGroupHandler<T> extends BaseTagGroupHandler<T, DomElemen
         }
     };
 
-    public ElementsTagGroupHandler() {
-        this(new DummyGlobalMappings<T>());
+    public ElementsTagGroupHandler(Map<Constant, String> constantStringMap) {
+        this(constantStringMap, new DummyGlobalMappings<T>());
     }
 
-    public ElementsTagGroupHandler(GlobalMappings<T> globalMappings) {
-        super(Globals.ELEMENT_TAG);
+    public ElementsTagGroupHandler(Map<Constant, String> constantStringMap, GlobalMappings<T> globalMappings) {
+        super(constantStringMap, Constant.ELEMENT_TAG);
 
         this.childMapping = new ArrayList<>();
         this.globalMappings = globalMappings;
@@ -74,7 +70,7 @@ public class ElementsTagGroupHandler<T> extends BaseTagGroupHandler<T, DomElemen
         }
         updateScope(xpp, childBuilder);
 
-        DomObject<Object> childDom = new DomObject<>(childBuilder);
+        DomObject<Object> childDom = new DomObject<>(constantMap, childBuilder);
         DomUtils.applyTagToDom(childDom, xpp);
     }
 
@@ -99,7 +95,7 @@ public class ElementsTagGroupHandler<T> extends BaseTagGroupHandler<T, DomElemen
         }
         updateScope(xpp, elementBuilder);
 
-        DomElement<? extends T> domElement = new DomElement<>(elementBuilder, globalMappings, constantTagHandler.getDom());
+        DomElement<? extends T> domElement = new DomElement<>(constantMap, elementBuilder, globalMappings, constantTagHandler.getDom());
         domElement.setLayer(scopeStack.size());
         DomUtils.applyTagToDom(domElement, xpp);
 

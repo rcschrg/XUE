@@ -2,6 +2,7 @@ package de.verygame.xue;
 
 import de.verygame.xue.annotation.Bind;
 import de.verygame.xue.annotation.Dependency;
+import de.verygame.xue.constants.Constant;
 import de.verygame.xue.exception.XueException;
 import de.verygame.xue.handler.TagGroupHandler;
 import de.verygame.xue.input.XueInputEvent;
@@ -11,10 +12,7 @@ import de.verygame.xue.mapping.BuilderMapping;
 import de.verygame.xue.util.InjectionUtils;
 
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Rico Schrage
@@ -65,6 +63,10 @@ public class Xue<T> {
         this.resource = xml;
         this.updateHandlers = new ArrayList<>();
         this.inputHandlers = new ArrayList<>();
+    }
+
+    public void overwriteConstant(Constant constant, String value) {
+        core.overwriteConstant(constant, value);
     }
 
     public void addInputHandler(XueInputHandler inputHandler) {
