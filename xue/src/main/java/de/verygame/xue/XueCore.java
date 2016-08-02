@@ -3,17 +3,11 @@ package de.verygame.xue;
 import de.verygame.util.ReflectionUtils;
 import de.verygame.xue.annotation.Dependency;
 import de.verygame.xue.constants.Constant;
+import de.verygame.xue.dom.DomRepresentation;
 import de.verygame.xue.exception.*;
-import de.verygame.xue.handler.ActionSequenceTagGroupHandler;
-import de.verygame.xue.handler.ConstantTagGroupHandler;
-import de.verygame.xue.handler.ElementsTagGroupHandler;
 import de.verygame.xue.handler.TagGroupHandler;
-import de.verygame.xue.handler.dom.DomElement;
-import de.verygame.xue.handler.dom.DomObject;
-import de.verygame.xue.handler.dom.DomRepresentation;
 import de.verygame.xue.mapping.BuilderMapping;
 import de.verygame.xue.util.InjectionUtils;
-import de.verygame.xue.util.action.Action;
 import org.kxml2.io.KXmlParser;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -28,12 +22,8 @@ import java.util.*;
  *
  * @author Rico Schrage
  */
-public class XueCore<T> {
+public class XueCore {
     private static final String ENCODING = "UTF-8";
-
-    private final ElementsTagGroupHandler<T> elementsTagHandler;
-    private final ConstantTagGroupHandler constantTagHandler;
-    private final ActionSequenceTagGroupHandler actionSequenceTagHandler;
 
     private final List<TagGroupHandler<?, ?>> tagGroupHandlerList;
     private final List<TagGroupHandler<?, ?>> closed;
@@ -51,14 +41,6 @@ public class XueCore<T> {
         for (Constant constant : Constant.values()) {
             constantMap.put(constant, constant.toString());
         }
-
-        constantTagHandler = new ConstantTagGroupHandler(constantMap);
-        elementsTagHandler = new ElementsTagGroupHandler<>(constantMap);
-        actionSequenceTagHandler = new ActionSequenceTagGroupHandler(constantMap);
-
-        addHandler(constantTagHandler);
-        addHandler(elementsTagHandler);
-        addHandler(actionSequenceTagHandler);
     }
 
     private TagGroupHandler<?, ?> calculateNextTagHandler() {
@@ -93,20 +75,11 @@ public class XueCore<T> {
     public void addHandler(TagGroupHandler<?, ?> tagGroupHandler) {
         for (TagGroupHandler<?, ?> other : tagGroupHandlerList) {
             InjectionUtils.injectByType(Dependency.class, tagGroupHandler, other);
+            InjectionUtils.injectByType(Dependency.class, other, tagGroupHandler);
         }
+        tagGroupHandler.setConstantMap(constantMap);
+
         this.tagGroupHandlerList.add(tagGroupHandler);
-    }
-
-    public List<DomElement<? extends T>> getElementDom() {
-        return elementsTagHandler.getDom();
-    }
-
-    public List<DomObject<? extends Object>> getConstantDom() {
-        return constantTagHandler.getDom();
-    }
-
-    public List<DomRepresentation<? extends Action>> getActionSequenceDom() {
-        return actionSequenceTagHandler.getDom();
     }
 
     public <E, D> Map<String, D> getDom(Class<TagGroupHandler<E, D>> tagGroupHandlerClass) {
@@ -124,31 +97,6 @@ public class XueCore<T> {
     }
 
     /**
-     * Convenience method to set the mapping of the constant group.
-     *
-     * @param mapping maps tag names to the constant builders.
-     */
-    public void addElementMapping(BuilderMapping<T> mapping) {
-        elementsTagHandler.addBuilderMapping(mapping);
-    }
-
-    /**
-     * Convenience method to set the mapping of the element group.
-     *
-     * @param mapping maps tag names to the corresponding element builders.
-     */
-    public void addConstantMapping(BuilderMapping<Object> mapping) {
-        constantTagHandler.addBuilderMapping(mapping);
-    }
-
-    /**
-     * @param mapping mapping name - actionSequence implementation
-     */
-    public void addActionSequenceMapping(BuilderMapping<Action> mapping) {
-        actionSequenceTagHandler.addBuilderMapping(mapping);
-    }
-
-    /**
      * Generic method to add a mapping to the given tagHandler. For core tag handler use the special methods instead.
      * This method should be used for custom tagHandler.
      *
@@ -156,42 +104,44 @@ public class XueCore<T> {
      * @param builderMapping mapping
      * @param <B> makes sure that the tagHandler und builderMapping fit together
      */
-    public <B, D> void addMapping(Class<TagGroupHandler<B, D>> tagHandler, BuilderMapping<B> builderMapping) {
+    public <B, D> void addMapping(Class<? extends TagGroupHandler<B, D>> tagHandler, BuilderMapping<B> builderMapping) {
+        addMappingUnsafe(tagHandler, builderMapping);
+    }
+
+    /**
+     * Generic <b>unsafe</b> method to add a mapping to the given tagHandler. The given class object must be a tag handler which can add the given
+     * mapping. Just use this method when you have to otherwise {@link #addMapping(Class, BuilderMapping)} is the far better choice.
+     * @param tagHandler class of the taghandler
+     * @param builderMapping mapping you want to add
+     * @param <B> internal
+     * @throws ClassCastException can be thrown when the class object is not a tagHandler or if the tagHandler can't add the mapping.
+     */
+    public <B> void addMappingUnsafe(Class<? extends TagGroupHandler> tagHandler, BuilderMapping<B> builderMapping) {
         for (TagGroupHandler<?, ?> t : tagGroupHandlerList) {
             if (t.getClass() == tagHandler) {
                 //noinspection unchecked
-                ((TagGroupHandler<B, D>)t).addBuilderMapping(builderMapping);
+                ((TagGroupHandler<B, ?>)t).addBuilderMapping(builderMapping);
             }
         }
     }
 
-    /**
-     * @return element map
-     */
-    public Map<String, T> getElementMap() {
+    public <B> Map<String, B> getResult(Class<? extends TagGroupHandler<B, ?>> handlerClass, Class<B> resultClass) {
         //noinspection unchecked
-        return getResult((Class<? extends TagGroupHandler<T, DomElement<T>>>) elementsTagHandler.getClass());
+        return getResultUnsafe(handlerClass, resultClass);
     }
 
     /**
-     * @return const map
-     */
-    public Map<String, Object> getConstMap() {
-        return getResult(ConstantTagGroupHandler.class);
-    }
-
-    /**
-     * Generic method to get/create the result map of a tagHandler.
-     *
-     * @param handlerClass type of the handler you want to get the map from
-     * @param <B> ensures a correct return type
-     * @return Result of the handlerClass
-     */
-    public <B, D> Map<String, B> getResult(Class<? extends TagGroupHandler<B, D>> handlerClass) {
+    * Generic method to get/create the result map of a tagHandler.
+    *
+    * @param handlerClass type of the handler you want to get the map from
+    * @param <B> ensures a correct return type
+    * @return Result of the handlerClass
+    */
+    public <B> Map<String, B> getResultUnsafe(Class<? extends TagGroupHandler> handlerClass, Class<B> resultClass) {
         for (TagGroupHandler<?, ?> t : tagGroupHandlerList) {
             if (t.getClass() == handlerClass) {
                 //noinspection unchecked
-                List<D> dom = (List<D>) t.getDom();
+                List<?> dom = t.getDom();
                 Map<String, B> resultMap = new HashMap<>();
                 for (int i = 0; i < dom.size(); ++i) {
                     //noinspection unchecked
@@ -201,7 +151,7 @@ public class XueCore<T> {
                 return resultMap;
             }
         }
-        throw new IllegalArgumentException(handlerClass + " is no part of this core!");
+        throw new IllegalArgumentException(handlerClass + " is not part of this core!");
     }
 
     /**

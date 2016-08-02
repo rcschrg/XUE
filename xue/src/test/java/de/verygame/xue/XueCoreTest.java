@@ -2,6 +2,8 @@ package de.verygame.xue;
 
 import de.verygame.xue.exception.ElementTagUnknownException;
 import de.verygame.xue.exception.XueException;
+import de.verygame.xue.handler.ConstantTagGroupHandler;
+import de.verygame.xue.handler.ElementsTagGroupHandler;
 import de.verygame.xue.mapping.BuilderMapping;
 import de.verygame.xue.mapping.tag.XueTag;
 import org.junit.Before;
@@ -15,6 +17,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
@@ -64,24 +67,28 @@ public class XueCoreTest {
     @Mock
     private XueTag gb;
 
-    private XueCore<Object> core;
+    private XueCore core;
     private InputStream inputStream;
 
     @Before
     public void prepare() throws ElementTagUnknownException, XmlPullParserException {
         when(aM.createBuilder(anyString())).thenReturn(gb);
         when(cM.createBuilder(anyString())).thenReturn(gb);
-        core = new XueCore<>();
-        core.addElementMapping(aM);
-        core.addConstantMapping(cM);
+        core = new XueCore();
+        core.addHandler(new ConstantTagGroupHandler());
+        core.addHandler(new ElementsTagGroupHandler<>());
+        core.addMappingUnsafe(ElementsTagGroupHandler.class, aM);
+        core.addMapping(ConstantTagGroupHandler.class, cM);
         inputStream = new ByteArrayInputStream(exampleXML.getBytes(StandardCharsets.UTF_8));
     }
 
     @Test
     public void testForCorrectParsing() throws XueException, XmlPullParserException, IOException {
         core.load(inputStream);
-        assertTrue("Size is " + core.getConstMap().size() + " instead of the expected 3", core.getConstMap().size() == 3);
-        assertTrue("Size is " + core.getElementMap().size() + " instead of the expected 12", core.getElementMap().size() == 12);
+        Map<String, Object> constMap = core.getResult(ConstantTagGroupHandler.class, Object.class);
+        Map<String, Object> elementMap = core.getResultUnsafe(ElementsTagGroupHandler.class, Object.class);
+        assertTrue("Size is " + constMap.size() + " instead of the expected 3", constMap.size() == 3);
+        assertTrue("Size is " + elementMap.size() + " instead of the expected 12", elementMap.size() == 12);
     }
 
 }

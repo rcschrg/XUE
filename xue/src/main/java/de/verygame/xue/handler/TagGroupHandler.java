@@ -1,12 +1,15 @@
 package de.verygame.xue.handler;
 
+import de.verygame.xue.constants.Constant;
 import de.verygame.xue.exception.AttributeUnknownException;
 import de.verygame.xue.exception.TagUnknownException;
 import de.verygame.xue.exception.XueException;
 import de.verygame.xue.exception.XueSyntaxException;
-import de.verygame.xue.handler.dom.DomContainer;
+import de.verygame.xue.dom.DomContainer;
 import de.verygame.xue.mapping.BuilderMapping;
 import org.xmlpull.v1.XmlPullParser;
+
+import java.util.Map;
 
 /**
  * @author Rico Schrage
@@ -59,5 +62,7 @@ public interface TagGroupHandler<T, D> extends DomContainer<D> {
      * @param mapping tag mapping
      */
     void addBuilderMapping(BuilderMapping<? extends T> mapping);
+
+    public void setConstantMap(Map<Constant, String> constantMap);
 
 }

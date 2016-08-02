@@ -1,4 +1,4 @@
-package de.verygame.xue.tag;
+package de.verygame.xue.handler.tag;
 
 import org.junit.Test;
 

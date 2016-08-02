@@ -1,8 +1,8 @@
-package de.verygame.xue.handler.dom;
+package de.verygame.xue.dom;
 
 import de.verygame.xue.exception.AttributeUnknownException;
 import de.verygame.xue.exception.XueException;
-import de.verygame.xue.handler.dom.value.Value;
+import de.verygame.xue.dom.value.Value;
 import de.verygame.xue.mapping.tag.XueTag;
 
 import java.util.Map;

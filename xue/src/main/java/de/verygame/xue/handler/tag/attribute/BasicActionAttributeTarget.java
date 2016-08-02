@@ -1,4 +1,4 @@
-package de.verygame.xue.tag.attribute;
+package de.verygame.xue.handler.tag.attribute;
 
 import de.verygame.util.modifier.base.SimpleModifierCallback;
 import de.verygame.xue.annotation.AttributeHandler;

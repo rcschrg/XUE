@@ -1,4 +1,4 @@
-package de.verygame.xue.tag;
+package de.verygame.xue.handler.tag;
 
 import de.verygame.xue.exception.AttributeUnknownException;
 import de.verygame.xue.input.XueInputEvent;
@@ -8,6 +8,7 @@ import de.verygame.xue.mapping.tag.XueTag;
  * @author Rico Schrage
  */
 public class PrimitiveTag implements XueTag<Object> {
+    public static final String NAME = "const";
 
     Object object = null;
 

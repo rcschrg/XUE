@@ -24,11 +24,19 @@ public abstract class BaseTagGroupHandler<T, D> implements TagGroupHandler<T, D>
     protected List<D> domList;
     protected List<BuilderMapping<? extends T>> mapping;
 
-    public BaseTagGroupHandler(Map<Constant, String> constantMap, Constant constant) {
-        this.nameConstant = constant;
+    public BaseTagGroupHandler(Constant nameConstant) {
+        this(Constant.obtainDefaultMap(), nameConstant);
+    }
+
+    public BaseTagGroupHandler(Map<Constant, String> constantMap, Constant nameConstant) {
+        this.nameConstant = nameConstant;
         this.constantMap = constantMap;
         this.domList = new ArrayList<>();
         this.mapping = new ArrayList<>();
+    }
+
+    public void setConstantMap(Map<Constant, String> constantMap) {
+        this.constantMap = constantMap;
     }
 
     @Override

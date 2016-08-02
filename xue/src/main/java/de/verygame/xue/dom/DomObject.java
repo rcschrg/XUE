@@ -1,12 +1,11 @@
-package de.verygame.xue.handler.dom;
+package de.verygame.xue.dom;
 
-import de.verygame.xue.constants.CoreAttribute;
+import de.verygame.util.math.CoordinateType;
 import de.verygame.xue.constants.Constant;
 import de.verygame.xue.exception.AttributeUnknownException;
 import de.verygame.xue.exception.ElementTagUnknownException;
 import de.verygame.xue.exception.XueException;
-import de.verygame.xue.handler.dom.value.*;
-import de.verygame.util.math.CoordinateType;
+import de.verygame.xue.dom.value.*;
 import de.verygame.xue.mapping.DummyGlobalMappings;
 import de.verygame.xue.mapping.GlobalMappings;
 import de.verygame.xue.mapping.tag.XueTag;
@@ -79,22 +78,18 @@ public class DomObject<T> implements DomRepresentation<T> {
     private void applyRelativeDigitToElement(String attributeName, String attributeValue) throws XueException {
         float relativeValue = Float.parseFloat(attributeValue.substring(0, attributeValue.length() - 1));
 
-        switch (attributeName) {
+        String constWidth = constantMap.get(Constant.ELEMENT_WIDTH);
+        String constHeight = constantMap.get(Constant.ELEMENT_HEIGHT);
+        String constX = constantMap.get(Constant.ELEMENT_X);
+        String constY = constantMap.get(Constant.ELEMENT_Y);
 
-            case CoreAttribute.ELEMENT_WIDTH:
-            case CoreAttribute.ELEMENT_X:
-                float absoluteValueX = mappings.calcFromRelativeValue(builder.getElement(), relativeValue, CoordinateType.X);
-                applyRelative(attributeName, new FloatValue.Relative(relativeValue, CoordinateType.X), absoluteValueX);
-                break;
-
-            case CoreAttribute.ELEMENT_HEIGHT:
-            case CoreAttribute.ELEMENT_Y:
-                float absoluteValueY = mappings.calcFromRelativeValue(builder.getElement(), relativeValue, CoordinateType.Y);
-                applyRelative(attributeName, new FloatValue.Relative(relativeValue, CoordinateType.Y), absoluteValueY);
-                break;
-
-            default:
-                break;
+        if (constWidth.equals(attributeName) || constX.equals(attributeName)) {
+            float absoluteValueX = mappings.calcFromRelativeValue(builder.getElement(), relativeValue, CoordinateType.X);
+            applyRelative(attributeName, new FloatValue.Relative(relativeValue, CoordinateType.X), absoluteValueX);
+        }
+        else if (constHeight.equals(attributeName) || constY.equals(attributeName)) {
+            float absoluteValueY = mappings.calcFromRelativeValue(builder.getElement(), relativeValue, CoordinateType.Y);
+            applyRelative(attributeName, new FloatValue.Relative(relativeValue, CoordinateType.Y), absoluteValueY);
         }
     }
 
@@ -235,6 +230,35 @@ public class DomObject<T> implements DomRepresentation<T> {
     @Override
     public void end() throws AttributeUnknownException {
         builder.postBuild();
+
+        String stringWidth = constantMap.get(Constant.ELEMENT_WIDTH);
+        String stringHeight = constantMap.get(Constant.ELEMENT_HEIGHT);
+
+        String stringMaxWidth = constantMap.get(Constant.ELEMENT_MAX_WIDTH);
+        String stringMinWidth = constantMap.get(Constant.ELEMENT_MIN_WIDTH);
+        String stringMaxHeight = constantMap.get(Constant.ELEMENT_MAX_HEIGHT);
+        String stringMinHeight = constantMap.get(Constant.ELEMENT_MIN_HEIGHT);
+
+        float width = valueExists(stringWidth) ? getValue(stringWidth).getValue(Float.class) : 0;
+        float height = valueExists(stringHeight) ? getValue(stringHeight).getValue(Float.class) : 0;
+        float minWidth = valueExists(stringMinWidth) ? getValue(stringMinWidth).getValue(Float.class) : 0;
+        float maxWidth = valueExists(stringMaxWidth) ? getValue(stringMaxWidth).getValue(Float.class) : Float.MAX_VALUE;
+        float minHeight = valueExists(stringMinHeight) ? getValue(stringMinHeight).getValue(Float.class) : 0;
+        float maxHeight = valueExists(stringMaxHeight) ? getValue(stringMaxHeight).getValue(Float.class) : Float.MAX_VALUE;
+
+        if (minWidth > width) {
+            builder.apply(stringWidth, minWidth);
+        }
+        else if (minHeight > height) {
+            builder.apply(stringHeight, minHeight);
+        }
+
+        if (height > maxHeight) {
+            builder.apply(stringHeight, maxHeight);
+        }
+        else if (width > maxWidth) {
+            builder.apply(stringWidth, maxWidth);
+        }
     }
 
     @Override

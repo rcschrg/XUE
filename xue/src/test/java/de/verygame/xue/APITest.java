@@ -1,20 +1,17 @@
 package de.verygame.xue;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
-
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
-
+import de.verygame.xue.handler.ElementsTagGroupHandler;
 import de.verygame.xue.mapping.BuilderMapping;
 import de.verygame.xue.mapping.tag.XueAbstractElementTag;
 import de.verygame.xue.mapping.tag.XueTag;
 import de.verygame.xue.mapping.tag.attribute.AbstractAttribute;
 import de.verygame.xue.mapping.tag.attribute.Attribute;
 import de.verygame.xue.mapping.tag.attribute.AttributeGroup;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.runners.MockitoJUnitRunner;
+
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -83,8 +80,8 @@ public class APITest {
 
     @Test
     public void testSimpleUsage() throws Exception{
-        Xue<TestBase> xue = new Xue<>(getClass().getResourceAsStream("/simple.xml"));
-        xue.addElementMapping(testBaseBuilderMapping);
+        BasicXue<TestBase> xue = new BasicXue<>(getClass().getResourceAsStream("/simple.xml"));
+        xue.addMappingUnsafe(ElementsTagGroupHandler.class, testBaseBuilderMapping);
 
         xue.load();
 

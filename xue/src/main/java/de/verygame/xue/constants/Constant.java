@@ -1,5 +1,8 @@
 package de.verygame.xue.constants;
 
+import java.util.EnumMap;
+import java.util.Map;
+
 /**
  * @author Rico Schrage
  *
@@ -23,7 +26,30 @@ public enum Constant {
     ATT_REL_VALUE_REGEX("[0-9]*" + ATT_REL_CHAR),
     ATT_INT_REGEX("[0-9]*"),
     ATT_FLOAT_REGEX("[0-9]*[.][0-9]*"),
-    ATT_DENSITY_REGEX("[0-9]*" + ATT_DENSITY_CHAR);
+    ATT_DENSITY_REGEX("[0-9]*" + ATT_DENSITY_CHAR),
+
+    ELEMENT_ID("name"),
+    ELEMENT_X("x"),
+    ELEMENT_Y("y"),
+    ELEMENT_WIDTH("width"),
+    ELEMENT_HEIGHT("height"),
+    ELEMENT_MAX_WIDTH("maxWidth"),
+    ELEMENT_MAX_HEIGHT("maxHeight"),
+    ELEMENT_MIN_WIDTH("minWidth"),
+    ELEMENT_MIN_HEIGHT("minHeight"),
+    ACTION_TARGET_ID("target");
+
+    private static final Map<Constant, String> defaultMap = new EnumMap<>(Constant.class);
+
+    static {
+        for (Constant constant : Constant.values()) {
+            defaultMap.put(constant, constant.toString());
+        }
+    }
+
+    public static Map<Constant, String> obtainDefaultMap(){
+        return defaultMap;
+    }
 
     private final String constant;
 

@@ -1,4 +1,4 @@
-package de.verygame.xue.handler.dom;
+package de.verygame.xue.dom;
 
 import java.util.List;
 

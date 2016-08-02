@@ -1,4 +1,4 @@
-package de.verygame.xue.handler.dom.value;
+package de.verygame.xue.dom.value;
 
 /**
  * @author Rico Schrage

@@ -1,9 +1,9 @@
 package de.verygame.xue.handler;
 
 import de.verygame.xue.annotation.Dependency;
-import de.verygame.xue.handler.dom.DomElement;
-import de.verygame.xue.handler.dom.value.FloatValue;
-import de.verygame.xue.handler.dom.value.Value;
+import de.verygame.xue.dom.DomObject;
+import de.verygame.xue.dom.value.FloatValue;
+import de.verygame.xue.dom.value.Value;
 import de.verygame.xue.input.XueInputEvent;
 import de.verygame.xue.input.XueInputHandler;
 
@@ -21,9 +21,9 @@ public class ResizeInputHandler<T> implements XueInputHandler {
     @Override
     public void onInputEvent(XueInputEvent event) {
         if (event == XueInputEvent.RESIZE) {
-            List<? extends DomElement<? extends T>> domElements = elementsTagGroupHandler.getDom();
+            List<? extends DomObject<? extends T>> domElements = elementsTagGroupHandler.getDom();
             for (int i = 0; i < domElements.size(); ++i) {
-                DomElement<? extends T> domElement = domElements.get(i);
+                DomObject<? extends T> domElement = domElements.get(i);
 
                 domElement.begin();
                 for (Map.Entry<String, Value<?, ?>> entry : domElement.getValues().entrySet()) {

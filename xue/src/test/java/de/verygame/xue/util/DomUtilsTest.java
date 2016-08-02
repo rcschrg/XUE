@@ -1,6 +1,6 @@
 package de.verygame.xue.util;
 
-import de.verygame.xue.handler.dom.DomRepresentation;
+import de.verygame.xue.dom.DomRepresentation;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -56,7 +56,7 @@ public class DomUtilsTest {
         xmlPullParser.next();
 
         //when
-        DomUtils.applyTagToDom(domRepresentation, xmlPullParser);
+        DomUtils.applyTagToDom(domRepresentation, "name", xmlPullParser);
 
         //then
         verify(domRepresentation).apply("c", "a");

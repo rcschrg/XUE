@@ -1,9 +1,9 @@
-package de.verygame.xue.tag;
+package de.verygame.xue.handler.tag;
 
 import de.verygame.xue.mapping.tag.attribute.Attribute;
 import de.verygame.xue.mapping.tag.attribute.AttributeGroup;
-import de.verygame.xue.tag.attribute.BasicActionAttributeTarget;
-import de.verygame.xue.tag.attribute.BasicActionInterpolation;
+import de.verygame.xue.handler.tag.attribute.BasicActionAttributeTarget;
+import de.verygame.xue.handler.tag.attribute.BasicActionInterpolation;
 import de.verygame.xue.util.action.BasicAction;
 import org.junit.Test;
 

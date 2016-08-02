@@ -1,15 +1,14 @@
 package de.verygame.xue.handler;
 
-import de.verygame.xue.constants.CoreAttribute;
 import de.verygame.xue.constants.Constant;
 import de.verygame.xue.exception.AttributeUnknownException;
 import de.verygame.xue.exception.ConstTagUnknownException;
 import de.verygame.xue.exception.TagUnknownException;
 import de.verygame.xue.exception.XueSyntaxException;
-import de.verygame.xue.handler.dom.DomObject;
+import de.verygame.xue.dom.DomObject;
 import de.verygame.xue.mapping.BuilderMapping;
 import de.verygame.xue.mapping.tag.XueTag;
-import de.verygame.xue.tag.PrimitiveTag;
+import de.verygame.xue.handler.tag.PrimitiveTag;
 import org.xmlpull.v1.XmlPullParser;
 
 import java.util.Map;
@@ -17,7 +16,11 @@ import java.util.Map;
 /**
  * @author Rico Schrage
  */
-public class ConstantTagGroupHandler extends BaseTagGroupHandler<Object, DomObject<? extends Object>> {
+public class ConstantTagGroupHandler extends BaseTagGroupHandler<Object, DomObject<?>> {
+
+    public ConstantTagGroupHandler() {
+        super(Constant.obtainDefaultMap(), Constant.CONST_TAG);
+    }
 
     public ConstantTagGroupHandler(Map<Constant, String> constantStringMap) {
         super(constantStringMap, Constant.CONST_TAG);
@@ -25,16 +28,15 @@ public class ConstantTagGroupHandler extends BaseTagGroupHandler<Object, DomObje
 
     @Override
     public void handle(XmlPullParser xpp) throws XueSyntaxException, TagUnknownException, AttributeUnknownException {
-        String nameAttr = "";
-        XueTag<? extends Object> objectBuilder = null;
-        for (BuilderMapping<? extends Object> m : mapping) {
+        XueTag<?> objectBuilder = null;
+        for (BuilderMapping<?> m : mapping) {
             objectBuilder = m.createBuilder(xpp.getName());
             if (objectBuilder != null) {
                 break;
             }
         }
 
-        if ("const".equals(xpp.getName())) {
+        if (PrimitiveTag.NAME.equals(xpp.getName())) {
             handlePrimitiveConst(xpp);
             return;
         }
@@ -51,8 +53,8 @@ public class ConstantTagGroupHandler extends BaseTagGroupHandler<Object, DomObje
             final String attributeValue = xpp.getAttributeValue(i);
             final String attributeName = xpp.getAttributeName(i);
 
-            if (CoreAttribute.ELEMENT_ID.equals(xpp.getAttributeName(i))) {
-                nameAttr = xpp.getAttributeValue(i);
+            if (constantMap.get(Constant.ELEMENT_ID).equals(xpp.getAttributeName(i))) {
+                String nameAttr = xpp.getAttributeValue(i);
                 domObject.setName(nameAttr);
 
                 if (nameAttr.isEmpty()) {
@@ -83,7 +85,7 @@ public class ConstantTagGroupHandler extends BaseTagGroupHandler<Object, DomObje
             String attributeValue = xpp.getAttributeValue(i);
             String attributeName = xpp.getAttributeName(i);
 
-            if (CoreAttribute.ELEMENT_ID.equals(attributeName)) {
+            if (constantMap.get(Constant.ELEMENT_ID).equals(attributeName)) {
                 nameAttr = xpp.getAttributeValue(i);
                 continue;
             }

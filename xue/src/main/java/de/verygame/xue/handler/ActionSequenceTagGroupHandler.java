@@ -1,16 +1,15 @@
 package de.verygame.xue.handler;
 
 import de.verygame.xue.annotation.Dependency;
-import de.verygame.xue.constants.CoreAttribute;
 import de.verygame.xue.constants.Constant;
 import de.verygame.xue.exception.ElementTagUnknownException;
 import de.verygame.xue.exception.XueException;
-import de.verygame.xue.handler.dom.DomObject;
-import de.verygame.xue.handler.dom.DomRepresentation;
+import de.verygame.xue.dom.DomObject;
+import de.verygame.xue.dom.DomRepresentation;
 import de.verygame.xue.input.XueInputEvent;
 import de.verygame.xue.mapping.BuilderMapping;
 import de.verygame.xue.mapping.tag.XueTag;
-import de.verygame.xue.tag.BasicActionTag;
+import de.verygame.xue.handler.tag.BasicActionTag;
 import de.verygame.xue.util.DomUtils;
 import de.verygame.xue.util.XmlParserUtils;
 import de.verygame.xue.util.action.Action;
@@ -56,7 +55,7 @@ public class ActionSequenceTagGroupHandler extends BaseTagGroupHandler<Action, D
     @Override
     public void startHandle(XmlPullParser xpp) throws XueException {
         for (int i = 0; i  < xpp.getAttributeCount(); ++i) {
-            if (xpp.getAttributeName(i).equals(CoreAttribute.ELEMENT_ID)) {
+            if (xpp.getAttributeName(i).equals(constantMap.get(Constant.ELEMENT_ID))) {
                 currentActionSequenceName = xpp.getAttributeValue(i);
             }
         }
@@ -81,19 +80,19 @@ public class ActionSequenceTagGroupHandler extends BaseTagGroupHandler<Action, D
 
         DomRepresentation<Action> domObject = new DomObject<Action>(constantMap, actionBuilder);
 
-        String nameId = XmlParserUtils.findValueOf(xpp, CoreAttribute.ELEMENT_ID);
-        String targetId = XmlParserUtils.findValueOf(xpp, CoreAttribute.ACTION_TARGET_ID);
+        String nameId = XmlParserUtils.findValueOf(xpp, constantMap.get(Constant.ELEMENT_ID));
+        String targetId = XmlParserUtils.findValueOf(xpp, constantMap.get(Constant.ACTION_TARGET_ID));
         if (nameId == null || targetId == null) {
             throw new XueException(xpp.getLineNumber() + ": You have to specify a name and a target id!");
         }
-        actionBuilder.apply(CoreAttribute.ACTION_TARGET_ID, DomUtils.searchFor(tagHandler.getDom(), targetId).getTag());
+        actionBuilder.apply(constantMap.get(Constant.ACTION_TARGET_ID), DomUtils.searchFor(tagHandler.getDom(), targetId).getTag());
 
         domObject.begin();
         for (int i = 0; i < xpp.getAttributeCount(); ++i) {
             String name = xpp.getAttributeName(i);
             String value = xpp.getAttributeValue(i);
 
-            if (name.equals(CoreAttribute.ELEMENT_ID) || name.equals(CoreAttribute.ACTION_TARGET_ID)) {
+            if (name.equals(constantMap.get(Constant.ELEMENT_ID)) || name.equals(constantMap.get(Constant.ACTION_TARGET_ID))) {
                 continue;
             }
             domObject.apply(name, value);

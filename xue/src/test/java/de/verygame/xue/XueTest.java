@@ -18,11 +18,11 @@ import static org.mockito.Mockito.verify;
  */
 public class XueTest {
 
-    private Xue<Object> xue;
+    private BasicXue<Object> xue;
 
     @Before
     public void setUp() throws Exception {
-        xue = new Xue<>(new ByteArrayInputStream("".getBytes()));
+        xue = new BasicXue<>(new ByteArrayInputStream("".getBytes()));
     }
 
     @Test
@@ -51,11 +51,6 @@ public class XueTest {
     @Test(expected = IllegalStateException.class)
     public void getElementByName() throws Exception {
         xue.getElementByName("");
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void getConstByName() throws Exception {
-        xue.getConstByName("");
     }
 
     @Test
