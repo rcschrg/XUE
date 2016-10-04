@@ -15,16 +15,11 @@ import java.util.Set;
 public class BasicXue<T> extends AbstractXue {
     private static final String LOAD_BEFORE_MESSAGE = "You have to load the xml-file first!";
 
-    /**
-     * Contains all elements, which have the attribute <code>name</code>
-     */
+    /** Contains all elements, which have the attribute <code>name</code> */
     private Map<String, T> elementMap;
-
+    /** Main tag group */
     private ElementsTagGroupHandler<T> elementsTagGroupHandler;
-
-    /**
-     * see {@link #bind(Object)}
-     */
+    /** see {@link #bind(Object)} */
     private Object bindTarget;
 
     /**

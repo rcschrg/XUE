@@ -24,11 +24,15 @@ import java.util.*;
  */
 public class XueCore {
     private static final String ENCODING = "UTF-8";
+    private static final int TRIES = 1;
 
     private final List<TagGroupHandler<?, ?>> tagGroupHandlerList;
-    private final List<TagGroupHandler<?, ?>> closed;
+    private final List<Class<? extends TagGroupHandler>> closed;
 
     private final Map<Constant, String> constantMap;
+
+    private TagGroupHandler<?, ?> currentHandler;
+    private int tries = TRIES;
 
     /**
      * Constructs XueCore, which uses tagMapping and attributeMapping for everything, which have to be mapped.
@@ -45,15 +49,18 @@ public class XueCore {
 
     private TagGroupHandler<?, ?> calculateNextTagHandler() {
         for (TagGroupHandler<?, ?> t : tagGroupHandlerList) {
-            if (closed.contains(t)) {
+            if (closed.contains(t.getClass())) {
                 continue;
             }
             List<Class<?>> depend = calcDependencies(t);
-            if (depend.isEmpty() || depend.containsAll(closed)) {
-                closed.add(t);
+            if (depend.isEmpty() || closed.containsAll(depend)) {
+                closed.add(t.getClass());
                 return t;
             }
         }
+        if (closed.size() == tagGroupHandlerList.size())
+            return null;
+
         throw new XueException("The dependencies of the tag handler are cyclic!");
     }
 
@@ -73,6 +80,12 @@ public class XueCore {
     }
 
     public void addHandler(TagGroupHandler<?, ?> tagGroupHandler) {
+        for (TagGroupHandler<?, ?> other : tagGroupHandlerList) {
+            if (other.getClass() == tagGroupHandler.getClass()) {
+                throw new IllegalArgumentException();
+            }
+        }
+
         for (TagGroupHandler<?, ?> other : tagGroupHandlerList) {
             InjectionUtils.injectByType(Dependency.class, tagGroupHandler, other);
             InjectionUtils.injectByType(Dependency.class, other, tagGroupHandler);
@@ -165,24 +178,42 @@ public class XueCore {
      * @throws ElementTagUnknownException see {@link ElementTagUnknownException}
      */
     public void load(InputStream inputXml) {
+        if (tagGroupHandlerList.isEmpty() || closed.size() == tagGroupHandlerList.size())
+            throw new IllegalArgumentException();
+
         try {
-            XmlPullParser xpp = new KXmlParser();
-            xpp.setInput(inputXml, ENCODING);
-            while (xpp.getEventType() != XmlPullParser.END_DOCUMENT) {
-                switch (xpp.getEventType()) {
+            inputXml.mark(Integer.MAX_VALUE);
+            currentHandler = calculateNextTagHandler();
+            while (currentHandler != null) {
+                XmlPullParser xpp = new KXmlParser();
+                xpp.setInput(inputXml, ENCODING);
+                while (xpp.getEventType() != XmlPullParser.END_DOCUMENT) {
+                    switch (xpp.getEventType()) {
 
-                    case XmlPullParser.START_TAG:
-                        handleStartTag(xpp);
-                        break;
+                        case XmlPullParser.START_TAG:
+                            handleStartTag(xpp);
+                            break;
 
-                    case XmlPullParser.END_TAG:
-                        handleEndTag(xpp);
-                        break;
+                        case XmlPullParser.END_TAG:
+                            handleEndTag(xpp);
+                            break;
 
-                    default:
+                        default:
+                            break;
+                    }
+                    xpp.next();
+                    if (currentHandler == null) {
                         break;
+                    }
                 }
-                xpp.next();
+                if (tries == 0) {
+                    currentHandler = calculateNextTagHandler();
+                    tries = TRIES;
+                }
+                else {
+                    tries--;
+                }
+                inputXml.reset();
             }
         }
         catch (XmlPullParserException e) {
@@ -203,17 +234,14 @@ public class XueCore {
      * @throws ElementTagUnknownException if a tag in <elements>...</elements> is unknown
      */
     private void handleStartTag(XmlPullParser xpp) {
-        for (TagGroupHandler pT : tagGroupHandlerList) {
-            if (pT.getName().equals(xpp.getName())) {
-                pT.setActive(true);
-                pT.startHandle(xpp);
-                return;
-            }
+        if (!currentHandler.isActive() && currentHandler.getName().equals(xpp.getName())) {
+            currentHandler.setActive(true);
+            currentHandler.startHandle(xpp);
+            return;
         }
-        for (TagGroupHandler t : tagGroupHandlerList) {
-            if (t.isActive()) {
-                t.handle(xpp);
-            }
+
+        if (currentHandler.isActive()) {
+            currentHandler.handle(xpp);
         }
     }
 
@@ -223,11 +251,10 @@ public class XueCore {
      * @param xpp PullParser, which has been created with the xml resource.
      */
     private void handleEndTag(XmlPullParser xpp) {
-        for (TagGroupHandler t : tagGroupHandlerList) {
-            if (t.getName().equals(xpp.getName()) && t.isActive()) {
-                t.setActive(false);
-                t.stopHandle(xpp);
-            }
+        if (currentHandler.getName().equals(xpp.getName()) && currentHandler.isActive()) {
+            currentHandler.setActive(false);
+            currentHandler.stopHandle(xpp);
+            currentHandler = calculateNextTagHandler();
         }
     }
 }
