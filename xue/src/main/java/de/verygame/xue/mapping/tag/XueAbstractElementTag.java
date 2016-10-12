@@ -5,10 +5,7 @@ import de.verygame.xue.mapping.tag.attribute.Attribute;
 import de.verygame.xue.mapping.tag.attribute.AttributeGroup;
 import de.verygame.xue.mapping.tag.attribute.AttributeGroupElementMeta;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Rico Schrage
@@ -17,11 +14,13 @@ public abstract class XueAbstractElementTag<T> implements XueTag<T> {
     protected T element;
     protected List<Attribute<T, ?>> attributes;
     protected List<AttributeGroup<T>> attributeGroups;
+    protected List<XueTag<?>> childTagList;
     protected Map<AttributeGroup<T>, Map<String, Object>> multiValueMap;
 
     public XueAbstractElementTag(T element) {
         this.element = element;
         this.multiValueMap = new HashMap<>();
+        this.childTagList = new ArrayList<>();
         this.attributes = defineAttributes();
         this.attributeGroups = defineAttributeGroups();
     }
@@ -30,21 +29,21 @@ public abstract class XueAbstractElementTag<T> implements XueTag<T> {
 
     protected abstract List<AttributeGroup<T>> defineAttributeGroups();
 
+    protected void addChildTag(XueTag<?> childTag) {
+        childTagList.add(childTag);
+    }
+
     @SafeVarargs
     protected final List<Attribute<T, ?>> buildAttributeList(Attribute<T, ?>... attributes) {
         List<Attribute<T, ?>> attributeList = new ArrayList<>(attributes.length);
-        for (Attribute<T, ?> attribute : attributes) {
-            attributeList.add(attribute);
-        }
+        Collections.addAll(attributeList, attributes);
         return attributeList;
     }
 
     @SafeVarargs
     protected final List<AttributeGroup<T>> buildAttributeGroupList(AttributeGroup<T>... attributes) {
         List<AttributeGroup<T>> attributeList = new ArrayList<>(attributes.length);
-        for (AttributeGroup<T> attribute : attributes) {
-            attributeList.add(attribute);
-        }
+        Collections.addAll(attributeList, attributes);
         return attributeList;
     }
 
@@ -66,6 +65,9 @@ public abstract class XueAbstractElementTag<T> implements XueTag<T> {
                 a2.apply(element, value);
                 return;
             }
+        }
+        for (int c = 0;  c < childTagList.size(); ++c) {
+            childTagList.get(c).apply(attribute, value);
         }
         for (int i = 0; i < attributeGroups.size(); ++i) {
             AttributeGroup<T> a = attributeGroups.get(i);
