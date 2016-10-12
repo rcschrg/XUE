@@ -24,6 +24,40 @@ public class APITest {
     private static class TestBase {
         protected String name;
         protected int value;
+        protected TestChild child = new TestChild();
+    }
+
+    private static class TestChild {
+        protected float a;
+        protected float b;
+    }
+
+    private static class TestBaseA extends AbstractAttribute<TestChild, Float> {
+        private static final String NAME = "a";
+
+        @Override
+        public String getName() {
+            return NAME;
+        }
+
+        @Override
+        public void apply(TestChild element, Float value) {
+            element.a = value;
+        }
+    }
+
+    private static class TestBaseB extends AbstractAttribute<TestChild, Float> {
+        private static final String NAME = "b";
+
+        @Override
+        public String getName() {
+            return NAME;
+        }
+
+        @Override
+        public void apply(TestChild element, Float value) {
+            element.b = value;
+        }
     }
 
     private static class TestBaseName extends AbstractAttribute<TestBase, String> {
@@ -54,10 +88,33 @@ public class APITest {
         }
     }
 
+    private static class TestChildTag extends XueAbstractElementTag<TestChild> {
+
+        public TestChildTag() {
+            this(new TestChild());
+        }
+
+        public TestChildTag(TestChild testChild) {
+            super(testChild);
+        }
+
+        @Override
+        protected List<Attribute<TestChild, ?>> defineAttributes() {
+            return buildAttributeList(new TestBaseA(), new TestBaseB());
+        }
+
+        @Override
+        protected List<AttributeGroup<TestChild>> defineAttributeGroups() {
+            return buildAttributeGroupList();
+        }
+    }
+
     private static class TestBaseTag extends XueAbstractElementTag<TestBase> {
 
         public TestBaseTag() {
             super(new TestBase());
+
+            addChildTag(new TestChildTag(getElement().child));
         }
 
         @Override
@@ -87,6 +144,8 @@ public class APITest {
 
         assertEquals("Hallo", xue.getElementByName("testOne").name);
         assertEquals(42, xue.getElementByName("testOne").value);
+        assertEquals(0.0f, xue.getElementByName("testOne").child.a, 0.001f);
+        assertEquals(1.0f, xue.getElementByName("testOne").child.b, 0.001f);
     }
 
 }
