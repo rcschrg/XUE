@@ -20,14 +20,14 @@ public class BasicActionTagTest {
 
     @Test
     public void defineAttributes() throws Exception {
-        List<Attribute<BasicAction, ?>> attributeList = basicActionTag.defineAttributes();
+        List<Attribute<? super BasicAction, ?>> attributeList = basicActionTag.defineAttributes();
 
         assertTrue(attributeList.contains(BasicActionInterpolation.getInstance()));
     }
 
     @Test
     public void defineAttributeGroups() throws Exception {
-        List<AttributeGroup<BasicAction>> attributeList = basicActionTag.defineAttributeGroups();
+        List<AttributeGroup<? super BasicAction>> attributeList = basicActionTag.defineAttributeGroups();
 
         assertTrue(attributeList.contains(BasicActionAttributeTarget.getInstance()));
     }

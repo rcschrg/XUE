@@ -99,12 +99,12 @@ public class APITest {
         }
 
         @Override
-        protected List<Attribute<TestChild, ?>> defineAttributes() {
+        protected List<Attribute<? super TestChild, ?>> defineAttributes() {
             return buildAttributeList(new TestBaseA(), new TestBaseB());
         }
 
         @Override
-        protected List<AttributeGroup<TestChild>> defineAttributeGroups() {
+        protected List<AttributeGroup<? super TestChild>> defineAttributeGroups() {
             return buildAttributeGroupList();
         }
     }
@@ -118,12 +118,12 @@ public class APITest {
         }
 
         @Override
-        protected List<Attribute<TestBase, ?>> defineAttributes() {
+        protected List<Attribute<? super TestBase, ?>> defineAttributes() {
             return buildAttributeList(new TestBaseName(), new TestBaseValue());
         }
 
         @Override
-        protected List<AttributeGroup<TestBase>> defineAttributeGroups() {
+        protected List<AttributeGroup<? super TestBase>> defineAttributeGroups() {
             return buildAttributeGroupList();
         }
     }

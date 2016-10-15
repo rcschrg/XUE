@@ -1,13 +1,12 @@
 package de.verygame.xue.handler.tag;
 
+import de.verygame.xue.handler.tag.attribute.BasicActionAttributeTarget;
+import de.verygame.xue.handler.tag.attribute.BasicActionInterpolation;
 import de.verygame.xue.mapping.tag.XueAbstractElementTag;
 import de.verygame.xue.mapping.tag.attribute.Attribute;
 import de.verygame.xue.mapping.tag.attribute.AttributeGroup;
-import de.verygame.xue.handler.tag.attribute.BasicActionAttributeTarget;
-import de.verygame.xue.handler.tag.attribute.BasicActionInterpolation;
 import de.verygame.xue.util.action.BasicAction;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,16 +19,12 @@ public class BasicActionTag extends XueAbstractElementTag<BasicAction> {
     }
 
     @Override
-    protected List<Attribute<BasicAction, ?>> defineAttributes() {
-        List<Attribute<BasicAction, ?>> attributes = new ArrayList<>();
-        attributes.add(BasicActionInterpolation.getInstance());
-        return attributes;
+    protected List<Attribute<? super BasicAction, ?>> defineAttributes() {
+        return buildAttributeList(BasicActionInterpolation.getInstance());
     }
 
     @Override
-    protected List<AttributeGroup<BasicAction>> defineAttributeGroups() {
-        List<AttributeGroup<BasicAction>> attributes = new ArrayList<>();
-        attributes.add(BasicActionAttributeTarget.getInstance());
-        return attributes;
+    protected List<AttributeGroup<? super BasicAction>> defineAttributeGroups() {
+        return buildAttributeGroupList(BasicActionAttributeTarget.getInstance());
     }
 }
