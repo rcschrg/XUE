@@ -40,6 +40,10 @@ public class ElementsTagGroupHandler<T> extends BaseTagGroupHandler<T, DomObject
         this(constantStringMap, new DummyGlobalMappings<T>());
     }
 
+    public ElementsTagGroupHandler(GlobalMappings<T> globalMappings) {
+        this(Constant.obtainDefaultMap(), globalMappings);
+    }
+
     public ElementsTagGroupHandler(Map<Constant, String> constantStringMap, GlobalMappings<T> globalMappings) {
         super(constantStringMap, Constant.ELEMENT_TAG);
 

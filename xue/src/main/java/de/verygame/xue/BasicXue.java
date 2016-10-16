@@ -3,6 +3,8 @@ package de.verygame.xue;
 import de.verygame.xue.annotation.Bind;
 import de.verygame.xue.handler.ConstantTagGroupHandler;
 import de.verygame.xue.handler.ElementsTagGroupHandler;
+import de.verygame.xue.mapping.DummyGlobalMappings;
+import de.verygame.xue.mapping.GlobalMappings;
 import de.verygame.xue.util.InjectionUtils;
 
 import java.io.InputStream;
@@ -16,21 +18,25 @@ public class BasicXue<T> extends AbstractXue {
     private static final String LOAD_BEFORE_MESSAGE = "You have to load the xml-file first!";
 
     /** Contains all elements, which have the attribute <code>name</code> */
-    private Map<String, T> elementMap;
+    protected Map<String, T> elementMap;
     /** Main tag group */
-    private ElementsTagGroupHandler<T> elementsTagGroupHandler;
+    protected ElementsTagGroupHandler<T> elementsTagGroupHandler;
     /** see {@link #bind(Object)} */
-    private Object bindTarget;
+    protected Object bindTarget;
+
+    public BasicXue(InputStream xml) {
+        this(xml, new DummyGlobalMappings<T>());
+    }
 
     /**
      * Creates a container with the given mappings.
      *
      * @param xml xml
      */
-    public BasicXue(InputStream xml) {
+    public BasicXue(InputStream xml, GlobalMappings<T> globalMappings) {
         super(xml);
 
-        this.elementsTagGroupHandler = new ElementsTagGroupHandler<>();
+        this.elementsTagGroupHandler = new ElementsTagGroupHandler<>(globalMappings);
 
         this.core.addHandler(elementsTagGroupHandler);
         this.core.addHandler(new ConstantTagGroupHandler());
