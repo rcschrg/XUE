@@ -45,6 +45,21 @@ public class InjectionUtils {
         }
     }
 
+    public static void injectByKey(Class<? extends Annotation> marker, Object injectTarget, Object injectable, String injectableKey) {
+        List<Field> fields = ReflectionUtils.getAllFields(injectTarget.getClass());
+        for (final Field field : fields) {
+            if (field.isAnnotationPresent(marker) && field.getName().equals(injectableKey)) {
+                try {
+                    field.setAccessible(true);
+                    field.set(injectTarget, injectable);
+                }
+                catch (IllegalAccessException e) {
+                    throw new XueException(e);
+                }
+            }
+        }
+    }
+
     /**
      * Created by rschr on 17.06.2016.
      */

@@ -16,13 +16,12 @@ public abstract class XueAbstractElementTag<T> implements XueTag<T> {
     protected List<AttributeGroup<? super T>> attributeGroups;
     protected List<XueTag<?>> childTagList;
     protected Map<AttributeGroup<? super T>, Map<String, Object>> multiValueMap;
+    private boolean first = true;
 
     public XueAbstractElementTag(T element) {
         this.element = element;
         this.multiValueMap = new HashMap<>();
         this.childTagList = new ArrayList<>();
-        this.attributes = defineAttributes();
-        this.attributeGroups = defineAttributeGroups();
     }
 
     protected abstract List<Attribute<? super T, ?>> defineAttributes();
@@ -49,6 +48,11 @@ public abstract class XueAbstractElementTag<T> implements XueTag<T> {
 
     @Override
     public void preBuild() {
+        if (first) {
+            attributes = defineAttributes();
+            attributeGroups = defineAttributeGroups();
+            first = false;
+        }
         for (int i = 0; i < attributes.size(); ++i) {
             Attribute<? super T, ?> a = attributes.get(i);
             a.begin(element);
@@ -111,6 +115,9 @@ public abstract class XueAbstractElementTag<T> implements XueTag<T> {
         for (int i = 0; i < attributes.size(); ++i) {
             Attribute<? super T, ?> a = attributes.get(i);
             a.end(element);
+        }
+        for (int i = 0; i < childTagList.size(); ++i) {
+            childTagList.get(i).postBuild();
         }
     }
 

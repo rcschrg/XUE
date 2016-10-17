@@ -72,7 +72,7 @@ public class BasicXue<T> extends AbstractXue {
             return;
         }
         for (final Map.Entry<String, T> entry : entries) {
-            InjectionUtils.injectByName(Bind.class, bindTarget, entry.getKey());
+            InjectionUtils.injectByKey(Bind.class, bindTarget, entry.getValue(), entry.getKey());
         }
     }
 }
