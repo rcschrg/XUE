@@ -85,9 +85,9 @@ public class ActionSequenceTagGroupHandler extends BaseTagGroupHandler<Action, D
         if (nameId == null || targetId == null) {
             throw new XueException(xpp.getLineNumber() + ": You have to specify a name and a target id!");
         }
-        actionBuilder.apply(constantMap.get(Constant.ACTION_TARGET_ID), DomUtils.searchFor(tagHandler.getDom(), targetId).getTag());
 
         domObject.begin();
+        actionBuilder.apply(constantMap.get(Constant.ACTION_TARGET_ID), DomUtils.searchFor(tagHandler.getDom(), targetId).getTag());
         for (int i = 0; i < xpp.getAttributeCount(); ++i) {
             String name = xpp.getAttributeName(i);
             String value = xpp.getAttributeValue(i);
