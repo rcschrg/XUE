@@ -7,7 +7,7 @@ import de.verygame.xue.exception.XueException;
 import de.verygame.xue.dom.DomObject;
 import de.verygame.xue.dom.DomRepresentation;
 import de.verygame.xue.input.XueInputEvent;
-import de.verygame.xue.mapping.BuilderMapping;
+import de.verygame.xue.mapping.TagMapping;
 import de.verygame.xue.mapping.tag.XueTag;
 import de.verygame.xue.handler.tag.BasicActionTag;
 import de.verygame.xue.util.DomUtils;
@@ -36,9 +36,9 @@ public class ActionSequenceTagGroupHandler extends BaseTagGroupHandler<Action, D
         super(constantStringMap, Constant.AS_TAG);
 
         actionSequenceMap = new HashMap<>();
-        addBuilderMapping(new BuilderMapping<Action>() {
+        addBuilderMapping(new TagMapping<Action>() {
             @Override
-            public XueTag<? extends Action> createBuilder(String name) {
+            public XueTag<? extends Action> createTag(String name) {
                 if ("basicAction".equals(name)) {
                     //noinspection unchecked
                     return new BasicActionTag();
@@ -71,8 +71,8 @@ public class ActionSequenceTagGroupHandler extends BaseTagGroupHandler<Action, D
         String tagName = xpp.getName();
 
         XueTag<? extends Action> actionBuilder = null;
-        for (BuilderMapping<? extends Action> m : mapping) {
-            actionBuilder = m.createBuilder(tagName);
+        for (TagMapping<? extends Action> m : mapping) {
+            actionBuilder = m.createTag(tagName);
         }
         if (actionBuilder == null) {
             throw new ElementTagUnknownException(tagName);

@@ -7,7 +7,7 @@ import de.verygame.xue.handler.TagGroupHandler;
 import de.verygame.xue.input.XueInputEvent;
 import de.verygame.xue.input.XueInputHandler;
 import de.verygame.xue.input.XueUpdateHandler;
-import de.verygame.xue.mapping.BuilderMapping;
+import de.verygame.xue.mapping.TagMapping;
 import de.verygame.xue.util.InjectionUtils;
 
 import java.io.InputStream;
@@ -60,12 +60,12 @@ public abstract class AbstractXue {
         }
     }
 
-    public void addMappingUnsafe(Class<? extends TagGroupHandler> tagHandler, BuilderMapping<?> builderMapping) {
-        this.core.addMappingUnsafe(tagHandler, builderMapping);
+    public void addMappingUnsafe(Class<? extends TagGroupHandler> tagHandler, TagMapping<?> tagMapping) {
+        this.core.addMappingUnsafe(tagHandler, tagMapping);
     }
 
-    public <B, D> void addMapping(Class<TagGroupHandler<B, D>> tagHandler, BuilderMapping<B> builderMapping) {
-        this.core.addMappingUnsafe(tagHandler, builderMapping);
+    public <B, D> void addMapping(Class<TagGroupHandler<B, D>> tagHandler, TagMapping<B> tagMapping) {
+        this.core.addMappingUnsafe(tagHandler, tagMapping);
     }
 
     /**

@@ -2,7 +2,7 @@ sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
 group = 'de.verygame.xue'
-version = '0.2.4'
+version = '0.2.5'
 archivesBaseName = 'XUE'
 
 ext {

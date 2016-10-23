@@ -6,7 +6,7 @@ import de.verygame.xue.exception.ConstTagUnknownException;
 import de.verygame.xue.exception.TagUnknownException;
 import de.verygame.xue.exception.XueSyntaxException;
 import de.verygame.xue.dom.DomObject;
-import de.verygame.xue.mapping.BuilderMapping;
+import de.verygame.xue.mapping.TagMapping;
 import de.verygame.xue.mapping.tag.XueTag;
 import de.verygame.xue.handler.tag.PrimitiveTag;
 import org.xmlpull.v1.XmlPullParser;
@@ -29,8 +29,8 @@ public class ConstantTagGroupHandler extends BaseTagGroupHandler<Object, DomObje
     @Override
     public void handle(XmlPullParser xpp) throws XueSyntaxException, TagUnknownException, AttributeUnknownException {
         XueTag<?> objectBuilder = null;
-        for (BuilderMapping<?> m : mapping) {
-            objectBuilder = m.createBuilder(xpp.getName());
+        for (TagMapping<?> m : mapping) {
+            objectBuilder = m.createTag(xpp.getName());
             if (objectBuilder != null) {
                 break;
             }

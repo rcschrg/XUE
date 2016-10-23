@@ -6,7 +6,7 @@ import de.verygame.xue.constants.Constant;
 import de.verygame.xue.dom.DomRepresentation;
 import de.verygame.xue.exception.*;
 import de.verygame.xue.handler.TagGroupHandler;
-import de.verygame.xue.mapping.BuilderMapping;
+import de.verygame.xue.mapping.TagMapping;
 import de.verygame.xue.util.InjectionUtils;
 import org.kxml2.io.KXmlParser;
 import org.xmlpull.v1.XmlPullParser;
@@ -114,26 +114,26 @@ public class XueCore {
      * This method should be used for custom tagHandler.
      *
      * @param tagHandler handler of a group of tags
-     * @param builderMapping mapping
-     * @param <B> makes sure that the tagHandler und builderMapping fit together
+     * @param tagMapping mapping
+     * @param <B> makes sure that the tagHandler und tagMapping fit together
      */
-    public <B, D> void addMapping(Class<? extends TagGroupHandler<B, D>> tagHandler, BuilderMapping<B> builderMapping) {
-        addMappingUnsafe(tagHandler, builderMapping);
+    public <B, D> void addMapping(Class<? extends TagGroupHandler<B, D>> tagHandler, TagMapping<B> tagMapping) {
+        addMappingUnsafe(tagHandler, tagMapping);
     }
 
     /**
      * Generic <b>unsafe</b> method to add a mapping to the given tagHandler. The given class object must be a tag handler which can add the given
-     * mapping. Just use this method when you have to otherwise {@link #addMapping(Class, BuilderMapping)} is the far better choice.
+     * mapping. Just use this method when you have to otherwise {@link #addMapping(Class, TagMapping)} is the far better choice.
      * @param tagHandler class of the taghandler
-     * @param builderMapping mapping you want to add
+     * @param tagMapping mapping you want to add
      * @param <B> internal
      * @throws ClassCastException can be thrown when the class object is not a tagHandler or if the tagHandler can't add the mapping.
      */
-    public <B> void addMappingUnsafe(Class<? extends TagGroupHandler> tagHandler, BuilderMapping<B> builderMapping) {
+    public <B> void addMappingUnsafe(Class<? extends TagGroupHandler> tagHandler, TagMapping<B> tagMapping) {
         for (TagGroupHandler<?, ?> t : tagGroupHandlerList) {
             if (t.getClass() == tagHandler) {
                 //noinspection unchecked
-                ((TagGroupHandler<B, ?>)t).addBuilderMapping(builderMapping);
+                ((TagGroupHandler<B, ?>)t).addBuilderMapping(tagMapping);
             }
         }
     }

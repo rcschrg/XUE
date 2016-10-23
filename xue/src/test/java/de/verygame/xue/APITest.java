@@ -1,7 +1,7 @@
 package de.verygame.xue;
 
 import de.verygame.xue.handler.ElementsTagGroupHandler;
-import de.verygame.xue.mapping.BuilderMapping;
+import de.verygame.xue.mapping.TagMapping;
 import de.verygame.xue.mapping.tag.XueAbstractElementTag;
 import de.verygame.xue.mapping.tag.XueTag;
 import de.verygame.xue.mapping.tag.attribute.AbstractAttribute;
@@ -114,7 +114,7 @@ public class APITest {
         public TestBaseTag() {
             super(new TestBase());
 
-            addChildTag(new TestChildTag(getElement().child));
+            linkXueTag(new TestChildTag(getElement().child));
         }
 
         @Override
@@ -128,9 +128,9 @@ public class APITest {
         }
     }
 
-    BuilderMapping<TestBase> testBaseBuilderMapping = new BuilderMapping<TestBase>() {
+    TagMapping<TestBase> testBaseTagMapping = new TagMapping<TestBase>() {
         @Override
-        public XueTag<? extends TestBase> createBuilder(String name) {
+        public XueTag<? extends TestBase> createTag(String name) {
             return new TestBaseTag();
         }
     };
@@ -138,7 +138,7 @@ public class APITest {
     @Test
     public void testSimpleUsage() throws Exception{
         BasicXue<TestBase> xue = new BasicXue<>(getClass().getResourceAsStream("/simple.xml"));
-        xue.addMappingUnsafe(ElementsTagGroupHandler.class, testBaseBuilderMapping);
+        xue.addMappingUnsafe(ElementsTagGroupHandler.class, testBaseTagMapping);
 
         xue.load();
 

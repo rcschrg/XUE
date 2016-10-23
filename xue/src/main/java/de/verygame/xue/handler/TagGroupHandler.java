@@ -6,7 +6,7 @@ import de.verygame.xue.exception.TagUnknownException;
 import de.verygame.xue.exception.XueException;
 import de.verygame.xue.exception.XueSyntaxException;
 import de.verygame.xue.dom.DomContainer;
-import de.verygame.xue.mapping.BuilderMapping;
+import de.verygame.xue.mapping.TagMapping;
 import org.xmlpull.v1.XmlPullParser;
 
 import java.util.Map;
@@ -61,7 +61,7 @@ public interface TagGroupHandler<T, D> extends DomContainer<D> {
     /**
      * @param mapping tag mapping
      */
-    void addBuilderMapping(BuilderMapping<? extends T> mapping);
+    void addBuilderMapping(TagMapping<? extends T> mapping);
 
     public void setConstantMap(Map<Constant, String> constantMap);
 

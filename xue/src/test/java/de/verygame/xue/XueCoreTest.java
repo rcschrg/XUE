@@ -4,7 +4,7 @@ import de.verygame.xue.exception.ElementTagUnknownException;
 import de.verygame.xue.exception.XueException;
 import de.verygame.xue.handler.ConstantTagGroupHandler;
 import de.verygame.xue.handler.ElementsTagGroupHandler;
-import de.verygame.xue.mapping.BuilderMapping;
+import de.verygame.xue.mapping.TagMapping;
 import de.verygame.xue.mapping.tag.XueTag;
 import org.junit.Before;
 import org.junit.Test;
@@ -61,9 +61,9 @@ public class XueCoreTest {
             "</menu>";
 
     @Mock
-    private BuilderMapping<Object> aM;
+    private TagMapping<Object> aM;
     @Mock
-    private BuilderMapping<Object> cM;
+    private TagMapping<Object> cM;
     @Mock
     private XueTag gb;
 
@@ -72,8 +72,8 @@ public class XueCoreTest {
 
     @Before
     public void prepare() throws ElementTagUnknownException, XmlPullParserException {
-        when(aM.createBuilder(anyString())).thenReturn(gb);
-        when(cM.createBuilder(anyString())).thenReturn(gb);
+        when(aM.createTag(anyString())).thenReturn(gb);
+        when(cM.createTag(anyString())).thenReturn(gb);
         core = new XueCore();
         core.addHandler(new ConstantTagGroupHandler());
         core.addHandler(new ElementsTagGroupHandler<>());

@@ -14,22 +14,22 @@ public abstract class XueAbstractElementTag<T> implements XueTag<T> {
     protected T element;
     protected List<Attribute<? super T, ?>> attributes;
     protected List<AttributeGroup<? super T>> attributeGroups;
-    protected List<XueTag<?>> childTagList;
+    protected List<XueTag<?>> xueTagList;
     protected Map<AttributeGroup<? super T>, Map<String, Object>> multiValueMap;
     private boolean first = true;
 
     public XueAbstractElementTag(T element) {
         this.element = element;
         this.multiValueMap = new HashMap<>();
-        this.childTagList = new ArrayList<>();
+        this.xueTagList = new ArrayList<>();
     }
 
     protected abstract List<Attribute<? super T, ?>> defineAttributes();
 
     protected abstract List<AttributeGroup<? super T>> defineAttributeGroups();
 
-    protected void addChildTag(XueTag<?> childTag) {
-        childTagList.add(childTag);
+    protected void linkXueTag(XueTag<?> childTag) {
+        xueTagList.add(childTag);
     }
 
     @SafeVarargs
@@ -57,8 +57,8 @@ public abstract class XueAbstractElementTag<T> implements XueTag<T> {
             Attribute<? super T, ?> a = attributes.get(i);
             a.begin(element);
         }
-        for (int i = 0; i < childTagList.size(); ++i) {
-            childTagList.get(i).preBuild();
+        for (int i = 0; i < xueTagList.size(); ++i) {
+            xueTagList.get(i).preBuild();
         }
     }
 
@@ -73,8 +73,8 @@ public abstract class XueAbstractElementTag<T> implements XueTag<T> {
                 return;
             }
         }
-        for (int c = 0;  c < childTagList.size(); ++c) {
-            childTagList.get(c).apply(attribute, value);
+        for (int c = 0;  c < xueTagList.size(); ++c) {
+            xueTagList.get(c).apply(attribute, value);
         }
         for (int i = 0; i < attributeGroups.size(); ++i) {
             AttributeGroup<? super T> a = attributeGroups.get(i);
@@ -116,8 +116,8 @@ public abstract class XueAbstractElementTag<T> implements XueTag<T> {
             Attribute<? super T, ?> a = attributes.get(i);
             a.end(element);
         }
-        for (int i = 0; i < childTagList.size(); ++i) {
-            childTagList.get(i).postBuild();
+        for (int i = 0; i < xueTagList.size(); ++i) {
+            xueTagList.get(i).postBuild();
         }
     }
 
