@@ -56,7 +56,7 @@ public abstract class AbstractXue {
 
     private void injectDomContainer(Object target) {
         for (TagGroupHandler<?, ?> groupHandler : core.getDomContainer()) {
-            InjectionUtils.injectByName(Dependency.class, groupHandler, target);
+            InjectionUtils.injectByName(Dependency.class, target, groupHandler);
         }
     }
 
