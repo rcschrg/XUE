@@ -70,6 +70,8 @@ public class ElementsTagGroupHandler<T> extends BaseTagGroupHandler<T, DomObject
         if (xpp.getDepth()-1 == scopeStack.size()+1 && !scopeStack.isEmpty()) {
             scopeStack.pop();
         }
+        XueTag<?> parentTag = scopeStack.peek();
+
         scopeStack.push(elementBuilder);
 
         DomObject<? extends T> domElement = new DomObject<>(constantMap, elementBuilder, globalMappings, constantTagHandler.getDom());
@@ -79,8 +81,8 @@ public class ElementsTagGroupHandler<T> extends BaseTagGroupHandler<T, DomObject
         if (domElement.getName() == null) {
             throw new XueException("The name attribute is missing!");
         }
-        if (xpp.getDepth()-1 > scopeStack.size()) {
-            scopeStack.peek().applyChild(elementBuilder.getElement());
+        if (xpp.getDepth()-1 > scopeStack.size() && parentTag != null) {
+            parentTag.applyChild(elementBuilder.getElement());
         }
 
         domList.add(domElement);
