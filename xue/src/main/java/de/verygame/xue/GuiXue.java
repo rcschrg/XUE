@@ -41,10 +41,6 @@ public class GuiXue<T> extends BasicXue<T> {
         return actionSequenceTagGroupHandler.getActionSequenceMap();
     }
 
-    public Map<String, T> getElementMap() {
-        return elementMap;
-    }
-
     public void addLoadTask(LoadTask task) {
         taskList.add(task);
     }

@@ -44,6 +44,8 @@ public abstract class BaseTagGroupHandler<T, D> implements TagGroupHandler<T, D>
         this.mapping.add(mapping);
     }
 
+    public List<TagMapping<? extends T>> getBuilderMappings() { return this.mapping; }
+
     @Override
     public void startHandle(XmlPullParser xpp) throws XueException {
         //default

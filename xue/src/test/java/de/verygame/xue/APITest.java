@@ -146,6 +146,8 @@ public class APITest {
         assertEquals(42, xue.getElementByName("testOne").value);
         assertEquals(0.0f, xue.getElementByName("testOne").child.a, 0.001f);
         assertEquals(1.0f, xue.getElementByName("testOne").child.b, 0.001f);
+        assertEquals(1, xue.getElementsByTagName("BaseTag").size());
+        assertEquals(xue.getElementByName("testOne"), xue.getElementsByTagName("BaseTag").get(0));
     }
 
 }
