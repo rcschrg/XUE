@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <elements>
-    <BaseTag name="testOne" testName="Hallo" value="42" a="0.0" b="1.0" />
+    <BaseTag name="testOne" testName="Hallo" value="42" a="0.0" b="1.0">
+        <BaseTag name="child" />
+    </BaseTag>
 </elements>

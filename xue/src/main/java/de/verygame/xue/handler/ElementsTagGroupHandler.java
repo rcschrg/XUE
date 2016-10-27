@@ -24,6 +24,8 @@ public class ElementsTagGroupHandler<T> extends BaseTagGroupHandler<T, DomObject
     private final Deque<XueTag<?>> scopeStack;
     private final GlobalMappings<T> globalMappings;
 
+    private int lastDepth = 0;
+
     private final Comparator<DomObject<? extends T>> domElementComparator = new Comparator<DomObject<? extends T>>() {
         @Override
         public int compare(DomObject<? extends T> o1, DomObject<? extends T> o2) {
@@ -67,7 +69,7 @@ public class ElementsTagGroupHandler<T> extends BaseTagGroupHandler<T, DomObject
         if (elementBuilder == null) {
             throw new ElementTagUnknownException("Tag " + tag + " is unknown.");
         }
-        if (xpp.getDepth()-1 == scopeStack.size()+1 && !scopeStack.isEmpty()) {
+        if (lastDepth == xpp.getDepth() && !scopeStack.isEmpty()) {
             scopeStack.pop();
         }
         XueTag<?> parentTag = scopeStack.peek();
@@ -81,11 +83,12 @@ public class ElementsTagGroupHandler<T> extends BaseTagGroupHandler<T, DomObject
         if (domElement.getName() == null) {
             throw new XueException("The name attribute is missing!");
         }
-        if (xpp.getDepth()-1 > scopeStack.size() && parentTag != null) {
+        if (lastDepth < xpp.getDepth() && parentTag != null) {
             parentTag.applyChild(elementBuilder.getElement());
         }
 
         domList.add(domElement);
+        lastDepth = xpp.getDepth();
     }
 
     @Override

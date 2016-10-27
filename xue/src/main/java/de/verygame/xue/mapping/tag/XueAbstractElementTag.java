@@ -57,6 +57,10 @@ public abstract class XueAbstractElementTag<T> implements XueTag<T> {
             Attribute<? super T, ?> a = attributes.get(i);
             a.begin(element);
         }
+        for (int i = 0; i < attributeGroups.size(); ++i) {
+            AttributeGroup<? super T> a = attributeGroups.get(i);
+            a.begin(element);
+        }
         for (int i = 0; i < xueTagList.size(); ++i) {
             xueTagList.get(i).preBuild();
         }
@@ -73,9 +77,6 @@ public abstract class XueAbstractElementTag<T> implements XueTag<T> {
                 return;
             }
         }
-        for (int c = 0;  c < xueTagList.size(); ++c) {
-            xueTagList.get(c).apply(attribute, value);
-        }
         for (int i = 0; i < attributeGroups.size(); ++i) {
             AttributeGroup<? super T> a = attributeGroups.get(i);
             for (int j = 0; j < a.getGroupMeta().size(); ++j) {
@@ -89,6 +90,9 @@ public abstract class XueAbstractElementTag<T> implements XueTag<T> {
                 }
             }
         }
+        for (int c = 0;  c < xueTagList.size(); ++c) {
+            xueTagList.get(c).apply(attribute, value);
+        }
     }
 
     @Override
@@ -100,20 +104,23 @@ public abstract class XueAbstractElementTag<T> implements XueTag<T> {
     public void postBuild() {
         for (int i = 0; i < attributeGroups.size(); ++i) {
             AttributeGroup<? super T> a = attributeGroups.get(i);
-            for (int j = 0; j < a.getGroupMeta().size(); ++j) {
-                AttributeGroupElementMeta meta = a.getGroupMeta().get(i);
-                for (Map.Entry<AttributeGroup<? super T>, Map<String, Object>> entry : multiValueMap.entrySet()) {
-                    for (Map.Entry<String, Object> valueEntry : entry.getValue().entrySet()) {
-                        if (valueEntry.getKey().equals(meta.getName())) {
-                            a.apply(element, valueEntry.getValue(), valueEntry.getKey());
-                            break;
-                        }
+            Map<String, Object> entry = multiValueMap.get(a);
+            for (Map.Entry<String,Object> valueEntry : entry.entrySet()) {
+                for (int j = 0; j < a.getGroupMeta().size(); ++j) {
+                    AttributeGroupElementMeta meta = a.getGroupMeta().get(i);
+                    if (valueEntry.getKey().equals(meta.getName())) {
+                        a.apply(element, valueEntry.getValue(), valueEntry.getKey());
+                        break;
                     }
                 }
             }
         }
         for (int i = 0; i < attributes.size(); ++i) {
             Attribute<? super T, ?> a = attributes.get(i);
+            a.end(element);
+        }
+        for (int i = 0; i < attributeGroups.size(); ++i) {
+            AttributeGroup<? super T> a = attributeGroups.get(i);
             a.end(element);
         }
         for (int i = 0; i < xueTagList.size(); ++i) {

@@ -21,6 +21,7 @@ import java.util.Map;
 public class DomObject<T> implements DomRepresentation<T> {
     protected final XueTag<? extends T> builder;
     private final Map<String, Value<?, ?>> attributeValueMap;
+    private final Map<FloatValue, Float> floatValueToAbsoluteValueMap;
     private final GlobalMappings<T> mappings;
     private final List<DomObject<?>> constantDom;
     protected final Map<Constant, String> constantMap;
@@ -42,6 +43,7 @@ public class DomObject<T> implements DomRepresentation<T> {
         this.constantMap = constantStringMap;
 
         this.attributeValueMap = new HashMap<>();
+        this.floatValueToAbsoluteValueMap = new HashMap<>();
     }
 
     /**
@@ -148,9 +150,10 @@ public class DomObject<T> implements DomRepresentation<T> {
         attributeValueMap.put(attribute, value);
     }
 
-    public void applyFloat(String attribute, Value<?, ?> value) {
+    public void applyFloat(String attribute, FloatValue<?> value) {
         onApplyFloat(attribute, value.getValue(Float.class));
         builder.apply(attribute, value.getValue(Float.class));
+        floatValueToAbsoluteValueMap.put(value, value.getValue());
         attributeValueMap.put(attribute, value);
     }
 
@@ -166,15 +169,17 @@ public class DomObject<T> implements DomRepresentation<T> {
         attributeValueMap.put(attribute, value);
     }
 
-    public void applyRelative(String attribute, Value<?, ?> value, float calculatedValue) {
+    public void applyRelative(String attribute, FloatValue<?> value, float calculatedValue) {
         onApplyFloat(attribute, calculatedValue);
         builder.apply(attribute, calculatedValue);
+        floatValueToAbsoluteValueMap.put(value, calculatedValue);
         attributeValueMap.put(attribute, value);
     }
 
-    public void applyDensity(String attribute, Value<?, ?> value, float calculatedValue) {
+    public void applyDensity(String attribute, FloatValue<?> value, float calculatedValue) {
         onApplyFloat(attribute, calculatedValue);
         builder.apply(attribute, calculatedValue);
+        floatValueToAbsoluteValueMap.put(value, calculatedValue);
         attributeValueMap.put(attribute, value);
     }
 
@@ -227,6 +232,7 @@ public class DomObject<T> implements DomRepresentation<T> {
         builder.preBuild();
     }
 
+    @SuppressWarnings("SuspiciousMethodCalls")
     @Override
     public void end() throws AttributeUnknownException {
         builder.postBuild();
@@ -239,12 +245,12 @@ public class DomObject<T> implements DomRepresentation<T> {
         String stringMaxHeight = constantMap.get(Constant.ELEMENT_MAX_HEIGHT);
         String stringMinHeight = constantMap.get(Constant.ELEMENT_MIN_HEIGHT);
 
-        float width = valueExists(stringWidth) ? getValue(stringWidth).getValue(Float.class) : 0;
-        float height = valueExists(stringHeight) ? getValue(stringHeight).getValue(Float.class) : 0;
-        float minWidth = valueExists(stringMinWidth) ? getValue(stringMinWidth).getValue(Float.class) : 0;
-        float maxWidth = valueExists(stringMaxWidth) ? getValue(stringMaxWidth).getValue(Float.class) : Float.MAX_VALUE;
-        float minHeight = valueExists(stringMinHeight) ? getValue(stringMinHeight).getValue(Float.class) : 0;
-        float maxHeight = valueExists(stringMaxHeight) ? getValue(stringMaxHeight).getValue(Float.class) : Float.MAX_VALUE;
+        float width = valueExists(stringWidth) ? floatValueToAbsoluteValueMap.get(getValue(stringWidth)) : 0;
+        float height = valueExists(stringHeight) ? floatValueToAbsoluteValueMap.get(getValue(stringHeight)) : 0;
+        float minWidth = valueExists(stringMinWidth) ? floatValueToAbsoluteValueMap.get(getValue(stringMinWidth)) : 0;
+        float maxWidth = valueExists(stringMaxWidth) ? floatValueToAbsoluteValueMap.get(getValue(stringMaxWidth)) : Float.MAX_VALUE;
+        float minHeight = valueExists(stringMinHeight) ? floatValueToAbsoluteValueMap.get(getValue(stringMinHeight)) : 0;
+        float maxHeight = valueExists(stringMaxHeight) ? floatValueToAbsoluteValueMap.get(getValue(stringMaxHeight)) : Float.MAX_VALUE;
 
         if (minWidth > width) {
             builder.apply(stringWidth, minWidth);

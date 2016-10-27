@@ -17,6 +17,10 @@ project(':xue') {
     apply plugin: "maven"
     apply plugin: 'signing'
 
+    test {
+        testLogging.showStandardStreams = true
+    }
+
     dependencies {
         compile "net.sf.kxml:kxml2:2.3.0"
     }
