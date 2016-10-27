@@ -2,5 +2,12 @@
 <elements>
     <BaseTag name="testOne" testName="Hallo" value="42" a="0.0" b="1.0">
         <BaseTag name="child" />
+        <BaseTag name="child2" />
+        <BaseTag name="child3" />
+    </BaseTag>
+    <BaseTag name="testTwo" testName="Hallo" value="42" a="0.0" b="1.0">
+        <BaseTag name="child4" />
+        <BaseTag name="child5" />
+        <BaseTag name="child6" />
     </BaseTag>
 </elements>
