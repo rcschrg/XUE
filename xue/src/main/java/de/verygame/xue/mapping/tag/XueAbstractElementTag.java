@@ -80,7 +80,7 @@ public abstract class XueAbstractElementTag<T> implements XueTag<T> {
         for (int i = 0; i < attributeGroups.size(); ++i) {
             AttributeGroup<? super T> a = attributeGroups.get(i);
             for (int j = 0; j < a.getGroupMeta().size(); ++j) {
-                AttributeGroupElementMeta meta = a.getGroupMeta().get(i);
+                AttributeGroupElementMeta meta = a.getGroupMeta().get(j);
                 if (meta.getName().equals(attribute)) {
                     if (!multiValueMap.containsKey(a)) {
                         multiValueMap.put(a, new HashMap<String, Object>());
@@ -107,7 +107,7 @@ public abstract class XueAbstractElementTag<T> implements XueTag<T> {
             Map<String, Object> entry = multiValueMap.get(a);
             for (Map.Entry<String,Object> valueEntry : entry.entrySet()) {
                 for (int j = 0; j < a.getGroupMeta().size(); ++j) {
-                    AttributeGroupElementMeta meta = a.getGroupMeta().get(i);
+                    AttributeGroupElementMeta meta = a.getGroupMeta().get(j);
                     if (valueEntry.getKey().equals(meta.getName())) {
                         a.apply(element, valueEntry.getValue(), valueEntry.getKey());
                         break;
