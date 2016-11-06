@@ -1,6 +1,7 @@
 package de.verygame.xue;
 
 import de.verygame.xue.handler.ElementsTagGroupHandler;
+import de.verygame.xue.input.XueInputEvent;
 import de.verygame.xue.mapping.TagMapping;
 import de.verygame.xue.mapping.tag.XueAbstractElementTag;
 import de.verygame.xue.mapping.tag.XueTag;
@@ -59,5 +60,15 @@ public class ASTest {
         ActionSequence as = xue.getActionSequenceMap().get("deactivateSequence");
         ActionSequence sas = xue.getActionSequenceMap().get("activateSequence");
         assertTrue(as != null && sas != null);
+
+        xue.onInputEvent(XueInputEvent.ACTIVATE);
+        xue.onUpdate(0.5f);
+        xue.onUpdate(0.5f);
+        xue.onUpdate(0.5f);
+
+        Counter counter1 = xue.getElementByName("test");
+        Counter counter2 = xue.getElementByName("test2");
+
+        assertTrue(counter1.i == 11 && counter2.i == 10);
     }
 }

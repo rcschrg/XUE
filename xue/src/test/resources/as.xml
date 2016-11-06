@@ -2,13 +2,16 @@
 <xue>
     <elements>
         <Counter name="test" i="0.0" />
+        <Counter name="test2" i="0.0" />
     </elements>
     <actionSequences>
         <actionSequence name="deactivateSequence" startOn="DEACTIVATE">
-            <basicAction name="first" target="test" attribute="i" interpolation="linear" startTime="0.0" stopTime="1.0" from="0.0" to="10.0" />
+            <basicAction name="first" target="test" attribute="i" interpolation="linear" startTime="0.0" stopTime="1.0" from="0.0" to="11.0" />
+            <basicAction name="second" target="test2" attribute="i" interpolation="linear" startTime="0.0" stopTime="1.0" from="0.0" to="10.0" />
         </actionSequence>
         <actionSequence name="activateSequence" startOn="ACTIVATE">
-            <basicAction name="second" target="test" attribute="i" interpolation="linear" startTime="0.0" stopTime="1.0" from="0.0" to="10.0" />
+            <basicAction name="first2" target="test" attribute="i" interpolation="linear" startTime="0.0" stopTime="1.0" from="0.0" to="11.0" />
+            <basicAction name="second2" target="test2" attribute="i" interpolation="linear" startTime="0.0" stopTime="1.0" from="0.0" to="10.0" />
         </actionSequence>
     </actionSequences>
 </xue>

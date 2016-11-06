@@ -16,13 +16,9 @@ import java.util.List;
 public class BasicActionAttributeTarget extends AbstractAttributeGroup<BasicAction> {
     private static final List<AttributeGroupElementMeta> GROUP_META = GroupMetaUtils.buildMetaList(new String[]{ "target", "attribute" },
             new Class<?>[]{ Object.class, String.class });
-    private static final BasicActionAttributeTarget instance = new BasicActionAttributeTarget();
 
     private XueTag<?> builder;
-
-    public static BasicActionAttributeTarget getInstance() {
-        return instance;
-    }
+    private String attribute;
 
     @Override
     public List<AttributeGroupElementMeta> getGroupMeta() {
@@ -36,16 +32,18 @@ public class BasicActionAttributeTarget extends AbstractAttributeGroup<BasicActi
 
     @AttributeHandler
     public void applyAttribute(BasicAction element, final String value) {
-        element.setActionCallback(new SimpleModifierCallback() {
-            @Override
-            protected void action(float v) {
-                builder.apply(value, v);
-            }
-        });
+        attribute = value;
     }
 
     @Override
     public void end(BasicAction element) {
+        element.setActionCallback(new SimpleModifierCallback() {
+            @Override
+            protected void action(float v) {
+                builder.apply(attribute, v);
+            }
+        });
+
         element.createModifier();
     }
 }

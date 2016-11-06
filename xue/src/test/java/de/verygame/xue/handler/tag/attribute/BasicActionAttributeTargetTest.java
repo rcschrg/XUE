@@ -16,7 +16,7 @@ import static org.mockito.Mockito.mock;
 @RunWith(MockitoJUnitRunner.class)
 public class BasicActionAttributeTargetTest {
 
-    BasicActionAttributeTarget basicActionAttributeTarget = BasicActionAttributeTarget.getInstance();
+    BasicActionAttributeTarget basicActionAttributeTarget = new BasicActionAttributeTarget();
     BasicAction action = mock(BasicAction.class);
 
     @Mock

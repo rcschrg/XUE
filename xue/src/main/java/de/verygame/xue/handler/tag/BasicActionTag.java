@@ -27,6 +27,6 @@ public class BasicActionTag extends XueAbstractElementTag<BasicAction> {
 
     @Override
     protected List<AttributeGroup<? super BasicAction>> defineAttributeGroups() {
-        return buildAttributeGroupList(BasicActionAttributeTarget.getInstance());
+        return buildAttributeGroupList(new BasicActionAttributeTarget());
     }
 }
