@@ -34,6 +34,7 @@ public class GuiXue<T> extends BasicXue<T> {
         core.addHandler(actionSequenceTagGroupHandler);
 
         this.addUpdateHandler(new ActionSequenceUpdateHandler());
+        this.addInputHandler(new ActionSequenceUpdateHandler());
         this.addInputHandler(new ResizeInputHandler<>());
     }
 

@@ -22,8 +22,9 @@ import static org.junit.Assert.assertTrue;
 @RunWith(MockitoJUnitRunner.class)
 public class ASTest {
 
-    private static class Counter {
-        int i = 0;
+    public static class Counter {
+        float i = 0;
+        public void setI(float i) { this.i = i;}
     }
 
     private static class CounterTag extends XueAbstractElementTag<Counter> {
@@ -34,7 +35,7 @@ public class ASTest {
 
         @Override
         protected List<Attribute<? super Counter, ?>> defineAttributes() {
-            return buildAttributeList(new SimpleGenericAttribute("counter"));
+            return buildAttributeList(new SimpleGenericAttribute<Counter, Float>("i"));
         }
 
         @Override

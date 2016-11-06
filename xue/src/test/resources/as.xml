@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <xue>
     <elements>
-        <Counter name="test" i="0" />
+        <Counter name="test" i="0.0" />
     </elements>
     <actionSequences>
         <actionSequence name="deactivateSequence" startOn="DEACTIVATE">
