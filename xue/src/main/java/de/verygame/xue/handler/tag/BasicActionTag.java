@@ -2,6 +2,7 @@ package de.verygame.xue.handler.tag;
 
 import de.verygame.xue.handler.tag.attribute.BasicActionAttributeTarget;
 import de.verygame.xue.handler.tag.attribute.BasicActionInterpolation;
+import de.verygame.xue.handler.tag.attribute.BasicActionSimpleAttribute;
 import de.verygame.xue.mapping.tag.XueAbstractElementTag;
 import de.verygame.xue.mapping.tag.attribute.Attribute;
 import de.verygame.xue.mapping.tag.attribute.AttributeGroup;
@@ -20,7 +21,8 @@ public class BasicActionTag extends XueAbstractElementTag<BasicAction> {
 
     @Override
     protected List<Attribute<? super BasicAction, ?>> defineAttributes() {
-        return buildAttributeList(BasicActionInterpolation.getInstance());
+        return buildAttributeList(BasicActionInterpolation.getInstance(), BasicActionSimpleAttribute.From.getInstance(), BasicActionSimpleAttribute.To.getInstance(),
+            BasicActionSimpleAttribute.StartTime.getInstance(), BasicActionSimpleAttribute.StopTime.getInstance());
     }
 
     @Override

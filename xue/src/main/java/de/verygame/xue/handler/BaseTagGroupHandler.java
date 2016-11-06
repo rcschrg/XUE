@@ -4,6 +4,7 @@ import de.verygame.xue.constants.Constant;
 import de.verygame.xue.exception.XueException;
 import de.verygame.xue.mapping.TagMapping;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,12 +48,12 @@ public abstract class BaseTagGroupHandler<T, D> implements TagGroupHandler<T, D>
     public List<TagMapping<? extends T>> getBuilderMappings() { return this.mapping; }
 
     @Override
-    public void startHandle(XmlPullParser xpp) throws XueException {
+    public void startHandle(XmlPullParser xpp) throws XueException, XmlPullParserException {
         //default
     }
 
     @Override
-    public void stopHandle(XmlPullParser xpp) throws XueException {
+    public void stopHandle(XmlPullParser xpp) throws XueException, XmlPullParserException {
         //default
     }
 

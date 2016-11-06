@@ -12,7 +12,8 @@ public enum Constant {
 
     ELEMENT_TAG("elements"),
     CONST_TAG("constants"),
-    AS_TAG("actionSequence"),
+    AS_TAG("actionSequences"),
+    AS_SUB_TAG("actionSequence"),
 
     ATT_STRING_ID("@string/"),
     ATT_CONST_ID("$"),

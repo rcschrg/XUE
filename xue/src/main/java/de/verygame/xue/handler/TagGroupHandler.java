@@ -1,13 +1,11 @@
 package de.verygame.xue.handler;
 
 import de.verygame.xue.constants.Constant;
-import de.verygame.xue.exception.AttributeUnknownException;
-import de.verygame.xue.exception.TagUnknownException;
-import de.verygame.xue.exception.XueException;
-import de.verygame.xue.exception.XueSyntaxException;
 import de.verygame.xue.dom.DomContainer;
+import de.verygame.xue.exception.XueException;
 import de.verygame.xue.mapping.TagMapping;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 import java.util.Map;
 
@@ -21,25 +19,24 @@ public interface TagGroupHandler<T, D> extends DomContainer<D> {
      *
      * @param xpp parser
      */
-    void startHandle(XmlPullParser xpp) throws XueException;
+    void startHandle(XmlPullParser xpp) throws XueException, XmlPullParserException;
 
     /**
      * Stops the handling of the group, means the end tag was reached.
      *
      * @param xpp parser
      */
-    void stopHandle(XmlPullParser xpp) throws XueException;
+    void stopHandle(XmlPullParser xpp) throws XueException, XmlPullParserException;
 
     /**
      * Called when a tag inside the specified ({@link #getName()}) tag has been reached.
      *
      * @param xpp parser of the xml
      *
-     * @throws XueSyntaxException
-     * @throws TagUnknownException
-     * @throws AttributeUnknownException
+     * @throws XueException
+     * @throws XmlPullParserException
      */
-    void handle(XmlPullParser xpp) throws XueException;
+    void handle(XmlPullParser xpp) throws XueException, XmlPullParserException;
 
     /**
      * Set the handling active

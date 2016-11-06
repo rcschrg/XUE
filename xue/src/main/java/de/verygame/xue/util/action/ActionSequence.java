@@ -3,6 +3,7 @@ package de.verygame.xue.util.action;
 import de.verygame.xue.input.XueInputEvent;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -31,6 +32,21 @@ public class ActionSequence {
             }
         }
         return max;
+    }
+
+    public int getActionCounter() {
+        return actions.size();
+    }
+
+    public Action getActionByIndex(int i) {
+        return actions.get(i);
+    }
+
+    /**
+     * @return an unmodifiable list
+     */
+    public List<Action> getActions() {
+        return Collections.unmodifiableList(actions);
     }
 
     public void setStartEvent(XueInputEvent startEvent) {

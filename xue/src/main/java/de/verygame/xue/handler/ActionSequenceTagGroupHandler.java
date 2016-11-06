@@ -2,19 +2,20 @@ package de.verygame.xue.handler;
 
 import de.verygame.xue.annotation.Dependency;
 import de.verygame.xue.constants.Constant;
-import de.verygame.xue.exception.ElementTagUnknownException;
-import de.verygame.xue.exception.XueException;
 import de.verygame.xue.dom.DomObject;
 import de.verygame.xue.dom.DomRepresentation;
+import de.verygame.xue.exception.ElementTagUnknownException;
+import de.verygame.xue.exception.XueException;
+import de.verygame.xue.handler.tag.BasicActionTag;
 import de.verygame.xue.input.XueInputEvent;
 import de.verygame.xue.mapping.TagMapping;
 import de.verygame.xue.mapping.tag.XueTag;
-import de.verygame.xue.handler.tag.BasicActionTag;
 import de.verygame.xue.util.DomUtils;
 import de.verygame.xue.util.XmlParserUtils;
 import de.verygame.xue.util.action.Action;
 import de.verygame.xue.util.action.ActionSequence;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,7 +23,7 @@ import java.util.Map;
 /**
  * @author Rico Schrage
  */
-public class ActionSequenceTagGroupHandler extends BaseTagGroupHandler<Action, DomRepresentation<? extends Action>> {
+public class ActionSequenceTagGroupHandler extends BaseTagGroupHandler<Action, DomRepresentation<Action>> {
 
     @Dependency
     private ElementsTagGroupHandler<?> tagHandler;
@@ -52,9 +53,12 @@ public class ActionSequenceTagGroupHandler extends BaseTagGroupHandler<Action, D
         return actionSequenceMap;
     }
 
-    @Override
-    public void startHandle(XmlPullParser xpp) throws XueException {
-        for (int i = 0; i  < xpp.getAttributeCount(); ++i) {
+    private void handleRootTag(XmlPullParser xpp) throws XmlPullParserException {
+        if (currentActionSequence != null) {
+            finishCurrentTag();
+        }
+
+        for (int i = 0; i < xpp.getAttributeCount(); ++i) {
             if (xpp.getAttributeName(i).equals(constantMap.get(Constant.ELEMENT_ID))) {
                 currentActionSequenceName = xpp.getAttributeValue(i);
             }
@@ -66,8 +70,20 @@ public class ActionSequenceTagGroupHandler extends BaseTagGroupHandler<Action, D
         currentActionSequence.setStartEvent(XueInputEvent.valueOf(xpp.getAttributeValue(null, "startOn")));
     }
 
+    private void finishCurrentTag() {
+        actionSequenceMap.put(currentActionSequenceName, currentActionSequence);
+
+        currentActionSequence = null;
+        currentActionSequenceName = null;
+    }
+
     @Override
-    public void handle(XmlPullParser xpp) throws XueException {
+    public void handle(XmlPullParser xpp) throws XmlPullParserException {
+        if (xpp.getName().equals(Constant.AS_SUB_TAG.toString())) {
+            handleRootTag(xpp);
+            return;
+        }
+
         String tagName = xpp.getName();
 
         XueTag<? extends Action> actionBuilder = null;
@@ -106,11 +122,7 @@ public class ActionSequenceTagGroupHandler extends BaseTagGroupHandler<Action, D
     }
 
     @Override
-    public void stopHandle(XmlPullParser xpp) {
-        actionSequenceMap.put(currentActionSequenceName, currentActionSequence);
-
-        currentActionSequence = null;
-        currentActionSequenceName = null;
+    public void stopHandle(XmlPullParser xpp) throws XueException, XmlPullParserException {
+        finishCurrentTag();
     }
-
 }

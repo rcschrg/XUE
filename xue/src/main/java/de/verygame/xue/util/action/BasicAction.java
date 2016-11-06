@@ -82,6 +82,20 @@ public class BasicAction implements Action {
     }
 
     @Override
+    public String toString() {
+        return "BasicAction{" +
+                "actionCallback=" + actionCallback +
+                ", modifier=" + modifier +
+                ", currentTime=" + currentTime +
+                ", startTime=" + startTime +
+                ", stopTime=" + stopTime +
+                ", to=" + to +
+                ", from=" + from +
+                ", easeFunction=" + easeFunction +
+                '}';
+    }
+
+    @Override
     public void reset() {
         currentTime = 0f;
         modifier.reset();

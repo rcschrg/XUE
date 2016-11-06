@@ -233,7 +233,7 @@ public class XueCore {
      * @throws AttributeUnknownException if an attribute is unknow.
      * @throws ElementTagUnknownException if a tag in <elements>...</elements> is unknown
      */
-    private void handleStartTag(XmlPullParser xpp) {
+    private void handleStartTag(XmlPullParser xpp) throws XmlPullParserException {
         if (!currentHandler.isActive() && currentHandler.getName().equals(xpp.getName())) {
             currentHandler.setActive(true);
             currentHandler.startHandle(xpp);
@@ -250,7 +250,7 @@ public class XueCore {
      *
      * @param xpp PullParser, which has been created with the xml resource.
      */
-    private void handleEndTag(XmlPullParser xpp) {
+    private void handleEndTag(XmlPullParser xpp) throws XmlPullParserException {
         if (currentHandler.getName().equals(xpp.getName()) && currentHandler.isActive()) {
             currentHandler.setActive(false);
             currentHandler.stopHandle(xpp);
