@@ -67,7 +67,7 @@ public class ElementsTagGroupHandler<T> extends BaseTagGroupHandler<T, DomObject
         if (elementBuilder == null) {
             throw new ElementTagUnknownException("Tag " + tag + " is unknown.");
         }
-        if (xpp.getDepth()-1 <= scopeStack.size() && !scopeStack.isEmpty()) {
+        while (xpp.getDepth()-1 <= scopeStack.size() && !scopeStack.isEmpty()) {
             scopeStack.pop();
         }
         XueTag<?> parentTag = scopeStack.peek();

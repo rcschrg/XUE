@@ -124,7 +124,7 @@ public class APITest {
 
         @Override
         public void applyChild(Object child) {
-            System.out.print("1");
+            System.out.print(this + "1");
             super.applyChild(child);
         }
 
