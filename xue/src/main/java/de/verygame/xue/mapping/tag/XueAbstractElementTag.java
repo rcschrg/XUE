@@ -1,5 +1,6 @@
 package de.verygame.xue.mapping.tag;
 
+import de.verygame.xue.annotation.Name;
 import de.verygame.xue.input.XueInputEvent;
 import de.verygame.xue.mapping.tag.attribute.Attribute;
 import de.verygame.xue.mapping.tag.attribute.AttributeGroup;
@@ -22,6 +23,13 @@ public abstract class XueAbstractElementTag<T> implements XueTag<T> {
         this.element = element;
         this.multiValueMap = new HashMap<>();
         this.xueTagList = new ArrayList<>();
+    }
+
+    private String fetchName(Attribute<?, ?> attribute) {
+        if (attribute.getClass().isAnnotationPresent(Name.class)) {
+            return attribute.getClass().getAnnotation(Name.class).value();
+        }
+        return attribute.getName();
     }
 
     protected abstract List<Attribute<? super T, ?>> defineAttributes();
@@ -71,7 +79,7 @@ public abstract class XueAbstractElementTag<T> implements XueTag<T> {
     public <V> void apply(String attribute, V value) {
         for (int i = 0; i < attributes.size(); ++i) {
             Attribute<? super T, ?> a = attributes.get(i);
-            if (a.getName().equals(attribute)) {
+            if (fetchName(a).equals(attribute)) {
                 Attribute<T, V> a2 = (Attribute<T, V>) a;
                 a2.apply(element, value);
                 return;
