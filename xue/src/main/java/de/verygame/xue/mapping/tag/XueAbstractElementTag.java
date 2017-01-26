@@ -82,6 +82,7 @@ public abstract class XueAbstractElementTag<T> implements XueTag<T> {
             if (fetchName(a).equals(attribute)) {
                 Attribute<T, V> a2 = (Attribute<T, V>) a;
                 a2.apply(element, value);
+		applyToLinkedXueTags(attribute, value);
                 return;
             }
         }
@@ -94,10 +95,15 @@ public abstract class XueAbstractElementTag<T> implements XueTag<T> {
                         multiValueMap.put(a, new HashMap<String, Object>());
                     }
                     multiValueMap.get(a).put(attribute, value);
+		    applyToLinkedXueTags(attribute, value);
                     return;
                 }
             }
         }
+	applyToLinkedXueTags(attribute, value);
+    }
+
+    public <V> void applyToLinkedXueTags(String attribute, V value) {
         for (int c = 0;  c < xueTagList.size(); ++c) {
             xueTagList.get(c).apply(attribute, value);
         }
