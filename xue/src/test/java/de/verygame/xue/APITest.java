@@ -124,7 +124,7 @@ public class APITest {
 
         @Override
         public void applyChild(Object child) {
-            System.out.print(this + "1");
+            System.out.print(this.element.name + ":" + ((TestBase)child).name + " ");
             super.applyChild(child);
         }
 
@@ -152,7 +152,7 @@ public class APITest {
         assertEquals(42, xue.getElementByName("testOne").value);
         assertEquals(0.0f, xue.getElementByName("testOne").child.a, 0.001f);
         assertEquals(1.0f, xue.getElementByName("testOne").child.b, 0.001f);
-        assertEquals(8, xue.getElementsByTagName("BaseTag").size());
+        assertEquals(9, xue.getElementsByTagName("BaseTag").size());
     }
 
 }

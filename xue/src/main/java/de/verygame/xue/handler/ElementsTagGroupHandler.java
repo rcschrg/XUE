@@ -76,11 +76,8 @@ public class ElementsTagGroupHandler<T> extends BaseTagGroupHandler<T, DomObject
 
         DomObject<? extends T> domElement = new DomObject<>(constantMap, elementBuilder, globalMappings, constantTagHandler.getDom());
         domElement.setLayer(scopeStack.size());
-        DomUtils.applyTagToDom(domElement, constantMap.get(Constant.ELEMENT_ID), xpp);
+        DomUtils.applyTagToDom(domElement, tag, constantMap.get(Constant.ELEMENT_ID), xpp, domList);
 
-        if (domElement.getName() == null) {
-            throw new XueException("The name attribute is missing!");
-        }
         if (xpp.getDepth()-1 > scopeStack.size()-1 && parentTag != null) {
             parentTag.applyChild(elementBuilder.getElement());
         }

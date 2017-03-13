@@ -306,4 +306,38 @@ public class DomObject<T> implements DomRepresentation<T> {
         return builder;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        DomObject<?> domObject = (DomObject<?>) o;
+
+        if (layer != domObject.layer) return false;
+        if (builder != null ? !builder.equals(domObject.builder) : domObject.builder != null) return false;
+        if (attributeValueMap != null ? !attributeValueMap.equals(domObject.attributeValueMap) : domObject.attributeValueMap != null)
+            return false;
+        if (floatValueToAbsoluteValueMap != null ? !floatValueToAbsoluteValueMap.equals(domObject.floatValueToAbsoluteValueMap) : domObject.floatValueToAbsoluteValueMap != null)
+            return false;
+        if (mappings != null ? !mappings.equals(domObject.mappings) : domObject.mappings != null) return false;
+        if (constantDom != null ? !constantDom.equals(domObject.constantDom) : domObject.constantDom != null)
+            return false;
+        if (constantMap != null ? !constantMap.equals(domObject.constantMap) : domObject.constantMap != null)
+            return false;
+        return name != null ? name.equals(domObject.name) : domObject.name == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = builder != null ? builder.hashCode() : 0;
+        result = 31 * result + (attributeValueMap != null ? attributeValueMap.hashCode() : 0);
+        result = 31 * result + (floatValueToAbsoluteValueMap != null ? floatValueToAbsoluteValueMap.hashCode() : 0);
+        result = 31 * result + (mappings != null ? mappings.hashCode() : 0);
+        result = 31 * result + (constantDom != null ? constantDom.hashCode() : 0);
+        result = 31 * result + (constantMap != null ? constantMap.hashCode() : 0);
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + layer;
+        return result;
+    }
 }

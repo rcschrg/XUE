@@ -24,7 +24,7 @@ public class DomUtils {
         throw new IllegalArgumentException("There does not exists a DOM element with the name " + name);
     }
 
-    public static <T> void applyTagToDom(DomRepresentation<T> domRepresentation, String idString, XmlPullParser xpp) {
+    public static <T> void applyTagToDom(DomRepresentation<?> domRepresentation, String tag, String idString, XmlPullParser xpp, List<? extends DomRepresentation<?>> other) {
         domRepresentation.begin();
         for (int i = 0; i < xpp.getAttributeCount(); ++i) {
 
@@ -39,6 +39,31 @@ public class DomUtils {
             domRepresentation.apply(attributeName, attributeValue);
         }
         domRepresentation.end();
+
+        if (other != null) {
+            if (domRepresentation.getName() == null) {
+                int num = 0;
+                boolean eq = false;
+                while (true) {
+                    for (DomRepresentation<?> aDomList : other) {
+                        if (aDomList.getName().equals(tag + num)) {
+                            eq = true;
+                            break;
+                        }
+                    }
+                    if (eq) {
+                        num++;
+                        eq = false;
+                        continue;
+                    }
+                    break;
+                }
+                domRepresentation.setName(tag + num);
+            }
+        }
+        else {
+            domRepresentation.setName(String.valueOf(domRepresentation.hashCode()));
+        }
     }
 
 }

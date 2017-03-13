@@ -56,7 +56,7 @@ public class DomUtilsTest {
         xmlPullParser.next();
 
         //when
-        DomUtils.applyTagToDom(domRepresentation, "name", xmlPullParser);
+        DomUtils.applyTagToDom(domRepresentation, "a", "name", xmlPullParser, null);
 
         //then
         verify(domRepresentation).apply("c", "a");
