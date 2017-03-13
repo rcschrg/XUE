@@ -10,6 +10,11 @@ import de.verygame.xue.input.XueInputEvent;
 public abstract class AbstractAttribute<T, V> implements Attribute<T, V> {
 
     @Override
+    public String getName() {
+        return null;
+    }
+
+    @Override
     public void begin(T element) {
         //default: do nothing
     }

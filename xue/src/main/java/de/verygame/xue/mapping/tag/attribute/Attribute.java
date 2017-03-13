@@ -8,7 +8,6 @@ import de.verygame.xue.input.XueUpdateHandler;
  */
 public interface Attribute<T, V> extends XueInputHandler, XueUpdateHandler {
     String getName();
-
     void begin(T element);
     void apply(T element, V value);
     void end(T element);
