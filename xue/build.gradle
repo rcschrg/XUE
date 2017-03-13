@@ -21,7 +21,7 @@ ext {
     devEmail = "rcschrg@verygame.de"
 }
 
-
+/*
 task javadocJar (type: Jar, dependsOn: javadoc) {
     classifier = 'javadoc'
     from javadoc
@@ -82,7 +82,7 @@ uploadArchives {
             }
         }
     }
-} 
+} */
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
 sourceSets.main.java.srcDirs = [ "src/main/java" ]
