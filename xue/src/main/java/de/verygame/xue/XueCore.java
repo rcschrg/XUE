@@ -8,14 +8,16 @@ import de.verygame.xue.exception.*;
 import de.verygame.xue.handler.TagGroupHandler;
 import de.verygame.xue.mapping.TagMapping;
 import de.verygame.xue.util.InjectionUtils;
+import de.verygame.xue.util.StreamUtils;
 import org.kxml2.io.KXmlParser;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by Rico on 10.07.2015.
@@ -178,14 +180,30 @@ public class XueCore {
      * @throws ElementTagUnknownException see {@link ElementTagUnknownException}
      */
     public void load(InputStream inputXml) {
-        if (tagGroupHandlerList.isEmpty() || closed.size() == tagGroupHandlerList.size())
+        if (tagGroupHandlerList.isEmpty() || closed.size() == tagGroupHandlerList.size()) {
             throw new IllegalArgumentException();
-
+        }
         try {
-            inputXml.mark(Integer.MAX_VALUE);
+            boolean finished = false;
+            String xml = StreamUtils.convertStreamToString(inputXml);
+            while (!finished) {
+                finished = true;
+                Pattern pattern = Pattern.compile("<" + Constant.XUE_INPUT_TAG_NAME + " " + Constant.XUE_INPUT_SRC_ATT + "?=?\"(.*)\".*/>");
+                Matcher m = pattern.matcher(xml);
+                StringBuffer sb = new StringBuffer();
+                while (m.find()) {
+                    String src = m.group(1);
+                    m.appendReplacement(sb, StreamUtils.convertStreamToString(getClass().getResourceAsStream(src)));
+                    finished = false;
+                }
+                m.appendTail(sb);
+                xml = sb.toString();
+            }
             currentHandler = calculateNextTagHandler();
             while (currentHandler != null) {
                 XmlPullParser xpp = new KXmlParser();
+                inputXml = new ByteArrayInputStream(xml.getBytes());
+                inputXml.mark(Integer.MAX_VALUE);
                 xpp.setInput(inputXml, ENCODING);
                 while (xpp.getEventType() != XmlPullParser.END_DOCUMENT) {
                     switch (xpp.getEventType()) {
@@ -243,6 +261,13 @@ public class XueCore {
         if (currentHandler.isActive()) {
             currentHandler.handle(xpp);
         }
+    }
+
+    private String handleXueInput(XmlPullParser xpp) {
+        if (xpp.getAttributeName(0).equals(Constant.XUE_INPUT_SRC_ATT.toString())) {
+            return xpp.getAttributeValue(0);
+        }
+        return null;
     }
 
     /**

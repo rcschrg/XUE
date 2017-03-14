@@ -38,7 +38,9 @@ public enum Constant {
     ELEMENT_MAX_HEIGHT("maxHeight"),
     ELEMENT_MIN_WIDTH("minWidth"),
     ELEMENT_MIN_HEIGHT("minHeight"),
-    ACTION_TARGET_ID("target");
+    ACTION_TARGET_ID("target"),
+    XUE_INPUT_TAG_NAME("xueInput"),
+    XUE_INPUT_SRC_ATT("src");
 
     private static final Map<Constant, String> defaultMap = new EnumMap<>(Constant.class);
 

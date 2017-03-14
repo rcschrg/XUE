@@ -1,0 +1,3 @@
+<BaseTag name="child3" testName="c5">
+    <BaseTag name="child7" testName="c6"/>
+</BaseTag>

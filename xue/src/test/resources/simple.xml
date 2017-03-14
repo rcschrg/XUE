@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<elements>
-    <BaseTag name="testOne" testName="Hallo" value="42" a="0.0" b="1.0">
-        <BaseTag name="child" testName="c"/>
-        <BaseTag name="child2" testName="c2"/>
-        <BaseTag name="child3" testName="c3">
-            <BaseTag name="child7" testName="c4"/>
+<xue>
+    <elements>
+        <BaseTag name="testOne" testName="Hallo" value="42" a="0.0" b="1.0">
+            <BaseTag name="child" testName="c"/>
+            <BaseTag name="child2" testName="c2"/>
+            <BaseTag name="child3" testName="c3">
+                <BaseTag name="child7" testName="c4"/>
+            </BaseTag>
+            <BaseTag name="child3" testName="c5">
+                <BaseTag name="child7" testName="c6"/>
+            </BaseTag>
         </BaseTag>
-        <BaseTag name="child3" testName="c5">
-            <BaseTag name="child7" testName="c6"/>
+        <BaseTag name="testTwo" testName="Hallo" value="42" a="0.0" b="1.0">
+            <BaseTag name="child4" />
+            <BaseTag name="child5" />
+            <BaseTag name="child6" />
         </BaseTag>
-    </BaseTag>
-    <BaseTag name="testTwo" testName="Hallo" value="42" a="0.0" b="1.0">
-        <BaseTag name="child4" />
-        <BaseTag name="child5" />
-        <BaseTag name="child6" />
-    </BaseTag>
-</elements>
+        <xueInput src="/input.xml" />
+    </elements>
+</xue>
