@@ -97,7 +97,7 @@ public class XueCore {
         this.tagGroupHandlerList.add(tagGroupHandler);
     }
 
-    public <E, D> Map<String, D> getDom(Class<TagGroupHandler<E, D>> tagGroupHandlerClass) {
+    public <E, D extends DomRepresentation<?>> Map<String, D> getDom(Class<TagGroupHandler<E, D>> tagGroupHandlerClass) {
         for (TagGroupHandler<?, ?> t : tagGroupHandlerList) {
             if (t.getClass() == tagGroupHandlerClass) {
                 //noinspection unchecked
@@ -119,7 +119,7 @@ public class XueCore {
      * @param tagMapping mapping
      * @param <B> makes sure that the tagHandler und tagMapping fit together
      */
-    public <B, D> void addMapping(Class<? extends TagGroupHandler<B, D>> tagHandler, TagMapping<B> tagMapping) {
+    public <B, D extends DomRepresentation<?>> void addMapping(Class<? extends TagGroupHandler<B, D>> tagHandler, TagMapping<B> tagMapping) {
         addMappingUnsafe(tagHandler, tagMapping);
     }
 
@@ -169,6 +169,19 @@ public class XueCore {
         throw new IllegalArgumentException(handlerClass + " is not part of this core!");
     }
 
+    public void loadDirectory(File directory) throws FileNotFoundException {
+        if (!directory.isDirectory()) {
+            throw new XueException("The object have to be a directory!");
+        }
+        File[] files = directory.listFiles();
+        if (files == null) {
+            throw new XueException("There are no listable files in this directory!");
+        }
+        for (File file : files) {
+            load(new FileInputStream(file), file.getName());
+        }
+    }
+
     /**
      * Creates all elements specified in xml-file, which has been used to create the PullParser.
      *
@@ -179,7 +192,7 @@ public class XueCore {
      * @throws AttributeUnknownException see {@link AttributeUnknownException}
      * @throws ElementTagUnknownException see {@link ElementTagUnknownException}
      */
-    public void load(InputStream inputXml) {
+    public void load(InputStream inputXml, String filename) {
         if (tagGroupHandlerList.isEmpty() || closed.size() == tagGroupHandlerList.size()) {
             throw new IllegalArgumentException();
         }
@@ -200,6 +213,7 @@ public class XueCore {
                 xml = sb.toString();
             }
             currentHandler = calculateNextTagHandler();
+            currentHandler.setDomain(filename);
             while (currentHandler != null) {
                 XmlPullParser xpp = new KXmlParser();
                 inputXml = new ByteArrayInputStream(xml.getBytes());

@@ -2,7 +2,7 @@ sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
 group = 'de.verygame.xue'
-version = '0.3'
+version = '0.3.1'
 archivesBaseName = 'XUE'
 
 ext {
@@ -82,7 +82,7 @@ uploadArchives {
             }
         }
     }
-} */
+}*/
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
 sourceSets.main.java.srcDirs = [ "src/main/java" ]

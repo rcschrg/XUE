@@ -90,7 +90,7 @@ public class ElementsTagGroupHandler<T> extends BaseTagGroupHandler<T, DomObject
             parentTag.applyChild(elementBuilder.getElement());
         }
 
-        domList.add(domElement);
+        addToDom(domElement);
     }
 
     @Override

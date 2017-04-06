@@ -84,7 +84,7 @@ public class XueCoreTest {
 
     @Test
     public void testForCorrectParsing() throws XueException, XmlPullParserException, IOException {
-        core.load(inputStream);
+        core.load(inputStream, "");
         Map<String, Object> constMap = core.getResult(ConstantTagGroupHandler.class, Object.class);
         Map<String, Object> elementMap = core.getResultUnsafe(ElementsTagGroupHandler.class, Object.class);
         assertTrue("Size is " + constMap.size() + " instead of the expected 3", constMap.size() == 3);

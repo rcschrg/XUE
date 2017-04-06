@@ -10,7 +10,6 @@ import de.verygame.xue.mapping.TagMapping;
 import de.verygame.xue.mapping.tag.XueTag;
 import de.verygame.xue.util.InjectionUtils;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -29,17 +28,12 @@ public class BasicXue<T> extends AbstractXue {
     /** see {@link #bind(Object)} */
     protected Object bindTarget;
 
-    public BasicXue(InputStream xml) {
-        this(xml, new DummyGlobalMappings<T>());
+    public BasicXue() {
+        this(new DummyGlobalMappings<T>());
     }
 
-    /**
-     * Creates a container with the given mappings.
-     *
-     * @param xml xml
-     */
-    public BasicXue(InputStream xml, GlobalMappings<T> globalMappings) {
-        super(xml);
+    public BasicXue(GlobalMappings<T> globalMappings) {
+        super();
 
         this.elementsTagGroupHandler = new ElementsTagGroupHandler<>(globalMappings);
 

@@ -19,6 +19,9 @@ public interface DomRepresentation<T> {
     String getName();
     void setName(String name);
 
+    String getDomain();
+    void setDomain(String domain);
+
     Value<?, ?> getValue(String attribute);
     Map<String, Value<?, ?>> getValues();
     boolean valueExists(String... attribute);

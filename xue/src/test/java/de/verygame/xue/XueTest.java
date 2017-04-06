@@ -22,7 +22,8 @@ public class XueTest {
 
     @Before
     public void setUp() throws Exception {
-        xue = new BasicXue<>(new ByteArrayInputStream("".getBytes()));
+        xue = new BasicXue<>();
+        xue.addFile(new ByteArrayInputStream("".getBytes()), "");
     }
 
     @Test

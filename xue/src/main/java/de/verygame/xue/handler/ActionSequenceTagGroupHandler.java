@@ -118,7 +118,7 @@ public class ActionSequenceTagGroupHandler extends BaseTagGroupHandler<Action, D
 
         currentActionSequence.addAction(actionBuilder.getElement());
 
-        domList.add(domObject);
+        addToDom(domObject);
     }
 
     @Override

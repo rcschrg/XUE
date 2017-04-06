@@ -26,6 +26,7 @@ public class DomObject<T> implements DomRepresentation<T> {
     private final List<DomObject<?>> constantDom;
     protected final Map<Constant, String> constantMap;
     protected String name;
+    protected String domain;
     private int layer;
 
     public DomObject(Map<Constant, String> constantStringMap, XueTag<? extends T> builder) {
@@ -275,6 +276,16 @@ public class DomObject<T> implements DomRepresentation<T> {
     @Override
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String getDomain() {
+        return domain;
+    }
+
+    @Override
+    public void setDomain(String domain) {
+        this.domain = domain;
     }
 
     @Override

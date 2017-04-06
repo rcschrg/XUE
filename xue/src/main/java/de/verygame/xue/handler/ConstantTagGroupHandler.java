@@ -66,7 +66,7 @@ public class ConstantTagGroupHandler extends BaseTagGroupHandler<Object, DomObje
         }
         domObject.end();
 
-        domList.add(domObject);
+        addToDom(domObject);
     }
 
     /**

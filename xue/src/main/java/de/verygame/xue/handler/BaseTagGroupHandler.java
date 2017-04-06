@@ -1,6 +1,7 @@
 package de.verygame.xue.handler;
 
 import de.verygame.xue.constants.Constant;
+import de.verygame.xue.dom.DomRepresentation;
 import de.verygame.xue.exception.XueException;
 import de.verygame.xue.mapping.TagMapping;
 import org.xmlpull.v1.XmlPullParser;
@@ -16,9 +17,11 @@ import java.util.Map;
  * Convinient abstract implementation of the {@link TagGroupHandler} interface, which provides some default implementations
  * of the trivial methods.
  */
-public abstract class BaseTagGroupHandler<T, D> implements TagGroupHandler<T, D> {
+public abstract class BaseTagGroupHandler<T, D extends DomRepresentation<?>> implements TagGroupHandler<T, D> {
+    private static final String DEFAULT_DOMAIN = "default";
 
     private boolean active = false;
+    private String currentDomain = DEFAULT_DOMAIN;
     private Constant nameConstant;
 
     protected Map<Constant, String> constantMap;
@@ -34,6 +37,17 @@ public abstract class BaseTagGroupHandler<T, D> implements TagGroupHandler<T, D>
         this.constantMap = constantMap;
         this.domList = new ArrayList<>();
         this.mapping = new ArrayList<>();
+    }
+
+    @Override
+    public void setDomain(String newDomain) {
+        this.currentDomain = newDomain;
+    }
+
+    @Override
+    public void addToDom(D domElement) {
+        domElement.setDomain(currentDomain);
+        domList.add(domElement);
     }
 
     public void setConstantMap(Map<Constant, String> constantMap) {

@@ -143,7 +143,8 @@ public class APITest {
 
     @Test
     public void testSimpleUsage() throws Exception{
-        BasicXue<TestBase> xue = new BasicXue<>(getClass().getResourceAsStream("/simple.xml"));
+        BasicXue<TestBase> xue = new BasicXue<>();
+        xue.addFile(getClass().getResourceAsStream("/simple.xml"), "");
         xue.addMappingUnsafe(ElementsTagGroupHandler.class, testBaseTagMapping);
 
         xue.load();

@@ -1,7 +1,9 @@
 package de.verygame.xue;
 
+import de.verygame.util.Tuple;
 import de.verygame.xue.annotation.Dependency;
 import de.verygame.xue.constants.Constant;
+import de.verygame.xue.dom.DomRepresentation;
 import de.verygame.xue.exception.XueException;
 import de.verygame.xue.handler.TagGroupHandler;
 import de.verygame.xue.input.XueInputEvent;
@@ -10,6 +12,9 @@ import de.verygame.xue.input.XueUpdateHandler;
 import de.verygame.xue.mapping.TagMapping;
 import de.verygame.xue.util.InjectionUtils;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,21 +26,51 @@ import java.util.List;
  */
 public abstract class AbstractXue {
     protected final XueCore core;
-    /** Resource of the menu, all elements of the menu are described in this file */
-    protected final InputStream resource;
     /** List of input handlers, which are used to react to input events */
     protected List<XueInputHandler> inputHandlers;
     /** List of update handlers, which are used to react to update ticks */
     protected List<XueUpdateHandler> updateHandlers;
 
-    /**
-     * Creates a container with the given mappings.
-     */
-    public AbstractXue(InputStream xml) {
+    protected List<Tuple<InputStream, String>> files;
+    protected List<File> dirs;
+
+    public AbstractXue() {
         this.core = new XueCore();
-        this.resource = xml;
         this.updateHandlers = new ArrayList<>();
         this.inputHandlers = new ArrayList<>();
+        this.files = new ArrayList<>();
+        this.dirs = new ArrayList<>();
+    }
+
+    public AbstractXue(InputStream xml, String fileName) {
+        this();
+
+        files.add(new Tuple<>(xml, fileName));
+    }
+
+    public void addFile(File file) {
+        if (!file.isFile()) {
+            throw new IllegalArgumentException("The object have to be a file!");
+        }
+
+        try {
+            Tuple<InputStream, String> tuple = new Tuple<InputStream, String>(new FileInputStream(file), file.getName());
+            files.add(tuple);
+        }
+        catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void addFile(InputStream xml, String fileName) {
+        files.add(new Tuple<>(xml, fileName));
+    }
+
+    public void addDir(File directory)  {
+        if (!directory.isDirectory()) {
+            throw new IllegalArgumentException("The object have to be a directory!");
+        }
+        dirs.add(directory);
     }
 
     public void overwriteConstant(Constant constant, String value) {
@@ -64,7 +99,7 @@ public abstract class AbstractXue {
         this.core.addMappingUnsafe(tagHandler, tagMapping);
     }
 
-    public <B, D> void addMapping(Class<TagGroupHandler<B, D>> tagHandler, TagMapping<B> tagMapping) {
+    public <B, D extends DomRepresentation<?>> void addMapping(Class<TagGroupHandler<B, D>> tagHandler, TagMapping<B> tagMapping) {
         this.core.addMappingUnsafe(tagHandler, tagMapping);
     }
 
@@ -82,10 +117,15 @@ public abstract class AbstractXue {
         //nothing to do
     }
 
-    public void load() throws XueException {
+    public void load() throws XueException, FileNotFoundException {
         this.preLoad();
 
-        this.core.load(resource);
+        for (Tuple<InputStream, String> file : files) {
+            core.load(file.getFirst(), file.getSecond());
+        }
+        for (File dir : dirs) {
+            core.loadDirectory(dir);
+        }
 
         this.postLoad();
     }

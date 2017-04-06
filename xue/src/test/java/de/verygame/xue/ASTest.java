@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 
 import static org.junit.Assert.assertTrue;
@@ -47,7 +48,8 @@ public class ASTest {
 
     @Test
     public void testLoad() {
-        GuiXue<Counter> xue  = new GuiXue<Counter>(getClass().getResourceAsStream("/as.xml"));
+        GuiXue<Counter> xue  = new GuiXue<Counter>();
+        xue.addFile(getClass().getResourceAsStream("/as.xml"), "");
         xue.addMappingUnsafe(ElementsTagGroupHandler.class, new TagMapping<Object>() {
             @Override
             public XueTag<?> createTag(String tagClass) {
@@ -55,7 +57,12 @@ public class ASTest {
             }
         });
 
-        xue.load();
+        try {
+            xue.load();
+        }
+        catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
 
         ActionSequence as = xue.getActionSequenceMap().get("deactivateSequence");
         ActionSequence sas = xue.getActionSequenceMap().get("activateSequence");

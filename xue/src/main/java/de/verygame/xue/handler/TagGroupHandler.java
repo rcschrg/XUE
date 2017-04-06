@@ -2,6 +2,7 @@ package de.verygame.xue.handler;
 
 import de.verygame.xue.constants.Constant;
 import de.verygame.xue.dom.DomContainer;
+import de.verygame.xue.dom.DomRepresentation;
 import de.verygame.xue.exception.XueException;
 import de.verygame.xue.mapping.TagMapping;
 import org.xmlpull.v1.XmlPullParser;
@@ -12,7 +13,7 @@ import java.util.Map;
 /**
  * @author Rico Schrage
  */
-public interface TagGroupHandler<T, D> extends DomContainer<D> {
+public interface TagGroupHandler<T, D extends DomRepresentation<?>> extends DomContainer<D> {
 
     /**
      * Starts the handling of the group, means the start tag was reached.
@@ -60,6 +61,8 @@ public interface TagGroupHandler<T, D> extends DomContainer<D> {
      */
     void addBuilderMapping(TagMapping<? extends T> mapping);
 
-    public void setConstantMap(Map<Constant, String> constantMap);
+    void setDomain(String newDomain);
+    void addToDom(D e);
+    void setConstantMap(Map<Constant, String> constantMap);
 
 }

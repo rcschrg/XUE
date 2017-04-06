@@ -8,7 +8,6 @@ import de.verygame.xue.mapping.DummyGlobalMappings;
 import de.verygame.xue.mapping.GlobalMappings;
 import de.verygame.xue.util.action.ActionSequence;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -22,12 +21,12 @@ public class GuiXue<T> extends BasicXue<T> {
     private final ActionSequenceTagGroupHandler actionSequenceTagGroupHandler;
     private final List<LoadTask> taskList;
 
-    public GuiXue(InputStream xml) {
-        this(xml, new DummyGlobalMappings<T>());
+    public GuiXue() {
+        this(new DummyGlobalMappings<T>());
     }
 
-    public GuiXue(InputStream xml, GlobalMappings<T> globalMappings) {
-        super(xml, globalMappings);
+    public GuiXue(GlobalMappings<T> globalMappings) {
+        super(globalMappings);
 
         taskList = new ArrayList<>();
         actionSequenceTagGroupHandler = new ActionSequenceTagGroupHandler(Constant.obtainDefaultMap());
