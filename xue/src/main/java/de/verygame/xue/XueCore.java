@@ -179,6 +179,7 @@ public class XueCore {
         }
         for (File file : files) {
             load(new FileInputStream(file), file.getName());
+            closed.clear();
         }
     }
 
@@ -213,6 +214,7 @@ public class XueCore {
                 xml = sb.toString();
             }
             currentHandler = calculateNextTagHandler();
+            //noinspection ConstantConditions intellij too bad not true fakenews!
             currentHandler.setDomain(filename);
             while (currentHandler != null) {
                 XmlPullParser xpp = new KXmlParser();

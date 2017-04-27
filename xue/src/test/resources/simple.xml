@@ -5,9 +5,9 @@
             <BaseTag name="child" testName="c"/>
             <BaseTag name="child2" testName="c2"/>
             <BaseTag name="child3" testName="c3">
-                <BaseTag name="child7" testName="c4"/>
+                <BaseTag name="child27" testName="c4"/>
             </BaseTag>
-            <BaseTag name="child3" testName="c5">
+            <BaseTag name="child31" testName="c5">
                 <BaseTag name="child7" testName="c6"/>
             </BaseTag>
         </BaseTag>
@@ -16,6 +16,6 @@
             <BaseTag name="child5" />
             <BaseTag name="child6" />
         </BaseTag>
-        <xueInput src="/input.xml" />
+        <<xueInput src="/input.xml" />
     </elements>
 </xue>
