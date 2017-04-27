@@ -16,6 +16,6 @@
             <BaseTag name="child5" />
             <BaseTag name="child6" />
         </BaseTag>
-        <<xueInput src="/input.xml" />
+        <xueInput src="/input.xml" />
     </elements>
 </xue>
