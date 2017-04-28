@@ -96,6 +96,7 @@ public class XueCoreTest {
     public void testCorrectLoadingDir() throws Exception {
         core.loadDirectory(new File("src/test/resources/"));
         assertTrue(core.getResultUnsafe(ElementsTagGroupHandler.class, "simple.xml", Object.class).size() == 11);
+        assertTrue(core.getResultUnsafe(ElementsTagGroupHandler.class, "as.xml", Object.class).size() == 2);
     }
 
 }
