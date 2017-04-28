@@ -99,6 +99,6 @@ public class ConstantTagGroupHandler extends BaseTagGroupHandler<Object, DomObje
             throw new XueSyntaxException(xpp.getLineNumber(), "Missing name attribute!");
         }
 
-        domList.add(dom);
+        addToDom(dom);
     }
 }

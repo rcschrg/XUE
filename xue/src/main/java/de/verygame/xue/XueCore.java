@@ -140,9 +140,9 @@ public class XueCore {
         }
     }
 
-    public <B> Map<String, B> getResult(Class<? extends TagGroupHandler<B, ?>> handlerClass, Class<B> resultClass) {
+    public <B> Map<String, B> getResult(Class<? extends TagGroupHandler<B, ?>> handlerClass, String domain, Class<B> resultClass) {
         //noinspection unchecked
-        return getResultUnsafe(handlerClass, resultClass);
+        return getResultUnsafe(handlerClass, domain, resultClass);
     }
 
     /**
@@ -152,16 +152,18 @@ public class XueCore {
     * @param <B> ensures a correct return type
     * @return Result of the handlerClass
     */
-    public <B> Map<String, B> getResultUnsafe(Class<? extends TagGroupHandler> handlerClass, Class<B> resultClass) {
+    public <B> Map<String, B> getResultUnsafe(Class<? extends TagGroupHandler> handlerClass, String domain, Class<B> resultClass) {
         for (TagGroupHandler<?, ?> t : tagGroupHandlerList) {
             if (t.getClass() == handlerClass) {
                 //noinspection unchecked
                 List<?> dom = t.getDom();
                 Map<String, B> resultMap = new HashMap<>();
                 for (int i = 0; i < dom.size(); ++i) {
-                    //noinspection unchecked
                     DomRepresentation<B> domObject = (DomRepresentation<B>) dom.get(i);
-                    resultMap.put(domObject.getName(), domObject.getObject());
+                    //noinspection unchecked
+                    if (domain.equals(domObject.getDomain())) {
+                        resultMap.put(domObject.getName(), domObject.getObject());
+                    }
                 }
                 return resultMap;
             }
@@ -230,6 +232,9 @@ public class XueCore {
 
                         case XmlPullParser.END_TAG:
                             handleEndTag(xpp);
+                            if (currentHandler != null) {
+                                currentHandler.setDomain(filename);
+                            }
                             break;
 
                         default:
@@ -242,6 +247,10 @@ public class XueCore {
                 }
                 if (tries == 0) {
                     currentHandler = calculateNextTagHandler();
+                    //noinspection ConstantConditions intellij too bad not true fakenews!
+                    if (currentHandler != null) {
+                        currentHandler.setDomain(filename);
+                    }
                     tries = TRIES;
                 }
                 else {

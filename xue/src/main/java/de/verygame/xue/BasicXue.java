@@ -1,5 +1,6 @@
 package de.verygame.xue;
 
+import de.verygame.util.Tuple;
 import de.verygame.xue.annotation.Bind;
 import de.verygame.xue.exception.ElementTagUnknownException;
 import de.verygame.xue.handler.ConstantTagGroupHandler;
@@ -10,10 +11,9 @@ import de.verygame.xue.mapping.TagMapping;
 import de.verygame.xue.mapping.tag.XueTag;
 import de.verygame.xue.util.InjectionUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.io.File;
+import java.io.InputStream;
+import java.util.*;
 
 /**
  * @author Rico Schrage
@@ -21,8 +21,10 @@ import java.util.Set;
 public class BasicXue<T> extends AbstractXue {
     private static final String LOAD_BEFORE_MESSAGE = "You have to load the xml-file first!";
 
-    /** Contains all elements, which have the attribute <code>name</code> */
-    protected Map<String, T> elementMap;
+    /** Contains all elements */
+    protected Map<String, Map<String, T>> elements;
+    /** Contains all elements, from the first file*/
+    protected Map<String, T> defaultElementMap;
     /** Main tag group */
     protected ElementsTagGroupHandler<T> elementsTagGroupHandler;
     /** see {@link #bind(Object)} */
@@ -45,24 +47,35 @@ public class BasicXue<T> extends AbstractXue {
         this.bindTarget = bindTarget;
     }
 
+    @Deprecated
     public int getElementSize() {
-        if (elementMap == null) {
+        if (defaultElementMap == null) {
             throw new IllegalStateException(LOAD_BEFORE_MESSAGE);
         }
 
-        return elementMap.size();
+        return defaultElementMap.size();
     }
 
-    public Map<String, T> getElementMap() {
-        return elementMap;
+    public T getElementByName(final String name) {
+        if (defaultElementMap == null) {
+            throw new IllegalStateException(LOAD_BEFORE_MESSAGE);
+        }
+        return defaultElementMap.get(name);
     }
 
     public List<T> getElementsByName(String... names) {
         List<T> elementList = new ArrayList<>();
         for (String name : names) {
-            elementList.add(elementMap.get(name));
+            elementList.add(defaultElementMap.get(name));
         }
         return elementList;
+    }
+
+    public T getElementInDomainByName(String name, String domain) {
+        if (elements == null) {
+            throw new IllegalStateException(LOAD_BEFORE_MESSAGE);
+        }
+        return elements.get(domain).get(name);
     }
 
     public List<T> getElementsByTagName(String name) {
@@ -77,33 +90,46 @@ public class BasicXue<T> extends AbstractXue {
         if (target == null) {
             throw new ElementTagUnknownException("There is no tag with the name: " + name);
         }
-        for (Map.Entry<String, T> entry : elementMap.entrySet()) {
-            if (target.isInstance(entry.getValue())) {
-                elementList.add(entry.getValue());
+        for (Map.Entry<String, Map<String, T>> entry : elements.entrySet()) {
+            for (final Map.Entry<String, T> sEntries : entry.getValue().entrySet()) {
+                if (target.isInstance(sEntries.getValue())) {
+                    elementList.add(sEntries.getValue());
+                }
             }
         }
         return elementList;
     }
 
-    public T getElementByName(final String name) {
-        if (elementMap == null) {
-            throw new IllegalStateException(LOAD_BEFORE_MESSAGE);
-        }
-
-        return elementMap.get(name);
-    }
-
     @Override
     protected void postLoad() {
-        //noinspection unchecked
-        this.elementMap = (Map<String, T>) core.getResultUnsafe(elementsTagGroupHandler.getClass(), Object.class);
-
-        Set<Map.Entry<String, T>> entries = elementMap.entrySet();
-        if (bindTarget == null) {
-            return;
+        if (!files.isEmpty()) {
+            //noinspection unchecked
+            this.defaultElementMap = (Map<String, T>) core.getResultUnsafe(elementsTagGroupHandler.getClass(), files.get(0).getSecond(), Object.class);
         }
-        for (final Map.Entry<String, T> entry : entries) {
-            InjectionUtils.injectByKey(Bind.class, bindTarget, entry.getValue(), entry.getKey());
+
+        this.elements = new HashMap<>();
+        for (File dir: dirs) {
+            for (File file : dir.listFiles()) {
+                //noinspection unchecked
+                Map<String, T> map = (Map<String, T>) core.getResultUnsafe(elementsTagGroupHandler.getClass(), file.getName(), Object.class);
+                this.elements.put(file.getName(), map);
+            }
+        }
+        for (Tuple<InputStream, String> tuple : files) {
+            //noinspection unchecked
+            Map<String, T> map = (Map<String, T>) core.getResultUnsafe(elementsTagGroupHandler.getClass(), tuple.getSecond(), Object.class);
+            this.elements.put(tuple.getSecond(), map);
+        }
+
+        if (bindTarget != null) {
+            Set<Map.Entry<String, Map<String, T>>> e = this.elements.entrySet();
+            for (final Map.Entry<String, Map<String, T>> entry : e) {
+                Set<Map.Entry<String, T>> allEntries = entry.getValue().entrySet();
+                for (final Map.Entry<String, T> elements : allEntries) {
+                    InjectionUtils.injectByKey(Bind.class, bindTarget, elements.getValue(), elements.getKey());
+                }
+            }
         }
     }
+
 }

@@ -118,6 +118,10 @@ public abstract class AbstractXue {
     }
 
     public void load() throws XueException, FileNotFoundException {
+        if (dirs.isEmpty() && files.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+
         this.preLoad();
 
         for (Tuple<InputStream, String> file : files) {
