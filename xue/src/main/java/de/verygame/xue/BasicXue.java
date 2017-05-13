@@ -2,6 +2,7 @@ package de.verygame.xue;
 
 import de.verygame.util.Tuple;
 import de.verygame.xue.annotation.Bind;
+import de.verygame.xue.dom.DomObject;
 import de.verygame.xue.exception.ElementTagUnknownException;
 import de.verygame.xue.handler.ConstantTagGroupHandler;
 import de.verygame.xue.handler.ElementsTagGroupHandler;
@@ -129,6 +130,10 @@ public class BasicXue<T> extends AbstractXue {
                     InjectionUtils.injectByKey(Bind.class, bindTarget, elements.getValue(), elements.getKey());
                 }
             }
+        }
+
+        for (DomObject<? extends T> domElement : elementsTagGroupHandler.getDom()) {
+            addInputHandler(domElement.getTag());
         }
     }
 
