@@ -80,18 +80,25 @@ public class BasicXue<T> extends AbstractXue {
     }
 
     public List<T> getElementsByTagName(String name) {
+        return getElementsByTagNameInDomain(name, null);
+    }
+
+    public List<T> getElementsByTagNameInDomain(String tagName, String domainName) {
         List<T> elementList = new ArrayList<>();
         Class<?> target = null;
         for (TagMapping<? extends T> tagMapping : elementsTagGroupHandler.getBuilderMappings()) {
-            XueTag<? extends T> tag = tagMapping.createTag(name);
+            XueTag<? extends T> tag = tagMapping.createTag(tagName);
             if (tag != null) {
                 target = tag.getElement().getClass();
             }
         }
         if (target == null) {
-            throw new ElementTagUnknownException("There is no tag with the name: " + name);
+            throw new ElementTagUnknownException("There is no tag with the name: " + tagName);
         }
         for (Map.Entry<String, Map<String, T>> entry : elements.entrySet()) {
+            if (domainName != null && !entry.getKey().equals(domainName)) {
+                continue;
+            }
             for (final Map.Entry<String, T> sEntries : entry.getValue().entrySet()) {
                 if (target.isInstance(sEntries.getValue())) {
                     elementList.add(sEntries.getValue());
