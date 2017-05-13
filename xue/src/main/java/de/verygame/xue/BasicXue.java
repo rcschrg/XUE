@@ -57,6 +57,19 @@ public class BasicXue<T> extends AbstractXue {
         return defaultElementMap.size();
     }
 
+    public Map<String, T> getDefaultElementMap() {
+        return defaultElementMap;
+    }
+
+    public Map<String, T> getElementMapOfDomain(String domain) {
+        for (Map.Entry<String, Map<String, T>> entry : elements.entrySet()) {
+            if (entry.getKey().equals(domain)) {
+                return entry.getValue();
+            }
+        }
+        throw new IllegalArgumentException("There is no domain: '" + domain + "'!");
+    }
+
     public T getElementByName(final String name) {
         if (defaultElementMap == null) {
             throw new IllegalStateException(LOAD_BEFORE_MESSAGE);
