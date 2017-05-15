@@ -119,6 +119,9 @@ public abstract class XueAbstractElementTag<T> implements XueTag<T> {
         for (int i = 0; i < attributeGroups.size(); ++i) {
             AttributeGroup<? super T> a = attributeGroups.get(i);
             Map<String, Object> entry = multiValueMap.get(a);
+            if (entry == null) {
+                continue;
+            }
             for (Map.Entry<String,Object> valueEntry : entry.entrySet()) {
                 for (int j = 0; j < a.getGroupMeta().size(); ++j) {
                     AttributeGroupElementMeta meta = a.getGroupMeta().get(j);
