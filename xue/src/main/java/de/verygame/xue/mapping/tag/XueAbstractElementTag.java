@@ -1,11 +1,15 @@
 package de.verygame.xue.mapping.tag;
 
+import de.verygame.util.ReflectionUtils;
+import de.verygame.xue.annotation.Dependency;
 import de.verygame.xue.annotation.Name;
+import de.verygame.xue.exception.XueException;
 import de.verygame.xue.input.XueInputEvent;
 import de.verygame.xue.mapping.tag.attribute.Attribute;
 import de.verygame.xue.mapping.tag.attribute.AttributeGroup;
 import de.verygame.xue.mapping.tag.attribute.AttributeGroupElementMeta;
 
+import java.lang.reflect.Field;
 import java.util.*;
 
 /**
@@ -59,6 +63,8 @@ public abstract class XueAbstractElementTag<T> implements XueTag<T> {
         if (first) {
             attributes = defineAttributes();
             attributeGroups = defineAttributeGroups();
+            sortAttributes();
+            injectDependencies();
             first = false;
         }
         for (int i = 0; i < attributes.size(); ++i) {
@@ -74,6 +80,52 @@ public abstract class XueAbstractElementTag<T> implements XueTag<T> {
         }
     }
 
+    private void sortAttributes() {
+        List<Attribute<? super T, ?>> attributeCopy = new ArrayList<>(attributes);
+        attributes.clear();
+        while (!attributeCopy.isEmpty()) {
+            Iterator<Attribute<? super T, ?>> iterator = attributeCopy.iterator();
+            while (iterator.hasNext()) {
+                Attribute<? super T, ?> attribute = iterator.next();
+                int dependencies = 0;
+                Field[] f = attribute.getClass().getDeclaredFields();
+                for (Field field : f) {
+                    if (field.isAnnotationPresent(Dependency.class)) {
+                        dependencies++;
+                    }
+                }
+                if (dependencies == 0) {
+                    attributes.add(attribute);
+                    iterator.remove();
+                }
+            }
+        }
+    }
+
+    private void injectDependencies() {
+        for (Attribute<? super T, ?> attribute : attributes) {
+            List<Field> f = ReflectionUtils.getAllFields(attribute.getClass());
+            for (Field field : f) {
+                if (!field.isAnnotationPresent(Dependency.class)) {
+                    continue;
+                }
+                String fieldName = field.getName();
+                for (Attribute<? super T, ?> otherAttribute : attributes) {
+                    if (fieldName.equals(otherAttribute.getName())) {
+                        try {
+                            field.setAccessible(true);
+                            field.set(attribute, otherAttribute);
+                        }
+                        catch (IllegalAccessException e) {
+                            throw new XueException(e);
+                        }
+                    }
+                }
+            }
+
+        }
+    }
+
     @Override
     @SuppressWarnings("unchecked")
     public <V> void apply(String attribute, V value) {
@@ -82,7 +134,7 @@ public abstract class XueAbstractElementTag<T> implements XueTag<T> {
             if (fetchName(a).equals(attribute)) {
                 Attribute<T, V> a2 = (Attribute<T, V>) a;
                 a2.apply(element, value);
-		applyToLinkedXueTags(attribute, value);
+		        applyToLinkedXueTags(attribute, value);
                 return;
             }
         }
@@ -95,12 +147,12 @@ public abstract class XueAbstractElementTag<T> implements XueTag<T> {
                         multiValueMap.put(a, new HashMap<String, Object>());
                     }
                     multiValueMap.get(a).put(attribute, value);
-		    applyToLinkedXueTags(attribute, value);
+		            applyToLinkedXueTags(attribute, value);
                     return;
                 }
             }
         }
-	applyToLinkedXueTags(attribute, value);
+	    applyToLinkedXueTags(attribute, value);
     }
 
     public <V> void applyToLinkedXueTags(String attribute, V value) {
