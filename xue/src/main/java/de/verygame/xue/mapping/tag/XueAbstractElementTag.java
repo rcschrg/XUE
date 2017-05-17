@@ -90,7 +90,7 @@ public abstract class XueAbstractElementTag<T> implements XueTag<T> {
                 int dependencies = 0;
                 Field[] f = attribute.getClass().getDeclaredFields();
                 for (Field field : f) {
-                    if (field.isAnnotationPresent(Dependency.class)) {
+                    if (field.isAnnotationPresent(Dependency.class) && isAttributePresent(field.getName(), attributeCopy)) {
                         dependencies++;
                     }
                 }
@@ -100,6 +100,15 @@ public abstract class XueAbstractElementTag<T> implements XueTag<T> {
                 }
             }
         }
+    }
+
+    private boolean isAttributePresent(String name, List<Attribute<? super T, ?>> attributeCopy) {
+        for (Attribute<? super T, ?> att : attributeCopy) {
+            if (att.getName().equals(name)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void injectDependencies() {
