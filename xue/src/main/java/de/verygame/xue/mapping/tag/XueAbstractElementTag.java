@@ -104,7 +104,7 @@ public abstract class XueAbstractElementTag<T> implements XueTag<T> {
 
     private boolean isAttributePresent(String name, List<Attribute<? super T, ?>> attributeCopy) {
         for (Attribute<? super T, ?> att : attributeCopy) {
-            if (att.getName().equals(name)) {
+            if (fetchName(att).equals(name)) {
                 return true;
             }
         }

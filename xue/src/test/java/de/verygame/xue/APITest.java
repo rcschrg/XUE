@@ -1,5 +1,7 @@
 package de.verygame.xue;
 
+import de.verygame.xue.annotation.Dependency;
+import de.verygame.xue.annotation.Name;
 import de.verygame.xue.handler.ElementsTagGroupHandler;
 import de.verygame.xue.mapping.TagMapping;
 import de.verygame.xue.mapping.tag.XueAbstractElementTag;
@@ -76,6 +78,7 @@ public class APITest {
 
     private static class TestBaseValue extends AbstractAttribute<TestBase, Integer> {
         private static final String NAME = "value";
+        private int v = 0;
 
         @Override
         public String getName() {
@@ -84,7 +87,25 @@ public class APITest {
 
         @Override
         public void apply(TestBase element, Integer value) {
+            this.v = value;
             element.value = value;
+        }
+
+        protected int getValue() { return v; }
+    }
+
+    /**
+     * Testing new APIs
+     */
+    @Name("valueChild")
+    private static class TestBaseValueChild extends AbstractAttribute<TestBase, Integer> {
+
+        @Dependency
+        private TestBaseValue value;
+
+        @Override
+        public void apply(TestBase element, Integer value) {
+            element.value = value * this.value.getValue();
         }
     }
 
@@ -119,7 +140,7 @@ public class APITest {
 
         @Override
         protected List<Attribute<? super TestBase, ?>> defineAttributes() {
-            return buildAttributeList(new TestBaseName(), new TestBaseValue());
+            return buildAttributeList(new TestBaseName(), new TestBaseValue(), new TestBaseValueChild());
         }
 
         @Override
@@ -151,6 +172,7 @@ public class APITest {
 
         assertEquals("Hallo", xue.getElementByName("testOne").name);
         assertEquals(42, xue.getElementByName("testOne").value);
+        assertEquals(84, xue.getElementByName("testTwo").value);
         assertEquals(0.0f, xue.getElementByName("testOne").child.a, 0.001f);
         assertEquals(1.0f, xue.getElementByName("testOne").child.b, 0.001f);
         assertEquals(11, xue.getElementsByTagName("BaseTag").size());

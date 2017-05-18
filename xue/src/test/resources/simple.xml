@@ -11,7 +11,7 @@
                 <BaseTag name="child7" testName="c6"/>
             </BaseTag>
         </BaseTag>
-        <BaseTag name="testTwo" testName="Hallo" value="42" a="0.0" b="1.0">
+        <BaseTag name="testTwo" testName="Hallo" value="42" valueChild="2" a="0.0" b="1.0">
             <BaseTag name="child4" />
             <BaseTag name="child5" />
             <BaseTag name="child6" />
