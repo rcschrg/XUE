@@ -4,6 +4,7 @@ import de.verygame.xue.constants.Constant;
 import de.verygame.xue.handler.ActionSequenceTagGroupHandler;
 import de.verygame.xue.handler.ActionSequenceUpdateHandler;
 import de.verygame.xue.handler.ResizeInputHandler;
+import de.verygame.xue.handler.UpdateStringHandler;
 import de.verygame.xue.mapping.DummyGlobalMappings;
 import de.verygame.xue.mapping.GlobalMappings;
 import de.verygame.xue.util.action.ActionSequence;
@@ -35,6 +36,7 @@ public class GuiXue<T> extends BasicXue<T> {
         this.addUpdateHandler(new ActionSequenceUpdateHandler());
         this.addInputHandler(new ActionSequenceUpdateHandler());
         this.addInputHandler(new ResizeInputHandler<>());
+        this.addInputHandler(new UpdateStringHandler<>());
     }
 
     public Map<String, ActionSequence> getActionSequenceMap() {
