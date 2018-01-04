@@ -1,3 +1,14 @@
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.6.1"
+    }
+}
+
 allprojects {
     apply plugin: "eclipse"
     apply plugin: "idea"
@@ -11,11 +22,13 @@ allprojects {
         testCompile 'junit:junit:4.12'
         testCompile 'org.mockito:mockito-all:1.10.19'
     }
+
 }
 
 project(':xue') {
     apply plugin: "maven"
     apply plugin: 'signing'
+    apply plugin: "org.sonarqube"
 
     test {
         testLogging.showStandardStreams = true
