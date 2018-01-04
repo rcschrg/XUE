@@ -1,24 +1,24 @@
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
-group = 'de.verygame.xue'
-version = '0.3.4'
+group = 'de.rschrage.xue'
+version = '0.3.5'
 archivesBaseName = 'XUE'
 
 ext {
     appName = "XUE"
     appDescription = "XUE provides an easy way to create and set up objects via XML"
-    projectUrl = "https://github.com/VeryGame/Xue"
-    scmUrl = "https://github.com/VeryGame/Xue.git"
-    connectionUrl = "scm:git:git://github.com/VeryGame/Xue.git"
-    developerConnectionUrl = "scm:git:ssh:git@github.com:VeryGame/Xue.git"
+    projectUrl = "https://github.com/rcschrg/Xue"
+    scmUrl = "https://github.com/rcschrg/Xue.git"
+    connectionUrl = "scm:git:git://github.com/rcschrg/Xue.git"
+    developerConnectionUrl = "scm:git:ssh:git@github.com:rcschrg/Xue.git"
     mitLicenseName = "The MIT License (MIT)"
     mitLicenseUrl = "https://opensource.org/licenses/mit-license.php"
     mitLicenseDis = "repo"
 
     devId = "rcschrg"
     devName = "Rico Schrage"
-    devEmail = "rcschrg@verygame.de"
+    devEmail = "rico.schrage@gmail.com"
 }
 
 /*
@@ -83,6 +83,7 @@ uploadArchives {
         }
     }
 }*/
+
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
 sourceSets.main.java.srcDirs = [ "src/main/java" ]
