@@ -19,5 +19,12 @@ bash ./gradlew assemble'''
         sh 'bash ./gradlew test'
       }
     }
+    stage('Test') {
+      steps {
+        withCredentials([string(credentialsId: 'SonarExecutor', variable: 'SONAR_TOKEN')]) {
+          sh 'bash ./gradlew xue:sonarqube -Dsonar.host.url=https://sonar.rschrage.org -Dsonar.login=$SONAR_TOKEN'
+        }
+      }
+    }
   }
 }
