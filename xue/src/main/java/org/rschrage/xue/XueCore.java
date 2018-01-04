@@ -4,7 +4,6 @@ import org.rschrage.util.ReflectionUtils;
 import org.rschrage.xue.annotation.Dependency;
 import org.rschrage.xue.constants.Constant;
 import org.rschrage.xue.dom.DomRepresentation;
-import de.verygame.xue.exception.*;
 import org.rschrage.xue.exception.*;
 import org.rschrage.xue.handler.TagGroupHandler;
 import org.rschrage.xue.mapping.TagMapping;

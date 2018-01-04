@@ -6,7 +6,6 @@ import org.rschrage.xue.dom.value.*;
 import org.rschrage.xue.exception.AttributeUnknownException;
 import org.rschrage.xue.exception.ElementTagUnknownException;
 import org.rschrage.xue.exception.XueException;
-import de.verygame.xue.dom.value.*;
 import org.rschrage.xue.mapping.DummyGlobalMappings;
 import org.rschrage.xue.mapping.GlobalMappings;
 import org.rschrage.xue.mapping.tag.XueTag;

@@ -2,7 +2,6 @@ package org.rschrage.xue.handler;
 
 import org.rschrage.xue.annotation.Dependency;
 import org.rschrage.xue.constants.Constant;
-import de.verygame.xue.exception.*;
 import org.rschrage.xue.dom.DomObject;
 import org.rschrage.xue.mapping.TagMapping;
 import org.rschrage.xue.mapping.DummyGlobalMappings;
