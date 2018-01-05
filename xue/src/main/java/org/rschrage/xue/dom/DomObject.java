@@ -23,7 +23,7 @@ public class DomObject<T> implements DomRepresentation<T> {
     private final Map<String, Value<?, ?>> attributeValueMap;
     private final Map<FloatValue, Float> floatValueToAbsoluteValueMap;
     private final GlobalMappings<T> mappings;
-    private final List<DomObject<?>> constantDom;
+    private final List<DomObject<Object>> constantDom;
     protected final Map<Constant, String> constantMap;
     protected String name;
     protected String domain;
@@ -34,10 +34,10 @@ public class DomObject<T> implements DomRepresentation<T> {
     }
 
     public DomObject(Map<Constant, String> constantStringMap, XueTag<? extends T> builder, GlobalMappings<T> mappings) {
-        this(constantStringMap, builder, mappings, new ArrayList<DomObject<?>>());
+        this(constantStringMap, builder, mappings, new ArrayList<DomObject<Object>>());
     }
 
-    public DomObject(Map<Constant, String> constantStringMap, XueTag<? extends T> builder, GlobalMappings<T> mappings, List<DomObject<?>> constantDom) {
+    public DomObject(Map<Constant, String> constantStringMap, XueTag<? extends T> builder, GlobalMappings<T> mappings, List<DomObject<Object>> constantDom) {
         this.builder = builder;
         this.mappings = mappings;
         this.constantDom = constantDom;

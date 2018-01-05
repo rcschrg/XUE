@@ -16,7 +16,7 @@ import java.util.Map;
 /**
  * @author Rico Schrage
  */
-public class ConstantTagGroupHandler extends BaseTagGroupHandler<Object, DomObject<?>> {
+public class ConstantTagGroupHandler extends BaseTagGroupHandler<Object, DomObject<Object>> {
 
     public ConstantTagGroupHandler() {
         super(Constant.obtainDefaultMap(), Constant.CONST_TAG);

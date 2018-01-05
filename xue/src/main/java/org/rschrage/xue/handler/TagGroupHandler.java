@@ -13,7 +13,7 @@ import java.util.Map;
 /**
  * @author Rico Schrage
  */
-public interface TagGroupHandler<T, D extends DomRepresentation<?>> extends DomContainer<D> {
+public interface TagGroupHandler<T, D extends DomRepresentation<T>> extends DomContainer<D> {
 
     /**
      * Starts the handling of the group, means the start tag was reached.

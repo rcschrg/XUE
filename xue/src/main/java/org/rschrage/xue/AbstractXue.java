@@ -99,7 +99,7 @@ public abstract class AbstractXue {
         this.core.addMappingUnsafe(tagHandler, tagMapping);
     }
 
-    public <B, D extends DomRepresentation<?>> void addMapping(Class<TagGroupHandler<B, D>> tagHandler, TagMapping<B> tagMapping) {
+    public <B, D extends DomRepresentation<B>> void addMapping(Class<TagGroupHandler<B, D>> tagHandler, TagMapping<B> tagMapping) {
         this.core.addMappingUnsafe(tagHandler, tagMapping);
     }
 

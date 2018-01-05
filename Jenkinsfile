@@ -22,7 +22,7 @@ bash ./gradlew assemble'''
     stage('Sonar') {
       steps {
         withCredentials([string(credentialsId: 'SonarExecutor', variable: 'SONAR_TOKEN')]) {
-          sh 'bash ./gradlew xue:sonarqube -Dsonar.host.url=https://sonar.rschrage.org -Dsonar.login=$SONAR_TOKEN'
+          sh 'bash ./gradlew jacocoTestReport sonarqube -Dsonar.projectKey=xue -Dsonar.projectName=xue-$BRANCH_NAME -Dsonar.host.url=https://sonar.rschrage.org -Dsonar.login=$SONAR_TOKEN'
         }
       }
     }

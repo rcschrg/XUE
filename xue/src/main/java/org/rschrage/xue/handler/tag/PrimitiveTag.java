@@ -24,7 +24,7 @@ public class PrimitiveTag implements XueTag<Object> {
 
     @Override
     public void applyChild(Object child) {
-
+        //nothing to do
     }
 
     @Override

@@ -34,7 +34,7 @@ public class XueCore {
     private final Map<Constant, String> constantMap;
 
     private TagGroupHandler<?, ?> currentHandler;
-    private int tries = TRIES;
+    private int remainingTries = TRIES;
 
     /**
      * Constructs XueCore, which uses tagMapping and attributeMapping for everything, which have to be mapped.
@@ -97,7 +97,7 @@ public class XueCore {
         this.tagGroupHandlerList.add(tagGroupHandler);
     }
 
-    public <E, D extends DomRepresentation<?>> Map<String, D> getDom(Class<TagGroupHandler<E, D>> tagGroupHandlerClass) {
+    public <E, D extends DomRepresentation<E>> Map<String, D> getDom(Class<TagGroupHandler<E, D>> tagGroupHandlerClass) {
         for (TagGroupHandler<?, ?> t : tagGroupHandlerList) {
             if (t.getClass() == tagGroupHandlerClass) {
                 //noinspection unchecked
@@ -119,7 +119,7 @@ public class XueCore {
      * @param tagMapping mapping
      * @param <B> makes sure that the tagHandler und tagMapping fit together
      */
-    public <B, D extends DomRepresentation<?>> void addMapping(Class<? extends TagGroupHandler<B, D>> tagHandler, TagMapping<B> tagMapping) {
+    public <B, D extends DomRepresentation<B>> void addMapping(Class<? extends TagGroupHandler<B, D>> tagHandler, TagMapping<B> tagMapping) {
         addMappingUnsafe(tagHandler, tagMapping);
     }
 
@@ -245,16 +245,16 @@ public class XueCore {
                         break;
                     }
                 }
-                if (tries == 0) {
+                if (remainingTries == 0) {
                     currentHandler = calculateNextTagHandler();
                     //noinspection ConstantConditions intellij too bad not true fakenews!
                     if (currentHandler != null) {
                         currentHandler.setDomain(filename);
                     }
-                    tries = TRIES;
+                    remainingTries = TRIES;
                 }
                 else {
-                    tries--;
+                    remainingTries--;
                 }
                 inputXml.reset();
             }

@@ -17,7 +17,7 @@ import java.util.Map;
  * Convinient abstract implementation of the {@link TagGroupHandler} interface, which provides some default implementations
  * of the trivial methods.
  */
-public abstract class BaseTagGroupHandler<T, D extends DomRepresentation<?>> implements TagGroupHandler<T, D> {
+public abstract class BaseTagGroupHandler<T, D extends DomRepresentation<T>> implements TagGroupHandler<T, D> {
     private static final String DEFAULT_DOMAIN = "default";
 
     private boolean active = false;

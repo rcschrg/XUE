@@ -16,7 +16,7 @@ import java.util.*;
 /**
  * @author Rico Schrage
  */
-public class ElementsTagGroupHandler<T> extends BaseTagGroupHandler<T, DomObject<? extends T>> {
+public class ElementsTagGroupHandler<T> extends BaseTagGroupHandler<T, DomObject<T>> {
 
     @Dependency
     private ConstantTagGroupHandler constantTagHandler;
@@ -82,7 +82,7 @@ public class ElementsTagGroupHandler<T> extends BaseTagGroupHandler<T, DomObject
 
         scopeStack.push(elementBuilder);
 
-        DomObject<? extends T> domElement = new DomObject<>(constantMap, elementBuilder, globalMappings, constantTagHandler.getDom());
+        DomObject<T> domElement = new DomObject<>(constantMap, elementBuilder, globalMappings, constantTagHandler.getDom());
         domElement.setLayer(scopeStack.size());
         DomUtils.applyTagToDom(domElement, tag, constantMap.get(Constant.ELEMENT_ID), xpp, domList);
 
